@@ -1,0 +1,28 @@
+node_modules
+dist
+.chrome-headless/
+.edge-headless/
+.claude/
+
+# Local environment files - never commit secrets.
+.env
+.env.*
+!.env.example
+.env.local
+.env.*.local
+*.secrets.env
+.supabase-secrets.env
+supabase/.temp/
+supabase/.branches/
+.local-quarantine/
+RECUPERACION_VERSIONES/
+LOSARTESANOS_RECUPERADO_OK/
+
+# TypeScript artifacts.
+*.tsbuildinfo
+
+# Generated config outputs. Keep the .ts sources as canonical.
+vite.config.js
+vite.config.d.ts
+tailwind.config.js
+tailwind.config.d.ts

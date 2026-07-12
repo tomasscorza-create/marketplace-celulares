@@ -1,0 +1,305 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/manrope";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.45s ease-out both;
+}
+
+@keyframes catalogExplorePageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.992);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes catalogPageLoaderEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.catalog-explore-page-enter {
+  animation: catalogExplorePageEnter 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform, filter;
+}
+
+.catalog-page-loader {
+  animation: catalogPageLoaderEnter 280ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .catalog-explore-page-enter,
+  .catalog-page-loader {
+    animation: none;
+  }
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: scale(0.985);
+  filter: blur(8px);
+  transition:
+    opacity 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+/* Comprar button: fill de izquierda a derecha al hover */
+.btn-brand-fill {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-brand-fill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(15,118,110,0.14) 0%, rgba(8,145,178,0.09) 100%);
+  transform: translateX(-101%);
+  transition: transform 0.28s ease-out;
+  border-radius: inherit;
+  z-index: -1;
+}
+.btn-brand-fill:hover::before {
+  transform: translateX(0);
+}
+
+/* Favorite flame button: pop al togglear */
+@keyframes favPop {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.28); }
+  65%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+.fav-pop {
+  animation: favPop 360ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fav-pop {
+    animation: none;
+  }
+}
+
+/* Card zoom on click: efecto antes de navegar al detalle/tienda */
+@keyframes catalogCardZoom {
+  to {
+    transform: scale(1.07);
+    filter: brightness(1.05) saturate(1.06);
+  }
+}
+.catalog-card-zoom {
+  animation: catalogCardZoom 220ms cubic-bezier(0.32, 0.7, 0.34, 1) forwards;
+  position: relative;
+  z-index: 30;
+  pointer-events: none;
+  will-change: transform, filter;
+}
+@media (prefers-reduced-motion: reduce) {
+  .catalog-card-zoom {
+    animation: none;
+  }
+}
+
+/* Neutral section: overlay que respira sin tocar hijos */
+@keyframes neutralBreath {
+  0%, 100% { opacity: 0; }
+  50%       { opacity: 1; }
+}
+.neutral-breathe {
+  position: relative;
+}
+.neutral-breathe::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 145, 178, 0.08);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: neutralBreath 8s ease-in-out infinite;
+}
+
+/* Search section badge: gradient diagonal + breath + sheen */
+.search-section {
+  position: relative;
+  /* Sin overflow:hidden aqui: los efectos se contienen en .search-section-fx */
+  isolation: isolate;
+  background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+}
+/* Capa contenedora de animaciones: overflow:hidden solo afecta a los efectos,
+   no a los hijos posicionados (dropdown de filtros, etc.) */
+.search-section-fx {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+}
+/* Breathing overlay: pulsa el corner opuesto, solo opacidad (GPU) */
+.search-section-fx::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(315deg, rgba(8,145,178,0.15) 0%, transparent 58%);
+  animation: searchBreath 9s ease-in-out infinite;
+}
+/* Metallic sheen: una pasada cada 10s, solo transform (GPU) */
+.search-section-fx::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    108deg,
+    transparent 25%,
+    rgba(255,255,255,0.12) 38%,
+    rgba(255,255,255,0.58) 50%,
+    rgba(255,255,255,0.12) 62%,
+    transparent 75%
+  );
+  transform: translateX(-120%);
+  animation: searchSheen 10s linear infinite;
+}
+@keyframes searchBreath {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 1; }
+}
+@keyframes searchSheen {
+  0%      { transform: translateX(-120%); }
+  20%     { transform: translateX(120%);  }
+  20.001% { transform: translateX(-120%); }
+  100%    { transform: translateX(-120%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll,
+  .reveal-on-scroll.is-visible {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+
+  .search-section-fx::before,
+  .search-section-fx::after { animation: none; }
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.catalog-lite .reveal-on-scroll,
+.catalog-lite .reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: none;
+}
+
+.catalog-lite .catalog-card {
+  transition: none;
+}
+
+.catalog-lite .catalog-card:hover {
+  transform: none;
+}
+
+.catalog-lite .neutral-breathe::before,
+.catalog-lite .search-section-fx::before,
+.catalog-lite .search-section-fx::after {
+  animation: none;
+}
+
+@layer base {
+  :root {
+    --color-brand: #0f766e;
+    --color-sun: #0891b2;
+    --color-ocean: #475569;
+    --color-paper: #f8fafc;
+  }
+
+  html {
+    font-family: "Inter Variable", Inter, system-ui, sans-serif;
+    color: #1c1917;
+    background: linear-gradient(160deg, #f8fafc 0%, #f0fdfa 100%);
+    min-height: 100dvh;
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: "Manrope Variable", Manrope, "Inter Variable", system-ui, sans-serif;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+  /* Focus ring visible para teclado: solo se muestra con navegacion por teclado,
+     no al hacer click (gracias a :focus-visible). Los inputs gestionan su propio
+     foco via border color, por eso se limita a botones y enlaces. */
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  input[type="checkbox"]:focus-visible,
+  input[type="radio"]:focus-visible,
+  select:focus-visible {
+    outline: 2px solid #0f766e;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}

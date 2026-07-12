@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Marca neutral</title>
+  <desc id="desc">Isotipo geometrico neutral para un marketplace adaptable.</desc>
+  <rect width="128" height="128" rx="30" fill="#0f766e"/>
+  <path d="M30 40h68v16H30z" fill="#f8fafc" opacity=".96"/>
+  <path d="M30 72h30v16H30z" fill="#67e8f9"/>
+  <path d="M70 72h28v16H70z" fill="#f8fafc" opacity=".96"/>
+  <path d="M30 56h68v8H30z" fill="#064e3b" opacity=".42"/>
+  <circle cx="36" cy="96" r="6" fill="#f8fafc" opacity=".95"/>
+  <circle cx="92" cy="96" r="6" fill="#f8fafc" opacity=".95"/>
+</svg>

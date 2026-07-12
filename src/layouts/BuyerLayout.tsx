@@ -1,0 +1,21 @@
+import { PanelLayoutShell } from "./PanelLayoutShell";
+
+const buyerLinks = [
+  { to: "/panel/comprador", label: "Mis pedidos", end: true },
+  { to: "/perfil/cliente", label: "Perfil" },
+  { to: "/panel/comprador/carrito", label: "Carrito" },
+];
+
+export function BuyerLayout() {
+  return (
+    <PanelLayoutShell
+      accentClassName="text-[#0e7490]"
+      activeLinkClassName="bg-sun-500 text-stone-900"
+      backgroundClassName="bg-[radial-gradient(circle_at_top,_#ecfeff,_#f8fafc_55%)]"
+      borderClassName="border-sun-100"
+      inactiveLinkClassName="text-stone-600 hover:bg-sun-50 hover:text-brand-500"
+      links={buyerLinks}
+      title="Mi espacio"
+    />
+  );
+}
