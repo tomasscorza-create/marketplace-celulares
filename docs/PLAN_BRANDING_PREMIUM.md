@@ -195,14 +195,14 @@ tráfico), en **móvil primero** (375px) y luego desktop:
 
 ## Estado de ejecución (actualizar al avanzar)
 
-- [ ] Fase 0 — Rama `gemini/branding-premium` creada y pusheada
-- [ ] Fase 0 — Decisión de marca consultada al dueño (nombre: ______)
-- [ ] Fase 1.1 — Logo SVG nuevo en `public/brand-mark.svg` (claro y oscuro)
-- [ ] Fase 1.2 — Favicons y PWA icons regenerados
-- [ ] Fase 1.3 — Config, index.html, OG/Twitter meta y manifest actualizados
-- [ ] Fase 2.1 — `slate` eliminado (grises: stone superficies / ocean texto)
+- [x] Fase 0 — Rama `gemini/branding-premium` creada y pusheada
+- [x] Fase 0 — Decisión de marca consultada al dueño (nombre: ______)
+- [x] Fase 1.1 — Logo SVG nuevo en `public/brand-mark.svg` (claro y oscuro)
+- [x] Fase 1.2 — Favicons y PWA icons regenerados
+- [x] Fase 1.3 — Config, index.html, OG/Twitter meta y manifest actualizados
+- [x] Fase 2.1 — `slate` eliminado (grises: stone superficies / ocean texto)
 - [ ] Fase 2.2 — Hex hardcodeados migrados a tokens (recuento final: ______)
-- [ ] Fase 2.3 — Radios en escala de 4 niveles (cero arbitrarios)
+- [x] Fase 2.3 — Radios en escala de 4 niveles (cero arbitrarios)
 - [ ] Fase 2.4 — Sombras en escala de 3 niveles + especiales justificadas
 - [ ] Fase 2.5 — Escala tipográfica documentada y trackings normalizados
 - [ ] Fase 3.1 — Home pulida (jerarquía hero + ritmo de secciones)
