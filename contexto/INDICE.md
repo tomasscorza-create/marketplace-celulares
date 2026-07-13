@@ -15,6 +15,11 @@ Este documento mantiene el registro de las fichas de dominio generadas para docu
 | `entornos-y-seguridad.md` | Operación, integración y publicación | Contratos de `.env.example`, cliente Supabase, cuarentena local, auditorías. | `.env.example`, `docs/ENVIRONMENT.md`, `scripts/audit-safety.mjs` | `documentado` |
 | `despliegue-y-verificacion.md` | Operación, integración y publicación | Build, configuración de Netlify, límites entre frontend y backend, pruebas post-deploy. | `netlify.toml`, `package.json`, `scripts/` | `documentado` |
 | `checkout-y-pagos.md` | Operación, integración y publicación | Integración de checkout y flujos de pago. | `docs/CHECKOUT_MERCADOPAGO.md`, `src/features/buyer/`, `src/features/orders/` | `documentado` |
+| `operacion-vendedor.md` | Experiencia Vendedor | Gestión de tienda, creación de productos e inventario. | `src/features/artisan/`, `src/pages/Artisan*Page.tsx` | `documentado` |
+| `carrito-y-comprador.md` | Experiencia Comprador | Carrito de compras y estado de las órdenes del lado del cliente. | `src/features/buyer/`, `src/features/orders/` | `documentado` |
+| `visor-3d-y-medios.md` | Medios y UI | Implementación lazy del renderizador Three.js y WebGL. | `docs/PRODUCT_3D_PREVIEW.md`, `src/features/public/` | `documentado` |
+| `notificaciones-internas.md` | Backend y datos | Sistema para mandar alertas auditables a los usuarios. | `src/features/internalNotifications/` | `documentado` |
+| `decisiones-de-dominio.md` | Operación e integración | Reglas críticas sobre la nomenclatura intocable de "artisan". | `docs/DOMAIN_DECISIONS.md`, `AGENTS.md` | `documentado` |
 
 ## Mantenimiento
 
