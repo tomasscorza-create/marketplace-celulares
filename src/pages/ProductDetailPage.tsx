@@ -780,6 +780,7 @@ export function ProductDetailPage() {
                           title: product.title,
                           price: finalUnitPrice,
                         }}
+                        className="min-h-[3.25rem] w-full !bg-[#25D366] !text-white shadow-[0_12px_28px_-10px_rgba(37,211,102,0.65)] hover:!bg-[#1ebe5d] hover:shadow-[0_16px_32px_-10px_rgba(37,211,102,0.72)] sm:flex-1 sm:text-[1.0625rem]"
                         selectedOptionsSummary={selectedOptionsSummary}
                         variant="full"
                         label={isSoldOut ? "Consultar disponibilidad" : "Pedir por WhatsApp"}
