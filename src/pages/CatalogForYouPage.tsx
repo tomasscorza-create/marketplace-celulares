@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { PagePlaceholder } from "../components/PagePlaceholder";
@@ -219,7 +219,7 @@ export function CatalogForYouPage() {
           <div className="grid grid-cols-2 gap-4 sm:gap-5 xl:grid-cols-4">
             {Array.from({ length: 12 }).map((_, index) => (
               <div
-                className="rounded-[1.7rem] border border-stone-200 bg-white p-4 shadow-sm"
+                className="rounded-3xl border border-stone-200 bg-white p-4 shadow-sm"
                 key={index}
               >
                 <SkeletonBlock className="aspect-[4/5] w-full rounded-2xl" />

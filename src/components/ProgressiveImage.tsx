@@ -36,7 +36,7 @@ export function ProgressiveImage({
       <div
         aria-hidden="true"
         className={[
-          "pointer-events-none absolute inset-0 rounded-[inherit] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.78),rgba(246,240,231,0.58)_38%,rgba(230,238,248,0.42)_100%)] transition-opacity duration-500 ease-out",
+          "pointer-events-none absolute inset-0 [border-radius:inherit] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.78),rgba(246,240,231,0.58)_38%,rgba(230,238,248,0.42)_100%)] transition-opacity duration-500 ease-out",
           isLoaded ? "opacity-0" : "opacity-100",
         ].join(" ")}
       />

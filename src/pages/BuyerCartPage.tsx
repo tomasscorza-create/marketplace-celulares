@@ -425,7 +425,7 @@ export function BuyerCartPage() {
             ))}
           </section>
 
-          <aside className="grid gap-3 self-start rounded-[1.65rem] border border-ocean-100 bg-[linear-gradient(180deg,_#ffffff,_#f5f8ff)] p-4 shadow-[0_18px_44px_-32px_rgba(11,58,130,0.35)] lg:mt-[3.15rem]">
+          <aside className="grid gap-3 self-start rounded-3xl border border-ocean-100 bg-[linear-gradient(180deg,_#ffffff,_#f5f8ff)] p-4 shadow-[0_18px_44px_-32px_rgba(11,58,130,0.35)] lg:mt-[3.15rem]">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-ocean-600">
                 Listo para pagar

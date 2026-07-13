@@ -56,7 +56,7 @@ function DetailSectionCard({
   return (
     <section
       className={[
-        "relative overflow-hidden rounded-[1.65rem] border border-stone-200/90 bg-[linear-gradient(165deg,rgba(255,255,255,0.98),rgba(249,246,240,0.96)_52%,rgba(237,243,255,0.94))] p-4 shadow-[0_28px_58px_-40px_rgba(15,23,42,0.35)] ring-1 ring-white/70 sm:p-5",
+        "relative overflow-hidden rounded-3xl border border-stone-200/90 bg-[linear-gradient(165deg,rgba(255,255,255,0.98),rgba(249,246,240,0.96)_52%,rgba(237,243,255,0.94))] p-4 shadow-[0_28px_58px_-40px_rgba(15,23,42,0.35)] ring-1 ring-white/70 sm:p-5",
         toneClassName,
       ].join(" ")}
     >
@@ -402,7 +402,7 @@ export function ProductDetailPage() {
       title=""
     >
       <div className="animate-fade-in-up grid gap-5">
-        <div className="neutral-breathe relative overflow-hidden rounded-[1.8rem] border border-[#cbd5e1]/35 bg-[linear-gradient(135deg,rgba(236,254,255,0.62),rgba(255,255,255,0.96)_42%,rgba(237,243,255,0.92)_100%)] px-4 py-4 shadow-[0_24px_60px_-42px_rgba(15,23,42,0.18)] sm:px-5 sm:py-5">
+        <div className="neutral-breathe relative overflow-hidden rounded-3xl border border-[#cbd5e1]/35 bg-[linear-gradient(135deg,rgba(236,254,255,0.62),rgba(255,255,255,0.96)_42%,rgba(237,243,255,0.92)_100%)] px-4 py-4 shadow-[0_24px_60px_-42px_rgba(15,23,42,0.18)] sm:px-5 sm:py-5">
           <div className="pointer-events-none absolute inset-y-0 left-0 w-40 bg-[radial-gradient(circle_at_left,rgba(15,118,110,0.12),transparent_72%)]" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-40 bg-[radial-gradient(circle_at_right,rgba(71,85,105,0.12),transparent_72%)]" />
           <div className="relative flex items-start justify-between gap-4">
@@ -465,7 +465,7 @@ export function ProductDetailPage() {
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.08fr)_minmax(22rem,0.92fr)]">
         <section className="grid gap-3.5">
           <div
-            className="relative overflow-hidden rounded-[2.15rem] border border-[#cbd5e1]/45 bg-white/96 p-4 shadow-[0_30px_80px_-46px_rgba(15,23,42,0.38)] ring-1 ring-white/80 sm:p-5"
+            className="relative overflow-hidden rounded-3xl border border-[#cbd5e1]/45 bg-white/96 p-4 shadow-[0_30px_80px_-46px_rgba(15,23,42,0.38)] ring-1 ring-white/80 sm:p-5"
             style={{
               background: `linear-gradient(150deg, ${accentColor}15, rgba(255,255,255,0.96) 42%, #f4f8ff)`,
               borderColor: `${accentColor}32`,
@@ -488,8 +488,8 @@ export function ProductDetailPage() {
 
             {selectedProductImage ? (
               <div className="grid gap-3">
-                <div className="overflow-hidden rounded-[1.85rem] border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,244,238,0.92))] p-3 shadow-[0_28px_62px_-42px_rgba(15,23,42,0.42)] ring-1 ring-white/85 sm:p-4">
-                  <div className="relative flex min-h-[21rem] items-center justify-center overflow-hidden rounded-[1.45rem] bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.98),_rgba(244,248,255,0.96)_56%,_rgba(233,241,255,0.9))] sm:min-h-[26rem]">
+                <div className="overflow-hidden rounded-3xl border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,244,238,0.92))] p-3 shadow-[0_28px_62px_-42px_rgba(15,23,42,0.42)] ring-1 ring-white/85 sm:p-4">
+                  <div className="relative flex min-h-[21rem] items-center justify-center overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.98),_rgba(244,248,255,0.96)_56%,_rgba(233,241,255,0.9))] sm:min-h-[26rem]">
                     <div className="pointer-events-none absolute inset-x-8 top-2 h-16 rounded-full bg-white/60 blur-3xl" />
                     <ProductImageCarousel
                       autoAdvance={productImages.length > 1 && isDetailAutoplayEnabled}
@@ -585,7 +585,7 @@ export function ProductDetailPage() {
                 ) : null}
 
                 {selectedProductImage.description ? (
-                  <div className="rounded-[1.35rem] border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(247,241,233,0.9))] px-4 py-3 text-sm leading-6 text-stone-600 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.35)] ring-1 ring-white/85">
+                  <div className="rounded-2xl border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(247,241,233,0.9))] px-4 py-3 text-sm leading-6 text-stone-600 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.35)] ring-1 ring-white/85">
                     <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                       Sobre esta foto
                     </p>
@@ -594,7 +594,7 @@ export function ProductDetailPage() {
                 ) : null}
               </div>
             ) : (
-              <div className="flex aspect-[4/3] items-center justify-center rounded-[1.7rem] border border-white/70 bg-white/72 px-4 text-center shadow-[0_18px_40px_-34px_rgba(15,23,42,0.35)] sm:aspect-[3/2]">
+              <div className="flex aspect-[4/3] items-center justify-center rounded-3xl border border-white/70 bg-white/72 px-4 text-center shadow-[0_18px_40px_-34px_rgba(15,23,42,0.35)] sm:aspect-[3/2]">
                 <div>
                   <p
                     className="text-sm font-semibold uppercase tracking-widest"
@@ -631,7 +631,7 @@ export function ProductDetailPage() {
             <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-600">{product.description}</p>
 
             <div className="mt-4 grid gap-3">
-              <div className="relative overflow-hidden rounded-[1.35rem] border border-stone-200/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.92),rgba(247,241,233,0.92)_55%,rgba(237,243,255,0.9))] px-4 py-4 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.2)]">
+              <div className="relative overflow-hidden rounded-2xl border border-stone-200/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.92),rgba(247,241,233,0.92)_55%,rgba(237,243,255,0.9))] px-4 py-4 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.2)]">
                 <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[radial-gradient(circle_at_left,rgba(8,145,178,0.12),transparent_72%)]" />
                 <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                   Precio

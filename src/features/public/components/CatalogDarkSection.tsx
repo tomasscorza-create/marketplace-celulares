@@ -40,7 +40,7 @@ export default function CatalogDarkSection({
 }: CatalogDarkSectionProps) {
   return (
     <div
-      className="relative grid gap-5 overflow-hidden rounded-[1.9rem] border border-white/10 p-4 shadow-[0_28px_60px_-42px_rgba(15,23,42,0.58)] sm:p-5"
+      className="relative grid gap-5 overflow-hidden rounded-3xl border border-white/10 p-4 shadow-[0_28px_60px_-42px_rgba(15,23,42,0.58)] sm:p-5"
     >
       <div className="pointer-events-none absolute inset-0 z-0 bg-stone-900" />
       <div className="pointer-events-none absolute -inset-2 z-0 bg-[url('/catalog_dark_bg.webp')] bg-cover bg-center opacity-30 blur-[4px]" />

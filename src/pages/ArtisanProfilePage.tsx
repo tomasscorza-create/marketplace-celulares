@@ -188,7 +188,7 @@ export function ArtisanProfilePage() {
                     {storefront.profile_image_url ? (
                       <img
                         alt={storeTitle}
-                        className="h-full w-full rounded-[1.45rem] object-cover"
+                        className="h-full w-full rounded-2xl object-cover"
                         loading="eager"
                         src={storefront.profile_image_url}
                       />

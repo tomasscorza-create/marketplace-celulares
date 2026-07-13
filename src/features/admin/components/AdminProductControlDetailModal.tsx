@@ -124,7 +124,7 @@ export function AdminProductControlDetailModal({
       }}
       role="dialog"
     >
-      <div className="flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-[1.8rem] border border-stone-200 bg-white shadow-[0_32px_90px_-40px_rgba(15,23,42,0.6)]">
+      <div className="flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-[0_32px_90px_-40px_rgba(15,23,42,0.6)]">
         {/* ── Cabecera fija ── */}
         <div className="shrink-0 border-b border-stone-200 px-5 pb-0 pt-5">
           <div className="flex items-start justify-between gap-3">
