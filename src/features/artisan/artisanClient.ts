@@ -126,24 +126,6 @@ function normalizeSearchTerm(search?: string) {
     .trim();
 }
 
-function isMissingColumnError(
-  error: {
-    code?: string;
-    details?: string;
-    message?: string;
-  } | null,
-  columnName: string,
-) {
-  const errorText = `${error?.message ?? ""} ${error?.details ?? ""}`.toLowerCase();
-
-  return (
-    error?.code === "PGRST204" ||
-    errorText.includes(columnName.toLowerCase()) ||
-    errorText.includes("could not find the") ||
-    errorText.includes("column")
-  );
-}
-
 export async function updateArtisanStoreProfile(
   profileId: string,
   input: ArtisanStoreProfileInput,
@@ -366,14 +348,6 @@ export async function createArtisanProduct(artisanId: string, input: ArtisanProd
     .select(productSelection)
     .single<ArtisanProduct>();
 
-  if (response.error && isMissingColumnError(response.error, "product_attributes")) {
-    return client
-      .from("products")
-      .insert(basePayload)
-      .select(productSelection)
-      .single<ArtisanProduct>();
-  }
-
   return response;
 }
 
@@ -405,15 +379,6 @@ export async function updateArtisanProduct(productId: string, input: ArtisanProd
     .eq("id", productId)
     .select(productSelection)
     .single<ArtisanProduct>();
-
-  if (response.error && isMissingColumnError(response.error, "product_attributes")) {
-    return client
-      .from("products")
-      .update(basePayload)
-      .eq("id", productId)
-      .select(productSelection)
-      .single<ArtisanProduct>();
-  }
 
   return response;
 }

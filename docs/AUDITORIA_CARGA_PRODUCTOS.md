@@ -408,7 +408,7 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - [x] Fase 3 - Migracion aplicada al backend confirmado
 - [x] Fase 4.1 â€” CÃ³digo muerto de borrado de imÃ¡genes eliminado
 - [x] Fase 4.2 â€” Vestigios de refresh manual eliminados
-- [ ] Fase 4.3 â€” `isMissingColumnError` acotado o eliminado
+- [x] Fase 4.3 â€” `isMissingColumnError` acotado o eliminado
 - [ ] Fase 4.4 â€” Autosave con debounce y carrera resuelta
 - [ ] Fase 4.5 â€” `ArtisanProductsPage` dividido en hooks
 - [ ] Fase 4.6 â€” `ArtisanProductFormSection` dividido
@@ -421,6 +421,9 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - 2026-07-13: Fase 4.1-4.2. Se conserva Storage append-only por la migraciÃ³n 020;
   se retirÃ³ el rollback no operativo y sus mensajes. Las mutations de React Query
   invalidan la lista, por lo que se eliminÃ³ el refresh stub.
+- 2026-07-13: Fase 4.3. Se eliminÃ³ el fallback de columna ausente: las migraciones
+  del proyecto remoto confirmado estÃ¡n alineadas y deben fallar de forma visible ante
+  una regresiÃ³n de esquema.
 
 ## Criterios de aceptaciÃ³n
 
