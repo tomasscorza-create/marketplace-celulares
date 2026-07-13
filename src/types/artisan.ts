@@ -11,11 +11,7 @@ export type ArtisanCategory = {
 export type ArtisanProduct = {
   id: string;
   artisan_id: string;
-  batch_code: string | null;
-  batch_id: string | null;
-  batch_position: number | null;
   category_id: string;
-  created_via_batch: boolean;
   created_at: string;
   description: string;
   image_url: string | null;
@@ -82,11 +78,7 @@ export type ArtisanStoreProfileInput = {
 };
 
 export type ArtisanProductInput = {
-  batch_code?: string | null;
-  batch_id?: string | null;
-  batch_position?: number | null;
   category_id: string;
-  created_via_batch?: boolean;
   description: string;
   image_urls: string[];
   product_media: ProductMediaItem[];

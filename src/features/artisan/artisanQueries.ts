@@ -1,4 +1,4 @@
-﻿import type { QueryClient } from "@tanstack/react-query";
+import type { QueryClient } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { getErrorMessage } from "@/lib/errors";
@@ -10,30 +10,20 @@ import type {
 } from "@/types/artisan";
 import type { UserProfile } from "@/types/auth";
 import type { FulfillmentStatus } from "@/types/commerce";
-import type {
-  ProductBatch,
-  ProductBatchInput,
-  ProductBatchMutationResult,
-} from "@/types/productBatch";
 import type { PaginatedResult, PaginationParams } from "@/types/pagination";
 import type { ArtisanProductLearningProfile } from "./artisanProductLearning";
 import { buildArtisanProductLearningProfile } from "./artisanProductLearning";
 import {
-  type ArtisanProductBatchListParams,
   type ArtisanProductListParams,
   type ArtisanProductStats,
   createArtisanProduct,
-  createArtisanProductBatch,
   deleteArtisanProduct,
-  deleteArtisanProductBatch,
   getArtisanCategories,
   getEditableArtisanProductById,
-  getArtisanProductBatches,
   getArtisanProductStats,
   getArtisanProducts,
   updateOrderItemFulfillmentStatus,
   updateArtisanProduct,
-  updateArtisanProductBatch,
   updateArtisanProductQuickFields,
   updateArtisanStoreProfile,
   type ArtisanProductQuickUpdateInput,
@@ -44,7 +34,6 @@ const FIVE_MINUTES = 5 * 60 * 1000;
 
 type ArtisanCategory = { id: string; name: string };
 type ArtisanProductsQueryParams = ArtisanProductListParams;
-type ArtisanProductBatchesQueryParams = ArtisanProductBatchListParams;
 
 function toPaginatedResult<T>(
   data: T[] | null,
@@ -69,9 +58,6 @@ function invalidatePublicProductCaches(
 ) {
   void queryClient.invalidateQueries({
     queryKey: queryKeys.artisan.products(artisanId),
-  });
-  void queryClient.invalidateQueries({
-    queryKey: queryKeys.artisan.productBatches(artisanId),
   });
   void queryClient.invalidateQueries({
     queryKey: queryKeys.artisan.productStats(artisanId),
@@ -107,7 +93,9 @@ function invalidatePublicProductCaches(
 
 // ─── Categorías visibles para el vendedor ───────────────────────────────
 
-function isProductDeleteRestrictedError(error: { code?: string; message?: string } | null) {
+function isProductDeleteRestrictedError(
+  error: { code?: string; message?: string } | null,
+) {
   const message = `${error?.message ?? ""}`.toLowerCase();
 
   return (
@@ -148,7 +136,10 @@ export function useArtisanProducts(
   return useQuery<PaginatedResult<ArtisanProduct>>({
     enabled: isEnabled,
     staleTime: TWO_MINUTES,
-    queryKey: [...queryKeys.artisan.products(artisanId ?? "missing"), params ?? {}],
+    queryKey: [
+      ...queryKeys.artisan.products(artisanId ?? "missing"),
+      params ?? {},
+    ],
     queryFn: async () => {
       const response = await getArtisanProducts(artisanId!, params);
 
@@ -163,7 +154,10 @@ export function useArtisanProducts(
   });
 }
 
-export function useArtisanProductStats(artisanId: string | undefined, enabled = true) {
+export function useArtisanProductStats(
+  artisanId: string | undefined,
+  enabled = true,
+) {
   const isEnabled = enabled && Boolean(artisanId);
 
   return useQuery<ArtisanProductStats>({
@@ -175,7 +169,10 @@ export function useArtisanProductStats(artisanId: string | undefined, enabled = 
 
       if (response.error || !response.data) {
         throw new Error(
-          getErrorMessage(response.error, "No pudimos cargar las metricas de productos."),
+          getErrorMessage(
+            response.error,
+            "No pudimos cargar las metricas de productos.",
+          ),
         );
       }
 
@@ -184,7 +181,10 @@ export function useArtisanProductStats(artisanId: string | undefined, enabled = 
   });
 }
 
-export function useEditableArtisanProduct(productId: string | undefined, enabled = true) {
+export function useEditableArtisanProduct(
+  productId: string | undefined,
+  enabled = true,
+) {
   const isEnabled = enabled && Boolean(productId);
 
   return useQuery<ArtisanProduct>({
@@ -215,7 +215,10 @@ export function useArtisanProductLearningProfile(
   return useQuery<ArtisanProductLearningProfile>({
     enabled: isEnabled,
     staleTime: FIVE_MINUTES,
-    queryKey: [...queryKeys.artisan.productLearning(artisanId ?? "missing"), categories.map((category) => category.id)],
+    queryKey: [
+      ...queryKeys.artisan.productLearning(artisanId ?? "missing"),
+      categories.map((category) => category.id),
+    ],
     queryFn: async () => {
       const response = await getArtisanProducts(artisanId!, {
         limit: 120,
@@ -224,11 +227,17 @@ export function useArtisanProductLearningProfile(
 
       if (response.error) {
         throw new Error(
-          getErrorMessage(response.error, "No pudimos leer el historial de carga."),
+          getErrorMessage(
+            response.error,
+            "No pudimos leer el historial de carga.",
+          ),
         );
       }
 
-      return buildArtisanProductLearningProfile(response.data ?? [], categories);
+      return buildArtisanProductLearningProfile(
+        response.data ?? [],
+        categories,
+      );
     },
   });
 }
@@ -239,7 +248,9 @@ export function useCreateArtisanProduct(artisanId: string | undefined) {
   return useMutation<ArtisanProduct, Error, ArtisanProductInput>({
     mutationFn: async (input) => {
       if (!artisanId) {
-        throw new Error("Falta identificar al vendedor para crear el producto.");
+        throw new Error(
+          "Falta identificar al vendedor para crear el producto.",
+        );
       }
 
       const response = await createArtisanProduct(artisanId, input);
@@ -305,8 +316,15 @@ export function useQuickUpdateArtisanProduct(artisanId: string | undefined) {
       return response.data;
     },
     onSuccess: (product) => {
-      void queryClient.setQueryData(queryKeys.artisan.product(product.id), product);
-      invalidatePublicProductCaches(queryClient, artisanId ?? product.artisan_id, [product.id]);
+      void queryClient.setQueryData(
+        queryKeys.artisan.product(product.id),
+        product,
+      );
+      invalidatePublicProductCaches(
+        queryClient,
+        artisanId ?? product.artisan_id,
+        [product.id],
+      );
     },
   });
 }
@@ -337,111 +355,14 @@ export function useDeleteArtisanProduct(artisanId: string | undefined) {
   });
 }
 
-// ─── Lotes de producto ──────────────────────────────────────────────────
-
-export function useArtisanProductBatches(
-  artisanId: string | undefined,
-  enabled = true,
-  params?: ArtisanProductBatchesQueryParams,
-) {
-  const isEnabled = enabled && Boolean(artisanId);
-
-  return useQuery<PaginatedResult<ProductBatch>>({
-    enabled: isEnabled,
-    staleTime: TWO_MINUTES,
-    queryKey: [...queryKeys.artisan.productBatches(artisanId ?? "missing"), params ?? {}],
-    queryFn: async () => {
-      const response = await getArtisanProductBatches(artisanId!, params);
-
-      if (response.error) {
-        throw new Error(
-          getErrorMessage(response.error, "No pudimos cargar los lotes."),
-        );
-      }
-
-      return toPaginatedResult(response.data, response.count, params);
-    },
-  });
-}
-
-export function useCreateArtisanProductBatch(artisanId: string | undefined) {
-  const queryClient = useQueryClient();
-
-  return useMutation<ProductBatchMutationResult, Error, ProductBatchInput>({
-    mutationFn: async (input) => {
-      if (!artisanId) {
-        throw new Error("Falta identificar al vendedor para crear el lote.");
-      }
-
-      const response = await createArtisanProductBatch(artisanId, input);
-
-      if (response.error || !response.data) {
-        throw new Error(
-          getErrorMessage(response.error, "No pudimos crear el lote."),
-        );
-      }
-
-      return response.data;
-    },
-    onSuccess: (result) => {
-      if (!artisanId) return;
-      invalidatePublicProductCaches(queryClient, artisanId, result.product_ids ?? []);
-    },
-  });
-}
-
-export function useUpdateArtisanProductBatch(artisanId: string | undefined) {
-  const queryClient = useQueryClient();
-
-  return useMutation<
-    ProductBatchMutationResult,
-    Error,
-    { batchId: string; input: ProductBatchInput }
-  >({
-    mutationFn: async ({ batchId, input }) => {
-      const response = await updateArtisanProductBatch(batchId, input);
-
-      if (response.error || !response.data) {
-        throw new Error(
-          getErrorMessage(response.error, "No pudimos actualizar el lote."),
-        );
-      }
-
-      return response.data;
-    },
-    onSuccess: (result) => {
-      if (!artisanId) return;
-      invalidatePublicProductCaches(queryClient, artisanId, result.product_ids ?? []);
-    },
-  });
-}
-
-export function useDeleteArtisanProductBatch(artisanId: string | undefined) {
-  const queryClient = useQueryClient();
-
-  return useMutation<ProductBatchMutationResult | null, Error, string>({
-    mutationFn: async (batchId) => {
-      const response = await deleteArtisanProductBatch(batchId);
-
-      if (response.error) {
-        throw new Error(
-          getErrorMessage(response.error, "No pudimos borrar el lote."),
-        );
-      }
-
-      return response.data;
-    },
-    onSuccess: (result) => {
-      if (!artisanId) return;
-      invalidatePublicProductCaches(queryClient, artisanId, result?.product_ids ?? []);
-    },
-  });
-}
-
 // ─── Perfil de tienda del vendedor ──────────────────────────────────────
 
 export function useUpdateArtisanStoreProfile() {
-  return useMutation<UserProfile, Error, { profileId: string; input: ArtisanStoreProfileInput }>({
+  return useMutation<
+    UserProfile,
+    Error,
+    { profileId: string; input: ArtisanStoreProfileInput }
+  >({
     mutationFn: async ({ profileId, input }) => {
       const response = await updateArtisanStoreProfile(profileId, input);
 
@@ -459,16 +380,28 @@ export function useUpdateArtisanStoreProfile() {
   });
 }
 
-export function useUpdateOrderItemFulfillmentStatus(artisanId: string | undefined) {
+export function useUpdateOrderItemFulfillmentStatus(
+  artisanId: string | undefined,
+) {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, { orderItemId: string; status: FulfillmentStatus }>({
+  return useMutation<
+    void,
+    Error,
+    { orderItemId: string; status: FulfillmentStatus }
+  >({
     mutationFn: async ({ orderItemId, status }) => {
-      const response = await updateOrderItemFulfillmentStatus(orderItemId, status);
+      const response = await updateOrderItemFulfillmentStatus(
+        orderItemId,
+        status,
+      );
 
       if (response.error) {
         throw new Error(
-          getErrorMessage(response.error, "No pudimos actualizar el estado del pedido."),
+          getErrorMessage(
+            response.error,
+            "No pudimos actualizar el estado del pedido.",
+          ),
         );
       }
     },

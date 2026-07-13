@@ -21,7 +21,7 @@ import { getBuyerActiveCart } from "./cartClient";
 
 const DEFAULT_DELIVERY_TYPE: DeliveryType = "arrange_with_seller";
 const productSelection =
-  "id, artisan_id, batch_id, batch_code, batch_position, created_via_batch, category_id, title, description, price, image_url, image_urls, product_media, product_attributes, is_active, availability_mode, stock_quantity, lead_time_days, made_to_order_options, created_at, categories(name)";
+  "id, artisan_id, category_id, title, description, price, image_url, image_urls, product_media, product_attributes, is_active, availability_mode, stock_quantity, lead_time_days, made_to_order_options, created_at, categories(name)";
 const PERSONALIZATION_SIGNALS_TTL_MS = 60 * 1000;
 const buyerPersonalizationSignalsCache = new Map<
   string,

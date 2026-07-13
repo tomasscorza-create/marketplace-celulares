@@ -2,14 +2,13 @@ import { memo } from "react";
 
 import { SkeletonBlock } from "../../../../components/SkeletonBlock";
 
-type DashboardPanelKey = "artisans" | "products" | "batches" | "sales" | "categories";
+type DashboardPanelKey = "artisans" | "products" | "sales" | "categories";
 
 type DashboardMetricsGridProps = {
   isLoading: boolean;
   activeArtisansCount: number;
   activeBuyersCount: number;
   visibleProductsCount: number;
-  batchesCount: number;
   salesCount: number;
   activeCategoriesCount: number;
   onOpenActiveArtisans: () => void;
@@ -53,7 +52,6 @@ function DashboardMetricsGridInner({
   activeArtisansCount,
   activeBuyersCount,
   visibleProductsCount,
-  batchesCount,
   salesCount,
   activeCategoriesCount,
   onOpenActiveArtisans,
@@ -96,12 +94,6 @@ function DashboardMetricsGridInner({
         label="Productos visibles"
         onClick={onOpenVisibleProducts}
         value={visibleProductsCount}
-      />
-      <MetricCard
-        accentClass="text-brand-500"
-        label="Grupos cargados"
-        onClick={() => onSelectPanel("batches")}
-        value={batchesCount}
       />
       <MetricCard
         accentClass="text-ocean-500"

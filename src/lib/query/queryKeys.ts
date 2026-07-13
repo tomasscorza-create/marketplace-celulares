@@ -31,7 +31,6 @@ export const queryKeys = {
     product: (productId: string) => ["artisan", "product", productId] as const,
     productLearning: (artisanId: string) => ["artisan", "product-learning", artisanId] as const,
     products: (artisanId: string) => ["artisan", "products", artisanId] as const,
-    productBatches: (artisanId: string) => ["artisan", "product-batches", artisanId] as const,
     productStats: (artisanId: string) => ["artisan", "product-stats", artisanId] as const,
     sales: (artisanId: string) => ["artisan", "sales", artisanId] as const,
     internalNotifications: (artisanId: string) =>

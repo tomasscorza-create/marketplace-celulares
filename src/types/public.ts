@@ -32,12 +32,8 @@ export type PublicBuyerProfile = {
 
 export type PublicProduct = {
   artisan_id: string;
-  batch_code: string | null;
-  batch_id: string | null;
-  batch_position: number | null;
   catalog_boost_active?: boolean | null;
   category_id: string;
-  created_via_batch: boolean;
   created_at: string;
   description: string;
   id: string;

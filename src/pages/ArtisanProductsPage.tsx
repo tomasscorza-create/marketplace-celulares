@@ -1,7 +1,6 @@
-﻿import type { FormEvent, PointerEvent as ReactPointerEvent } from "react";
+import type { FormEvent, PointerEvent as ReactPointerEvent } from "react";
 import type { ArtisanProduct, ArtisanProductInput } from "../types/artisan";
 import type { ProductImageDraft } from "../features/artisan/imageEditorTypes";
-import type { ProductBatchMutationResult } from "../types/productBatch";
 import { isProductModel3DMediaItem } from "../types/productMedia";
 
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
@@ -9,19 +8,16 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { PagePlaceholder } from "../components/PagePlaceholder";
 import { useAdminArtisanProfile } from "../features/admin/adminQueries";
 import {
-  getArtisanBatchProducts,
   getArtisanProductById,
   removeArtisanProductImages,
 } from "../features/artisan/artisanClient";
 import {
   useArtisanCategories,
   useArtisanProductLearningProfile,
-  useArtisanProductBatches,
   useArtisanProductStats,
   useArtisanProducts,
   useCreateArtisanProduct,
   useDeleteArtisanProduct,
-  useDeleteArtisanProductBatch,
   useUpdateArtisanProduct,
 } from "../features/artisan/artisanQueries";
 import { getErrorMessage } from "../lib/errors";
@@ -33,7 +29,6 @@ import { ArtisanProductsCropController } from "../features/artisan/components/Ar
 import { ArtisanProductsStatsBar } from "../features/artisan/components/ArtisanProductsStatsBar";
 import {
   DRAFT_KEY_PREFIX,
-  MANAGEMENT_BATCHES_PAGE_SIZE,
   MANAGEMENT_PRODUCTS_PAGE_SIZE,
   MAX_IMAGES_PER_UPLOAD,
   type DragState,
@@ -45,10 +40,8 @@ import {
   initialProductForm,
 } from "../features/artisan/artisanProductsPageUtils";
 import {
-  applyDraftProductSnapshot,
   cleanupDraftUrls,
   createDefaultCrop,
-  createDraftProductDataSnapshot,
   createExistingImageDraft,
   hydratePersistedDraftImages,
   type PersistedProductDraftImage,
@@ -84,15 +77,10 @@ export function ArtisanProductsPage() {
   const [productForm, setProductForm] = useState<ArtisanProductInput>(initialProductForm);
   const [productImages, setProductImages] = useState<ProductImageDraft[]>([]);
   const [productModel3DFile, setProductModel3DFile] = useState<File | null>(null);
-  const [splitProductsByImage, setSplitProductsByImage] = useState(false);
-  const [editingBatchId, setEditingBatchId] = useState<string | null>(null);
-  const [editingBatchCode, setEditingBatchCode] = useState<string | null>(null);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-  const [_pendingDeleteBatchId, setPendingDeleteBatchId] = useState<string | null>(null);
-  const [_isBatchConfirmOpen, setIsBatchConfirmOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null);
   const [targetImageIndex, setTargetImageIndex] = useState<number | null>(null);
@@ -108,7 +96,6 @@ export function ArtisanProductsPage() {
   const [hasAppliedRequestedEdit, setHasAppliedRequestedEdit] = useState(false);
   const [managementSearch, setManagementSearch] = useState("");
   const [managementProductsPage, setManagementProductsPage] = useState(1);
-  const [managementBatchesPage, setManagementBatchesPage] = useState(1);
   const [hasAppliedLearningDefaults, setHasAppliedLearningDefaults] = useState(false);
   const isAdminManaging = role === "admin" && Boolean(artisanId);
   const isCreateFocus = searchParams.get("focus") === "create";
@@ -119,7 +106,7 @@ export function ArtisanProductsPage() {
   const draftKey = targetArtisanId
     ? `${DRAFT_KEY_PREFIX}:${targetArtisanId}:${draftScope}`
     : `${DRAFT_KEY_PREFIX}:${draftScope}`;
-  const isEditSelectionMode = isEditFocus && !editingProductId && !editingBatchId;
+  const isEditSelectionMode = isEditFocus && !editingProductId;
   const showProductForm = !isEditSelectionMode;
   const showManagementList = !isCreateFocus && (!isEditFocus || isEditSelectionMode);
   const useSingleColumnLayout = isCreateFocus || isEditSelectionMode || !showManagementList;
@@ -183,14 +170,6 @@ export function ArtisanProductsPage() {
     }),
     [managementProductsPage, normalizedManagementSearch],
   );
-  const batchListParams = useMemo(
-    () => ({
-      limit: MANAGEMENT_BATCHES_PAGE_SIZE,
-      page: managementBatchesPage,
-      search: normalizedManagementSearch || undefined,
-    }),
-    [managementBatchesPage, normalizedManagementSearch],
-  );
   // Productos individuales y lotes del vendedor objetivo, paginados para no
   // traer todo el catalogo cuando la cuenta crece.
   const productsQuery = useArtisanProducts(
@@ -207,36 +186,23 @@ export function ArtisanProductsPage() {
   );
   const totalProductsCount = productStatsQuery.data?.totalProducts ?? productsTotalCount;
 
-  const productBatchesQuery = useArtisanProductBatches(
-    targetArtisanId ?? undefined,
-    Boolean(targetArtisanId),
-    batchListParams,
-  );
-  const productBatches = useMemo(
-    () => productBatchesQuery.data?.items ?? [],
-    [productBatchesQuery.data?.items],
-  );
-  const productBatchesTotalCount = productBatchesQuery.data?.count ?? 0;
 
   // Loading agregado: true mientras todavía no haya llegado nada de Supabase.
   const isLoading =
     Boolean(targetArtisanId) &&
     (categoriesQuery.isLoading ||
       productsQuery.isLoading ||
-      productBatchesQuery.isLoading ||
       productStatsQuery.isLoading);
 
   // Mutations de productos y lotes — invalidan automáticamente las queries.
   const createProductMutation = useCreateArtisanProduct(targetArtisanId ?? undefined);
   const updateProductMutation = useUpdateArtisanProduct(targetArtisanId ?? undefined);
   const deleteProductMutation = useDeleteArtisanProduct(targetArtisanId ?? undefined);
-  const deleteBatchMutation = useDeleteArtisanProductBatch(targetArtisanId ?? undefined);
 
   // Error agregado de carga (para mostrar en UI si nada cargó).
   const loadErrorMessage =
     categoriesQuery.error?.message ??
     productsQuery.error?.message ??
-    productBatchesQuery.error?.message ??
     productStatsQuery.error?.message ??
     (isAdminManaging ? managedProfileQuery.error?.message ?? null : null) ??
     null;
@@ -244,7 +210,6 @@ export function ArtisanProductsPage() {
 
   useEffect(() => {
     setManagementProductsPage(1);
-    setManagementBatchesPage(1);
   }, [managementSearch]);
 
   useEffect(() => {
@@ -255,13 +220,6 @@ export function ArtisanProductsPage() {
     }
   }, [managementProductsPage, productsTotalCount]);
 
-  useEffect(() => {
-    const totalPages = Math.max(1, Math.ceil(productBatchesTotalCount / MANAGEMENT_BATCHES_PAGE_SIZE));
-
-    if (managementBatchesPage > totalPages) {
-      setManagementBatchesPage(totalPages);
-    }
-  }, [managementBatchesPage, productBatchesTotalCount]);
 
   useEffect(() => {
     setHasAppliedRequestedEdit(false);
@@ -284,9 +242,6 @@ export function ArtisanProductsPage() {
       drafts: null,
       persisted: [],
     };
-    setSplitProductsByImage(false);
-    setEditingBatchId(null);
-    setEditingBatchCode(null);
     setEditingProductId(null);
     setEditingOriginalImageUrls([]);
     setStatusMessage(null);
@@ -328,10 +283,7 @@ export function ArtisanProductsPage() {
 
         setHasDraft(true);
         setDraftPersistenceState("saved");
-        setSplitProductsByImage(false);
-        setEditingBatchId(draft.editingBatchId ?? null);
-        setEditingBatchCode(draft.editingBatchCode ?? null);
-        setEditingProductId(draft.editingProductId ?? null);
+            setEditingProductId(draft.editingProductId ?? null);
         setEditingOriginalImageUrls(draft.editingOriginalImageUrls ?? []);
         setProductForm((prev) => ({
           ...prev,
@@ -411,8 +363,6 @@ export function ArtisanProductsPage() {
           availability_mode: productForm.availability_mode,
           category_id: productForm.category_id,
           description: productForm.description,
-          editingBatchCode,
-          editingBatchId,
           editingOriginalImageUrls,
           editingProductId,
           imageDrafts,
@@ -421,7 +371,6 @@ export function ArtisanProductsPage() {
           made_to_order_options: productForm.made_to_order_options,
           product_attributes: productForm.product_attributes,
           price: productForm.price,
-          splitProductsByImage,
           stock_quantity: productForm.stock_quantity,
           title: productForm.title,
         } satisfies PersistedProductDraftState);
@@ -459,15 +408,12 @@ export function ArtisanProductsPage() {
     productForm.product_attributes,
     productImages,
     editingOriginalImageUrls,
-    editingBatchCode,
-    editingBatchId,
     editingProductId,
     isDraftReady,
-    splitProductsByImage,
   ]);
 
   useEffect(() => {
-    if (!showProductForm || (!editingProductId && !editingBatchId)) {
+    if (!showProductForm || !editingProductId) {
       return;
     }
 
@@ -481,12 +427,12 @@ export function ArtisanProductsPage() {
     return () => {
       window.clearTimeout(scrollTimer);
     };
-  }, [editingBatchId, editingProductId, showProductForm]);
+  }, [editingProductId, showProductForm]);
 
-  // Las mutations invalidan automáticamente las queries de products/batches,
+  // Las mutations invalidan automáticamente las queries de productos,
   // así que no hace falta refetch manual. Devolvemos true para mantener
   // la firma que espera `finalizeSuccessfulSave`.
-  const refreshProductsAndBatches = async () => true;
+  const refreshProducts = async () => true;
 
   const finalizeSuccessfulSave = (
     successMessage: string,
@@ -502,18 +448,13 @@ export function ArtisanProductsPage() {
   const resetForm = () => {
     cleanupDraftUrls(productImages);
     setEditingProductId(null);
-    setEditingBatchId(null);
-    setEditingBatchCode(null);
     setEditingOriginalImageUrls([]);
-    setSplitProductsByImage(false);
     setProductImages([]);
     setProductModel3DFile(null);
     setActiveCropIndex(null);
     setIsCropModalOpen(false);
     setTargetImageIndex(null);
     setDragState(null);
-    setPendingDeleteBatchId(null);
-    setIsBatchConfirmOpen(false);
     setProductForm(createInitialProductForm(categories, learningProfile));
     void removeProductDraft(draftKey);
     setHasDraft(false);
@@ -532,14 +473,9 @@ export function ArtisanProductsPage() {
     setIsCropModalOpen(false);
     setTargetImageIndex(null);
     setDragState(null);
-    setPendingDeleteBatchId(null);
-    setIsBatchConfirmOpen(false);
     setProductForm(createInitialProductForm(categories, learningProfile));
     setEditingProductId(null);
-    setEditingBatchId(null);
-    setEditingBatchCode(null);
     setEditingOriginalImageUrls([]);
-    setSplitProductsByImage(false);
     void removeProductDraft(draftKey);
     setHasDraft(false);
     setDraftPersistenceState("idle");
@@ -562,7 +498,6 @@ export function ArtisanProductsPage() {
       hasDraft ||
       hasAppliedLearningDefaults ||
       editingProductId ||
-      editingBatchId ||
       !learningProfile ||
       learningProfile.historyCount === 0
     ) {
@@ -585,7 +520,6 @@ export function ArtisanProductsPage() {
     setHasAppliedLearningDefaults(true);
   }, [
     categories,
-    editingBatchId,
     editingProductId,
     hasAppliedLearningDefaults,
     hasDraft,
@@ -659,25 +593,18 @@ export function ArtisanProductsPage() {
         try {
           const objectUrl = URL.createObjectURL(file);
           const image = await loadImage(objectUrl);
-          const snapshot = createDraftProductDataSnapshot(productForm);
           newDrafts.push({
             crop: createDefaultCrop(),
             description: "",
             dimensions: { height: image.height, width: image.width },
-            existingProductId: null,
             file,
             id: `${Date.now()}-bulk-${i}`,
             isEdited: false,
             mediaUrl: null,
             originalUrl: null,
             previewUrl: objectUrl,
-            productDescription: snapshot.productDescription,
-            productPrice: snapshot.productPrice,
-            productStockQuantity: snapshot.productStockQuantity,
-            productTitle: snapshot.productTitle,
             sourceUrl: objectUrl,
             thumbnailUrl: null,
-            useCustomProductData: false,
           });
         } catch {
           skippedFilesCount += 1;
@@ -738,21 +665,14 @@ export function ArtisanProductsPage() {
             crop: createDefaultCrop(),
             description: previousDraft?.description ?? "",
             dimensions: { height: image.height, width: image.width },
-            existingProductId: previousDraft?.existingProductId ?? null,
             file,
             id: `${Date.now()}-${targetImageIndex}`,
             isEdited: false,
             mediaUrl: null,
             originalUrl: null,
-            productDescription: previousDraft?.productDescription ?? productForm.description,
-            productPrice:
-              previousDraft?.productPrice ?? (Number.isFinite(Number(productForm.price)) ? Number(productForm.price) : 0),
-            productStockQuantity: previousDraft?.productStockQuantity ?? productForm.stock_quantity,
-            productTitle: previousDraft?.productTitle ?? productForm.title,
             previewUrl: objectUrl,
             sourceUrl: objectUrl,
             thumbnailUrl: null,
-            useCustomProductData: previousDraft?.useCustomProductData ?? false,
           };
 
           return nextValue;
@@ -866,7 +786,7 @@ export function ArtisanProductsPage() {
     productForm,
     productImages,
     productModel3DFile,
-    refreshProductsAndBatches,
+    refreshProducts,
     targetArtisanId,
     updateProduct: updateProductMutation.mutateAsync,
   });
@@ -875,11 +795,6 @@ export function ArtisanProductsPage() {
     event.preventDefault();
     setStatusMessage(null);
     setSaveErrorMessage(null);
-
-    if (splitProductsByImage && !editingBatchId && productImages.length > 1) {
-      setIsBatchConfirmOpen(true);
-      return;
-    }
 
     await submitProductForm();
   };
@@ -910,9 +825,6 @@ export function ArtisanProductsPage() {
       }),
     );
 
-    setEditingBatchId(null);
-    setEditingBatchCode(null);
-    setSplitProductsByImage(false);
     setEditingProductId(product.id);
     setEditingOriginalImageUrls(getProductStoredImageUrls(product));
     setProductImages(draftsWithDimensions);
@@ -937,126 +849,6 @@ export function ArtisanProductsPage() {
     setSaveErrorMessage(null);
   }, [productImages]);
 
-  const startEditingBatch = useCallback(async (batchId: string) => {
-    const batch = productBatches.find((currentBatch) => currentBatch.id === batchId);
-    let batchProducts = products
-      .filter((product) => product.batch_id === batchId)
-      .sort((left, right) => (left.batch_position ?? 0) - (right.batch_position ?? 0));
-
-    if (batch && targetArtisanId && batchProducts.length < batch.item_count) {
-      setUploadStatus("Cargando productos del grupo...");
-
-      const response = await getArtisanBatchProducts(targetArtisanId, batchId, batch.item_count);
-
-      setUploadStatus(null);
-
-      if (response.error) {
-        setSaveErrorMessage(
-          getErrorMessage(response.error, "No pudimos cargar el grupo seleccionado."),
-        );
-        return;
-      }
-
-      batchProducts = (response.data ?? []).sort(
-        (left, right) => (left.batch_position ?? 0) - (right.batch_position ?? 0),
-      );
-    }
-
-    if (!batch || batchProducts.length === 0) {
-      setSaveErrorMessage("No pudimos encontrar el grupo seleccionado.");
-      return;
-    }
-
-    cleanupDraftUrls(productImages);
-
-    const draftsWithDimensions = await Promise.all(
-      batchProducts.map(async (product, index) => {
-        const mediaItem = getProductMedia(product)[0] ?? {
-          crop: null,
-          description: "",
-          original_url: null,
-          thumbnail_url: null,
-          url: "",
-        };
-
-        try {
-          const image = await loadImage(mediaItem.original_url ?? mediaItem.url);
-
-          return {
-            ...createExistingImageDraft(mediaItem, index),
-            description: mediaItem.description,
-            dimensions: {
-              height: image.height,
-              width: image.width,
-            },
-            existingProductId: product.id,
-            productDescription: product.description,
-            productPrice: Number(product.price),
-            productStockQuantity: product.stock_quantity,
-            productTitle: product.title,
-            useCustomProductData:
-              product.title !== batch.title_base ||
-              product.description !== batch.description_base ||
-              Number(product.price) !== Number(batch.price_base) ||
-              (product.stock_quantity ?? null) !== (batch.stock_quantity_base ?? null),
-          } satisfies ProductImageDraft;
-        } catch {
-          return {
-            ...createExistingImageDraft(mediaItem, index),
-            description: mediaItem.description,
-            existingProductId: product.id,
-            productDescription: product.description,
-            productPrice: Number(product.price),
-            productStockQuantity: product.stock_quantity,
-            productTitle: product.title,
-            useCustomProductData:
-              product.title !== batch.title_base ||
-              product.description !== batch.description_base ||
-              Number(product.price) !== Number(batch.price_base) ||
-              (product.stock_quantity ?? null) !== (batch.stock_quantity_base ?? null),
-          } satisfies ProductImageDraft;
-        }
-      }),
-    );
-
-    setEditingProductId(null);
-    setEditingBatchId(batch.id);
-    setEditingBatchCode(batch.batch_code);
-    setSplitProductsByImage(true);
-    setEditingOriginalImageUrls(
-      batchProducts.flatMap((product) => getProductStoredImageUrls(product)),
-    );
-    setProductImages(draftsWithDimensions);
-    setProductModel3DFile(null);
-    setProductForm({
-      availability_mode: batch.availability_mode_base,
-      batch_code: batch.batch_code,
-      batch_id: batch.id,
-      batch_position: null,
-      category_id: batch.category_id,
-      created_via_batch: true,
-      description: batch.description_base,
-      image_urls: draftsWithDimensions.map((draft) => draft.sourceUrl),
-      product_media: draftsWithDimensions.map((draft) => ({
-        crop: draft.originalUrl ? draft.crop : null,
-        description: draft.description,
-        original_url: draft.originalUrl,
-        thumbnail_url: draft.thumbnailUrl,
-        url: draft.mediaUrl ?? draft.previewUrl,
-      })),
-      product_attributes: batch.product_attributes_base ?? [],
-      is_active: batch.is_active_base,
-      lead_time_days: batch.lead_time_days_base,
-      made_to_order_options: batch.made_to_order_options_base,
-      price: Number(batch.price_base),
-      stock_quantity: batch.stock_quantity_base,
-      title: batch.title_base,
-    });
-    setActiveCropIndex(null);
-    setIsCropModalOpen(false);
-    setStatusMessage(null);
-    setSaveErrorMessage(null);
-  }, [productBatches, productImages, products, targetArtisanId]);
 
   useEffect(() => {
     if (!isEditFocus || !requestedProductId || hasAppliedRequestedEdit || isLoading) {
@@ -1082,11 +874,6 @@ export function ArtisanProductsPage() {
         return;
       }
 
-      if (requestedProduct.batch_id) {
-        await startEditingBatch(requestedProduct.batch_id);
-        return;
-      }
-
       void startEditing(requestedProduct);
     };
 
@@ -1102,7 +889,6 @@ export function ArtisanProductsPage() {
     products,
     requestedProductId,
     startEditing,
-    startEditingBatch,
     targetArtisanId,
   ]);
 
@@ -1110,9 +896,6 @@ export function ArtisanProductsPage() {
     setPendingDeleteId(productId);
   };
 
-  const _handleDeleteBatchRequest = (batchId: string) => {
-    setPendingDeleteBatchId(batchId);
-  };
 
   const handleDelete = async (productId: string) => {
     if (!targetArtisanId) {
@@ -1140,7 +923,7 @@ export function ArtisanProductsPage() {
     const imageCleanupResponse =
       productImageUrls.length > 0 ? await removeArtisanProductImages(productImageUrls) : null;
 
-    const refreshed = await refreshProductsAndBatches();
+    const refreshed = await refreshProducts();
 
     if (!refreshed) {
       return;
@@ -1156,44 +939,6 @@ export function ArtisanProductsPage() {
     );
   };
 
-  const _handleDeleteBatch = async (batchId: string) => {
-    if (!targetArtisanId) {
-      return;
-    }
-
-    setPendingDeleteBatchId(null);
-    setStatusMessage(null);
-    setSaveErrorMessage(null);
-
-    let result: ProductBatchMutationResult | null;
-    try {
-      result = await deleteBatchMutation.mutateAsync(batchId);
-    } catch (error) {
-      setSaveErrorMessage(getErrorMessage(error, "No pudimos eliminar el grupo."));
-      return;
-    }
-
-    const batchCleanupResponse =
-      result && (result.obsolete_image_urls?.length ?? 0) > 0
-        ? await removeArtisanProductImages(result.obsolete_image_urls)
-        : null;
-
-    const refreshed = await refreshProductsAndBatches();
-
-    if (!refreshed) {
-      return;
-    }
-
-    if (editingBatchId === batchId) {
-      resetForm();
-    }
-
-    setStatusMessage(
-      batchCleanupResponse?.error
-        ? "Grupo eliminado correctamente. No pudimos quitar algunas fotos viejas."
-        : "Grupo eliminado correctamente.",
-    );
-  };
 
   const moveImageToPrimary = (index: number) => {
     setProductImages((currentValue) => {
@@ -1213,25 +958,6 @@ export function ArtisanProductsPage() {
       setActiveCropIndex(activeCropIndex + 1);
     }
   };
-
-  const _toggleSplitProductsMode = (checked: boolean) => {
-    setSplitProductsByImage(checked);
-
-    if (!checked) {
-      setEditingBatchId(null);
-      setEditingBatchCode(null);
-      return;
-    }
-
-    setProductImages((currentValue) =>
-      currentValue.map((draft) =>
-        draft.productTitle.length > 0 || draft.productDescription.length > 0
-          ? draft
-          : applyDraftProductSnapshot(draft, productForm),
-      ),
-    );
-  };
-
 
   return (
     <PagePlaceholder description="" hideHeader title="">
@@ -1277,7 +1003,6 @@ export function ArtisanProductsPage() {
             categories={categories}
             isCreateFocused={isCreateFocus}
             draftPersistenceState={draftPersistenceState}
-            editingBatchCode={editingBatchCode}
             editingProductId={editingProductId}
             errorMessage={errorMessage}
             hasDraft={hasDraft}
@@ -1396,7 +1121,6 @@ export function ArtisanProductsPage() {
             productForm={productForm}
             productImages={productImages}
             productModel3DFile={productModel3DFile}
-            splitProductsByImage={splitProductsByImage}
             statusMessage={statusMessage}
             uploadStatus={uploadStatus}
           />

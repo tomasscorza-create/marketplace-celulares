@@ -9,7 +9,6 @@
 
 export type AdminProductControlView = {
   artisanLabel: string;
-  batchLabel: string | null;
   boostLevel: AdminProductControlBoostLevel | null;
   boostSummaryLabel: string | null;
   boostUntil: string | null;
@@ -161,14 +160,10 @@ export function buildAdminProductControlViews(
     const currentTag = currentRecord?.internal_tag ?? null;
     const boostLevel = currentRecord?.boost_level ?? null;
     const boostUntil = currentRecord?.boost_until ?? null;
-    const batchLabel = product.batch_code ? product.batch_code : null;
-    const identifierLabel = batchLabel
-      ? `${batchLabel} · ID ${shortProductId(product.id)}`
-      : `ID ${shortProductId(product.id)}`;
+    const identifierLabel = `ID ${shortProductId(product.id)}`;
 
     return {
       artisanLabel,
-      batchLabel,
       boostLevel,
       boostSummaryLabel: buildAdminBoostSummary(boostLevel, boostUntil),
       boostUntil,
@@ -196,7 +191,6 @@ export function buildAdminProductControlViews(
           product.title,
           product.description,
           product.id,
-          product.batch_code ?? "",
           artisanLabel,
           product.categories?.name ?? "",
           currentTag ?? "",

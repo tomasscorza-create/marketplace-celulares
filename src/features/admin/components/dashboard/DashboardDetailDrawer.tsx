@@ -8,7 +8,7 @@ import type {
   AdminDashboardSale,
 } from "../../../../types/admin";
 
-type DashboardPanelKey = "artisans" | "products" | "batches" | "sales" | "categories";
+type DashboardPanelKey = "artisans" | "products" | "sales" | "categories";
 
 type ArtisanRow = AdminArtisanProfile & {
   productsCount: number;
@@ -19,22 +19,11 @@ type ArtisanRow = AdminArtisanProfile & {
 type ProductRow = AdminDashboardProduct & { artisanName: string };
 type SaleRow = AdminDashboardSale & { artisanName: string };
 
-type BatchRow = {
-  artisanId: string;
-  artisanName: string;
-  batchCode: string;
-  batchId: string;
-  createdAt: string;
-  itemCount: number;
-  totalValue: number;
-};
-
 type CategoryRow = AdminCategory & { productsCount: number };
 
 type DashboardDetailDrawerProps = {
   activePanel: DashboardPanelKey;
   artisans: ArtisanRow[];
-  batches: BatchRow[];
   categories: CategoryRow[];
   onClose: () => void;
   onSearchChange: (value: string) => void;
@@ -69,7 +58,6 @@ function DetailChip({ children }: { children: ReactNode }) {
 function DashboardDetailDrawerInner({
   activePanel,
   artisans,
-  batches,
   categories,
   onClose,
   onSearchChange,
@@ -120,40 +108,33 @@ function DashboardDetailDrawerInner({
               >
                 {activePanel === "artisans" ? (
                   <>
-                    <option value="most_sales">Más ventas</option>
-                    <option value="most_products">Más productos</option>
-                    <option value="newest">Más nueva</option>
-                    <option value="oldest">Más antigua</option>
+                    <option value="most_sales">MÃ¡s ventas</option>
+                    <option value="most_products">MÃ¡s productos</option>
+                    <option value="newest">MÃ¡s nueva</option>
+                    <option value="oldest">MÃ¡s antigua</option>
                     <option value="alphabetical">A-Z</option>
                   </>
                 ) : null}
                 {activePanel === "products" ? (
                   <>
-                    <option value="newest">Más nuevo</option>
-                    <option value="oldest">Más antiguo</option>
+                    <option value="newest">MÃ¡s nuevo</option>
+                    <option value="oldest">MÃ¡s antiguo</option>
                     <option value="active_first">Visibles primero</option>
                     <option value="highest_price">Mayor precio</option>
                   </>
                 ) : null}
-                {activePanel === "batches" ? (
-                  <>
-                    <option value="most_items">Más productos</option>
-                    <option value="highest_value">Mayor valor</option>
-                    <option value="newest">Más nuevo</option>
-                  </>
-                ) : null}
                 {activePanel === "sales" ? (
                   <>
-                    <option value="newest">Más nueva</option>
+                    <option value="newest">MÃ¡s nueva</option>
                     <option value="highest_amount">Mayor monto</option>
-                    <option value="highest_quantity">Más unidades</option>
+                    <option value="highest_quantity">MÃ¡s unidades</option>
                   </>
                 ) : null}
                 {activePanel === "categories" ? (
                   <>
                     <option value="active_first">Activas primero</option>
                     <option value="name">A-Z</option>
-                    <option value="newest">Más nueva</option>
+                    <option value="newest">MÃ¡s nueva</option>
                   </>
                 ) : null}
               </select>
@@ -179,14 +160,20 @@ function DashboardDetailDrawerInner({
                         <h3 className="text-base font-semibold text-stone-900">
                           {artisan.store_name?.trim() || artisan.full_name}
                         </h3>
-                        <p className="mt-1 text-sm text-stone-500">{artisan.email}</p>
+                        <p className="mt-1 text-sm text-stone-500">
+                          {artisan.email}
+                        </p>
                       </div>
                       <DetailChip>{formatDate(artisan.created_at)}</DetailChip>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <DetailChip>{artisan.productsCount} producto(s)</DetailChip>
+                      <DetailChip>
+                        {artisan.productsCount} producto(s)
+                      </DetailChip>
                       <DetailChip>{artisan.salesCount} venta(s)</DetailChip>
-                      <DetailChip>{formatCurrency(artisan.revenueTotal)}</DetailChip>
+                      <DetailChip>
+                        {formatCurrency(artisan.revenueTotal)}
+                      </DetailChip>
                     </div>
                   </article>
                 ))}
@@ -208,45 +195,26 @@ function DashboardDetailDrawerInner({
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <h3 className="text-base font-semibold text-stone-900">{product.title}</h3>
-                        <p className="mt-1 text-sm text-stone-500">{product.artisanName}</p>
+                        <h3 className="text-base font-semibold text-stone-900">
+                          {product.title}
+                        </h3>
+                        <p className="mt-1 text-sm text-stone-500">
+                          {product.artisanName}
+                        </p>
                       </div>
                       <DetailChip>{formatDate(product.created_at)}</DetailChip>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <DetailChip>{product.categories?.name ?? "Sin categoría"}</DetailChip>
+                      <DetailChip>
+                        {product.categories?.name ?? "Sin categorÃ­a"}
+                      </DetailChip>
                       <DetailChip>{formatCurrency(product.price)}</DetailChip>
-                      <DetailChip>{product.is_active ? "Visible" : "Oculto"}</DetailChip>
-                      <DetailChip>{product.stock_quantity ?? 0} unidad(es)</DetailChip>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : null}
-
-            {activePanel === "batches" && batches.length === 0 ? (
-              <p className="rounded-2xl border border-dashed border-stone-300 px-4 py-8 text-center text-sm text-stone-500">
-                {panelMeta.batches.empty}
-              </p>
-            ) : null}
-
-            {activePanel === "batches" ? (
-              <div className="grid gap-3">
-                {batches.map((batch) => (
-                  <article
-                    key={batch.batchId}
-                    className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-4 shadow-sm"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h3 className="text-base font-semibold text-stone-900">{batch.batchCode}</h3>
-                        <p className="mt-1 text-sm text-stone-500">{batch.artisanName}</p>
-                      </div>
-                      <DetailChip>{formatDate(batch.createdAt)}</DetailChip>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <DetailChip>{batch.itemCount} producto(s)</DetailChip>
-                      <DetailChip>{formatCurrency(batch.totalValue)}</DetailChip>
+                      <DetailChip>
+                        {product.is_active ? "Visible" : "Oculto"}
+                      </DetailChip>
+                      <DetailChip>
+                        {product.stock_quantity ?? 0} unidad(es)
+                      </DetailChip>
                     </div>
                   </article>
                 ))}
@@ -271,7 +239,9 @@ function DashboardDetailDrawerInner({
                         <h3 className="text-base font-semibold text-stone-900">
                           {sale.product_title}
                         </h3>
-                        <p className="mt-1 text-sm text-stone-500">{sale.artisanName}</p>
+                        <p className="mt-1 text-sm text-stone-500">
+                          {sale.artisanName}
+                        </p>
                       </div>
                       <DetailChip>{formatDate(sale.created_at)}</DetailChip>
                     </div>
@@ -300,14 +270,22 @@ function DashboardDetailDrawerInner({
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <h3 className="text-base font-semibold text-stone-900">{category.name}</h3>
-                        <p className="mt-1 text-sm text-stone-500">{category.slug}</p>
+                        <h3 className="text-base font-semibold text-stone-900">
+                          {category.name}
+                        </h3>
+                        <p className="mt-1 text-sm text-stone-500">
+                          {category.slug}
+                        </p>
                       </div>
                       <DetailChip>{formatDate(category.created_at)}</DetailChip>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <DetailChip>{category.productsCount} producto(s)</DetailChip>
-                      <DetailChip>{category.is_active ? "Activa" : "Inactiva"}</DetailChip>
+                      <DetailChip>
+                        {category.productsCount} producto(s)
+                      </DetailChip>
+                      <DetailChip>
+                        {category.is_active ? "Activa" : "Inactiva"}
+                      </DetailChip>
                     </div>
                   </article>
                 ))}

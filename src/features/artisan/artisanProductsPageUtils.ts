@@ -9,7 +9,6 @@ import type { ArtisanProductLearningProfile } from "./artisanProductLearning";
 
 export const DRAFT_KEY_PREFIX = "artisan_product_draft";
 export const MANAGEMENT_PRODUCTS_PAGE_SIZE = 24;
-export const MANAGEMENT_BATCHES_PAGE_SIZE = 12;
 export const MAX_IMAGES_PER_UPLOAD = 15;
 
 export type DragState = {

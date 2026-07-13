@@ -24,7 +24,6 @@ import { ProductImagesField } from "./ProductImagesField";
 type ArtisanProductFormSectionProps = {
   draftPersistenceState: "idle" | "saving" | "saved" | "error";
   categories: Array<{ id: string; name: string }>;
-  editingBatchCode: string | null;
   editingProductId: string | null;
   errorMessage: string | null;
   hasDraft: boolean;
@@ -33,7 +32,9 @@ type ArtisanProductFormSectionProps = {
   isSaving: boolean;
   learningProfile: ArtisanProductLearningProfile | null;
   onAddAttribute: (initialKey?: string) => void;
-  onAvailabilityModeChange: (value: ArtisanProductInput["availability_mode"]) => void;
+  onAvailabilityModeChange: (
+    value: ArtisanProductInput["availability_mode"],
+  ) => void;
   onCancel: () => void;
   onCategoryChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
@@ -54,11 +55,14 @@ type ArtisanProductFormSectionProps = {
   onTriggerBulkImagePicker: () => void;
   onTriggerImagePicker: (index: number) => void;
   onUpdateMadeToOrderOptions: (options: ProductOptionGroup[]) => void;
-  onUpdateAttribute: (index: number, field: keyof ProductAttribute, value: string) => void;
+  onUpdateAttribute: (
+    index: number,
+    field: keyof ProductAttribute,
+    value: string,
+  ) => void;
   productForm: ArtisanProductInput;
   productImages: ProductImageDraft[];
   productModel3DFile: File | null;
-  splitProductsByImage: boolean;
   statusMessage: string | null;
   uploadStatus: string | null;
 };
@@ -68,7 +72,9 @@ function updateOptionGroup(
   optionId: string,
   updater: (group: ProductOptionGroup) => ProductOptionGroup,
 ) {
-  return groups.map((group) => (group.id === optionId ? updater(group) : group));
+  return groups.map((group) =>
+    group.id === optionId ? updater(group) : group,
+  );
 }
 
 function updateOptionChoice(
@@ -92,7 +98,6 @@ function updateOptionChoice(
 export function ArtisanProductFormSection({
   draftPersistenceState,
   categories,
-  editingBatchCode,
   editingProductId,
   errorMessage,
   hasDraft,
@@ -126,7 +131,6 @@ export function ArtisanProductFormSection({
   productForm,
   productImages,
   productModel3DFile,
-  splitProductsByImage,
   statusMessage,
   uploadStatus,
 }: ArtisanProductFormSectionProps) {
@@ -134,25 +138,13 @@ export function ArtisanProductFormSection({
   const hasOptionGroups = productForm.made_to_order_options.length > 0;
   const [isStockEditorOpen, setIsStockEditorOpen] = useState(false);
   const attributesListRef = useRef<HTMLDivElement | null>(null);
-  const isEditingBatch = Boolean(editingBatchCode);
-  const totalCustomized = productImages.filter((draft) => draft.useCustomProductData).length;
-  const formTitle = isEditingBatch
-    ? `Editar grupo ${editingBatchCode}`
-    : editingProductId
-      ? "Editar producto"
-      : "Nuevo producto";
-  const submitLabel = isEditingBatch
-    ? "Guardar grupo"
-    : editingProductId
-      ? "Guardar cambios"
-      : splitProductsByImage
-        ? "Crear grupo"
-        : "Crear producto";
-  const showTopSummary = !isCreateFocused || editingProductId || isEditingBatch;
+  const formTitle = editingProductId ? "Editar producto" : "Nuevo producto";
+  const submitLabel = editingProductId ? "Guardar cambios" : "Crear producto";
+  const showTopSummary = !isCreateFocused || Boolean(editingProductId);
   const canAddMoreAttributes = productForm.product_attributes.length < 12;
   const currentModel3D = getPrimaryProductModel3D(productForm.product_media);
   const hasModel3D = Boolean(productModel3DFile || currentModel3D);
-  const showDiscardDraftButton = hasDraft && !editingProductId && !isEditingBatch;
+  const showDiscardDraftButton = hasDraft && !editingProductId;
   const showDraftStatusBadge =
     draftPersistenceState !== "idle" &&
     !(draftPersistenceState === "saved" && showDiscardDraftButton);
@@ -164,11 +156,15 @@ export function ArtisanProductFormSection({
   }, [isMadeToOrder]);
 
   useEffect(() => {
-    if (!attributesListRef.current || productForm.product_attributes.length <= 2) {
+    if (
+      !attributesListRef.current ||
+      productForm.product_attributes.length <= 2
+    ) {
       return;
     }
 
-    attributesListRef.current.scrollTop = attributesListRef.current.scrollHeight;
+    attributesListRef.current.scrollTop =
+      attributesListRef.current.scrollHeight;
   }, [productForm.product_attributes.length]);
 
   return (
@@ -179,15 +175,15 @@ export function ArtisanProductFormSection({
       <section className="grid gap-4 rounded-[1.75rem] border border-stone-200 bg-[linear-gradient(180deg,_#ffffff,_#f8f4eb)] p-4 sm:p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-1">
-            <h2 className="text-xl font-semibold text-stone-900">{formTitle}</h2>
+            <h2 className="text-xl font-semibold text-stone-900">
+              {formTitle}
+            </h2>
             <p className="text-sm leading-6 text-stone-500">
-              {isEditingBatch
-                ? "Ya estás editando el grupo. Ajusta la base y los cambios puntuales por foto desde acá."
-                : editingProductId
-                  ? "Ya estás editando este producto. Cambia ficha, stock o fotos sin salir de esta pantalla."
-                  : isCreateFocused
-                    ? "Completa los datos base, define el modo de venta, sube fotos y guarda."
-                    : "Carga rapido, revisa todo en una sola vista y publica sin pasos innecesarios."}
+              {editingProductId
+                ? "Ya estÃƒÂ¡s editando este producto. Cambia ficha, stock o fotos sin salir de esta pantalla."
+                : isCreateFocused
+                  ? "Completa los datos base, define el modo de venta, sube fotos y guarda."
+                  : "Carga rapido, revisa todo en una sola vista y publica sin pasos innecesarios."}
             </p>
           </div>
 
@@ -225,7 +221,7 @@ export function ArtisanProductFormSection({
               </button>
             ) : null}
 
-            {editingProductId || isEditingBatch ? (
+            {editingProductId ? (
               <button
                 className="rounded-full border border-ocean-100 px-4 py-2 text-sm font-medium text-ocean-500 transition-colors hover:bg-ocean-50"
                 onClick={onCancel}
@@ -237,23 +233,27 @@ export function ArtisanProductFormSection({
           </div>
         </div>
 
-        <div className={showTopSummary ? "grid gap-3 lg:grid-cols-[1.2fr_0.8fr]" : "grid gap-3"}>
+        <div
+          className={
+            showTopSummary
+              ? "grid gap-3 lg:grid-cols-[1.2fr_0.8fr]"
+              : "grid gap-3"
+          }
+        >
           <div className="grid gap-3 rounded-2xl border border-stone-200 bg-white p-4">
             <div className="space-y-1">
-              <p className="text-sm font-semibold text-stone-900">Modo de carga</p>
+              <p className="text-sm font-semibold text-stone-900">
+                Modo de carga
+              </p>
               <p className="text-sm text-stone-500">
-                Elige una sola forma de trabajo y sigue ese camino hasta guardar.
+                Elige una sola forma de trabajo y sigue ese camino hasta
+                guardar.
               </p>
             </div>
 
             <div className="grid gap-2">
               <button
-                className={[
-                  "rounded-2xl border px-4 py-3 text-left transition-colors",
-                  !splitProductsByImage
-                    ? "border-ocean-300 bg-[#E0F2FE] text-ocean-600"
-                    : "border-stone-200 bg-white text-stone-700 hover:border-ocean-200",
-                ].join(" ")}
+                className="rounded-2xl border border-ocean-300 bg-[#E0F2FE] px-4 py-3 text-left text-ocean-600 transition-colors"
                 type="button"
               >
                 <p className="text-sm font-semibold">Un solo producto</p>
@@ -261,36 +261,34 @@ export function ArtisanProductFormSection({
                   Varias fotos para una misma ficha con una portada principal.
                 </p>
               </button>
-
             </div>
           </div>
 
           {showTopSummary ? (
             <div className="grid gap-3 rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
-              <p className="text-sm font-semibold text-stone-900">Resumen rapido</p>
+              <p className="text-sm font-semibold text-stone-900">
+                Resumen rapido
+              </p>
               <div className="flex flex-wrap gap-2 text-xs text-stone-600">
                 <span className="rounded-full bg-white px-2.5 py-1">
-                  {splitProductsByImage ? "Grupo por fotos" : "Producto simple"}
+                  "Producto simple"
                 </span>
                 <span className="rounded-full bg-white px-2.5 py-1">
-                  {productImages.length} {productImages.length === 1 ? "foto" : "fotos"}
+                  {productImages.length}{" "}
+                  {productImages.length === 1 ? "foto" : "fotos"}
                 </span>
                 <span className="rounded-full bg-white px-2.5 py-1">
                   ${Number(productForm.price || 0).toLocaleString("es-AR")}
                 </span>
                 <span className="rounded-full bg-white px-2.5 py-1">
-                  {productForm.category_id ? "Categoría lista" : "Sin categoría"}
+                  {productForm.category_id
+                    ? "CategorÃƒÂ­a lista"
+                    : "Sin categorÃƒÂ­a"}
                 </span>
-                {splitProductsByImage ? (
-                  <span className="rounded-full bg-white px-2.5 py-1">
-                    {totalCustomized} personalizadas
-                  </span>
-                ) : null}
               </div>
               <p className="text-xs leading-5 text-stone-500">
-                {splitProductsByImage
-                  ? "Los datos base se copian a todas las fotos y solo personalizas donde realmente hace falta."
-                  : "Esta vista está pensada para completar una ficha común con el menor esfuerzo posible."}
+                "Esta vista estÃƒÂ¡ pensada para completar una ficha comÃƒÂºn
+                con el menor esfuerzo posible."
               </p>
             </div>
           ) : null}
@@ -305,7 +303,8 @@ export function ArtisanProductFormSection({
 
       {!isLoading && categories.length === 0 ? (
         <p className="rounded-2xl border border-sun-500 bg-[#ECFEFF] px-4 py-3 text-sm text-brand-500">
-          No hay categorias disponibles en este momento. Cuando el equipo las active vas a poder publicar.
+          No hay categorias disponibles en este momento. Cuando el equipo las
+          active vas a poder publicar.
         </p>
       ) : null}
 
@@ -313,20 +312,20 @@ export function ArtisanProductFormSection({
         <div className="space-y-1">
           <p className="text-sm font-semibold text-stone-900">Datos base</p>
           <p className="text-sm text-stone-500">
-            Completa una sola vez la información principal. Si estás en modo lote, estos datos se reutilizan en cada foto.
+            Completa una sola vez la informaciÃƒÂ³n principal. Si estÃƒÂ¡s en
+            modo lote, estos datos se reutilizan en cada foto.
           </p>
         </div>
 
         <label className="grid gap-2 text-sm font-medium text-stone-700">
           Titulo
-          
           <input
             className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
             onChange={(event) => {
               onTitleChange(event.target.value);
             }}
             placeholder="Ej. Mate de ceramica esmaltado"
-            
+
             type="text"
             value={productForm.title}
           />
@@ -367,7 +366,7 @@ export function ArtisanProductFormSection({
           </label>
 
           <label className="grid gap-2 text-sm font-medium text-stone-700">
-          Categoria
+            Categoria
             <select
               className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
               disabled={categories.length === 0}
@@ -376,7 +375,9 @@ export function ArtisanProductFormSection({
               }}
               value={productForm.category_id}
             >
-              {categories.length === 0 ? <option value="">Sin categorias activas</option> : null}
+              {categories.length === 0 ? (
+                <option value="">Sin categorias activas</option>
+              ) : null}
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -392,7 +393,8 @@ export function ArtisanProductFormSection({
           <div className="space-y-1">
             <p className="text-sm font-semibold text-stone-900">Atributos</p>
             <p className="text-sm text-stone-500">
-              Guarda datos extra reutilizables para ordenar, categorizar y personalizar mejor.
+              Guarda datos extra reutilizables para ordenar, categorizar y
+              personalizar mejor.
             </p>
           </div>
 
@@ -456,71 +458,76 @@ export function ArtisanProductFormSection({
                 className="grid gap-3 rounded-2xl border border-stone-200 bg-white p-3"
               >
                 <div className="grid gap-3 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)_auto] sm:items-end">
-                <label className="grid gap-2 text-sm font-medium text-stone-700">
-                  Atributo
-                  <input
-                    className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
-                    onChange={(event) => {
-                      onUpdateAttribute(index, "key", event.target.value);
-                    }}
-                    placeholder="Ej. material"
-                    type="text"
-                    value={attribute.key}
-                  />
-                </label>
+                  <label className="grid gap-2 text-sm font-medium text-stone-700">
+                    Atributo
+                    <input
+                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                      onChange={(event) => {
+                        onUpdateAttribute(index, "key", event.target.value);
+                      }}
+                      placeholder="Ej. material"
+                      type="text"
+                      value={attribute.key}
+                    />
+                  </label>
 
-                <label className="grid gap-2 text-sm font-medium text-stone-700">
-                  Valor
-                  <input
-                    className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
-                    onChange={(event) => {
-                      onUpdateAttribute(index, "value", event.target.value);
-                    }}
-                    placeholder="Ej. cerámica esmaltada"
-                    type="text"
-                    value={attribute.value}
-                  />
-                </label>
+                  <label className="grid gap-2 text-sm font-medium text-stone-700">
+                    Valor
+                    <input
+                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                      onChange={(event) => {
+                        onUpdateAttribute(index, "value", event.target.value);
+                      }}
+                      placeholder="Ej. cerÃƒÂ¡mica esmaltada"
+                      type="text"
+                      value={attribute.value}
+                    />
+                  </label>
 
-                <button
-                  className="rounded-full border border-stone-200 px-4 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100"
-                  onClick={() => {
-                    onRemoveAttribute(index);
-                  }}
-                  type="button"
-                >
-                  Quitar
-                </button>
+                  <button
+                    className="rounded-full border border-stone-200 px-4 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100"
+                    onClick={() => {
+                      onRemoveAttribute(index);
+                    }}
+                    type="button"
+                  >
+                    Quitar
+                  </button>
                 </div>
 
                 <div className="grid gap-2">
-                  {getProductAttributeValueSuggestions(attribute.key).length > 0 ? (
+                  {getProductAttributeValueSuggestions(attribute.key).length >
+                  0 ? (
                     <div className="grid gap-2">
                       <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
                         Ejemplos disponibles
                       </p>
                       <div className="flex flex-wrap gap-2">
-                      {getProductAttributeValueSuggestions(attribute.key).map((suggestion) => {
-                        const isActive = attribute.value.trim().toLowerCase() === suggestion;
+                        {getProductAttributeValueSuggestions(attribute.key).map(
+                          (suggestion) => {
+                            const isActive =
+                              attribute.value.trim().toLowerCase() ===
+                              suggestion;
 
-                        return (
-                          <button
-                            key={`${attribute.key}-${suggestion}-${index}`}
-                            className={[
-                              "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
-                              isActive
-                                ? "border border-brand-200 bg-[#ECFEFF] text-brand-500"
-                                : "border border-stone-200 bg-white text-stone-600 hover:border-brand-200 hover:bg-brand-50",
-                            ].join(" ")}
-                            onClick={() => {
-                              onUpdateAttribute(index, "value", suggestion);
-                            }}
-                            type="button"
-                          >
-                            {suggestion}
-                          </button>
-                        );
-                      })}
+                            return (
+                              <button
+                                key={`${attribute.key}-${suggestion}-${index}`}
+                                className={[
+                                  "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                                  isActive
+                                    ? "border border-brand-200 bg-[#ECFEFF] text-brand-500"
+                                    : "border border-stone-200 bg-white text-stone-600 hover:border-brand-200 hover:bg-brand-50",
+                                ].join(" ")}
+                                onClick={() => {
+                                  onUpdateAttribute(index, "value", suggestion);
+                                }}
+                                type="button"
+                              >
+                                {suggestion}
+                              </button>
+                            );
+                          },
+                        )}
                       </div>
                     </div>
                   ) : null}
@@ -530,7 +537,7 @@ export function ArtisanProductFormSection({
           </div>
         ) : (
           <div className="rounded-2xl border border-dashed border-stone-300 bg-white px-4 py-5 text-sm text-stone-500">
-            Todavía no agregaste atributos a esta ficha.
+            TodavÃƒÂ­a no agregaste atributos a esta ficha.
           </div>
         )}
       </section>
@@ -539,7 +546,7 @@ export function ArtisanProductFormSection({
         <div className="space-y-1">
           <p className="text-sm font-semibold text-stone-900">Modo de venta</p>
           <p className="text-sm text-stone-500">
-            Define cómo se vende la pieza antes de cargar las fotos.
+            Define cÃƒÂ³mo se vende la pieza antes de cargar las fotos.
           </p>
         </div>
 
@@ -576,7 +583,8 @@ export function ArtisanProductFormSection({
           >
             <p className="text-sm font-semibold">Produccion bajo demanda</p>
             <p className="mt-1 text-xs text-current/80">
-              El cliente ve la demora de producción y, si hace falta, puede elegir variables.
+              El cliente ve la demora de producciÃƒÂ³n y, si hace falta, puede
+              elegir variables.
             </p>
           </button>
         </div>
@@ -585,10 +593,13 @@ export function ArtisanProductFormSection({
           <div className="grid gap-3">
             <div className="flex flex-col gap-3 rounded-2xl border border-stone-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="space-y-1">
-                <p className="text-sm font-semibold text-stone-900">Stock disponible</p>
+                <p className="text-sm font-semibold text-stone-900">
+                  Stock disponible
+                </p>
                 <p className="text-sm text-stone-500">
                   {productForm.stock_quantity ?? 0} unidad
-                  {(productForm.stock_quantity ?? 0) === 1 ? "" : "es"} listas para vender.
+                  {(productForm.stock_quantity ?? 0) === 1 ? "" : "es"} listas
+                  para vender.
                 </p>
               </div>
 
@@ -618,7 +629,9 @@ export function ArtisanProductFormSection({
                     min="1"
                     onChange={(event) => {
                       onStockQuantityChange(
-                        event.target.value === "" ? null : Number.parseInt(event.target.value, 10),
+                        event.target.value === ""
+                          ? null
+                          : Number.parseInt(event.target.value, 10),
                       );
                     }}
                     placeholder="Ej. 3"
@@ -628,7 +641,8 @@ export function ArtisanProductFormSection({
                   />
                 </label>
                 <p className="text-xs leading-5 text-stone-500">
-                  Abre este ajuste solo cuando necesites corregir unidades disponibles.
+                  Abre este ajuste solo cuando necesites corregir unidades
+                  disponibles.
                 </p>
               </div>
             ) : null}
@@ -643,7 +657,9 @@ export function ArtisanProductFormSection({
                 min="1"
                 onChange={(event) => {
                   onLeadTimeDaysChange(
-                    event.target.value === "" ? null : Number.parseInt(event.target.value, 10),
+                    event.target.value === ""
+                      ? null
+                      : Number.parseInt(event.target.value, 10),
                   );
                 }}
                 placeholder="Ej. 7"
@@ -654,10 +670,9 @@ export function ArtisanProductFormSection({
             </label>
 
             <p className="text-xs leading-5 text-stone-500">
-              Este modo no usa stock. El cliente vera este tiempo estimado antes de comprar.
-              
+              Este modo no usa stock. El cliente vera este tiempo estimado antes
+              de comprar.
             </p>
-
           </div>
         )}
       </section>
@@ -665,9 +680,12 @@ export function ArtisanProductFormSection({
       <section className="grid gap-4 rounded-[1.75rem] border border-stone-200 bg-stone-50/80 p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold text-stone-900">Variables para elegir</p>
+            <p className="text-sm font-semibold text-stone-900">
+              Variables para elegir
+            </p>
             <p className="mt-1 text-sm text-stone-500">
-              Color, tamano, acabado o cualquier opcion que el comprador deba elegir antes de comprar.
+              Color, tamano, acabado o cualquier opcion que el comprador deba
+              elegir antes de comprar.
             </p>
           </div>
           <button
@@ -697,7 +715,8 @@ export function ArtisanProductFormSection({
 
         {!hasOptionGroups ? (
           <div className="rounded-2xl border border-dashed border-stone-300 bg-white px-4 py-4 text-sm text-stone-500">
-            Todavia no definiste variables. Si este producto tiene color, capacidad u otras opciones, puedes cargarlas aqui.
+            Todavia no definiste variables. Si este producto tiene color,
+            capacidad u otras opciones, puedes cargarlas aqui.
           </div>
         ) : null}
 
@@ -834,7 +853,8 @@ export function ArtisanProductFormSection({
                             (currentOption) => ({
                               ...currentOption,
                               choices: currentOption.choices.filter(
-                                (currentChoice) => currentChoice.id !== choice.id,
+                                (currentChoice) =>
+                                  currentChoice.id !== choice.id,
                               ),
                             }),
                           ),
@@ -893,9 +913,8 @@ export function ArtisanProductFormSection({
           <div className="space-y-1">
             <p className="text-sm font-semibold text-stone-900">Modelo 3D</p>
             <p className="text-sm leading-6 text-stone-500">
-              {splitProductsByImage
-                ? "Disponible para productos individuales. Los grupos por foto se mantienen solo con imagenes."
-                : "Acepta archivos .glb o .gltf livianos para la vista interactiva del catalogo."}
+              "Acepta archivos .glb o .gltf livianos para la vista interactiva
+              del catalogo."
             </p>
           </div>
 
@@ -927,19 +946,12 @@ export function ArtisanProductFormSection({
             </p>
           </div>
 
-          <label
-            className={[
-              "inline-flex h-9 cursor-pointer items-center justify-center rounded-lg px-3 text-xs font-semibold transition-colors",
-              splitProductsByImage
-                ? "pointer-events-none bg-stone-200 text-stone-400"
-                : "bg-ocean-600 text-white hover:bg-ocean-700",
-            ].join(" ")}
-          >
+          <label className="inline-flex h-9 cursor-pointer items-center justify-center rounded-lg bg-ocean-600 px-3 text-xs font-semibold text-white transition-colors hover:bg-ocean-700">
             Cargar 3D
             <input
               accept=".glb,.gltf,model/gltf-binary,model/gltf+json"
               className="sr-only"
-              disabled={splitProductsByImage}
+
               onChange={(event) => {
                 onProductModel3DFileChange(event.target.files?.[0] ?? null);
                 event.currentTarget.value = "";
@@ -960,7 +972,7 @@ export function ArtisanProductFormSection({
             }}
             type="checkbox"
           />
-          Publicar en el catálogo apenas se guarde
+          Publicar en el catÃƒÂ¡logo apenas se guarde
         </label>
 
         {statusMessage ? (
@@ -1002,9 +1014,8 @@ export function ArtisanProductFormSection({
 
         <div className="sticky bottom-3 z-10 flex flex-col gap-3 rounded-[1.5rem] border border-stone-200 bg-white/95 p-3 shadow-[0_16px_40px_rgba(15,23,42,0.08)] backdrop-blur sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs leading-5 text-stone-500 sm:max-w-xl">
-            {splitProductsByImage
-              ? "Desliza las tarjetas en horizontal para revisar qué fotos usan datos base y cuáles tienen cambios propios antes de guardar."
-              : "Desliza las fotos en horizontal para revisar portada, recortes y orden antes de guardar."}
+            "Desliza las fotos en horizontal para revisar portada, recortes y
+            orden antes de guardar."
           </p>
 
           <button
@@ -1014,7 +1025,11 @@ export function ArtisanProductFormSection({
           >
             {isSaving ? (
               <>
-                <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <svg
+                  className="h-4 w-4 animate-spin"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
                   <circle
                     className="opacity-25"
                     cx="12"
@@ -1029,7 +1044,7 @@ export function ArtisanProductFormSection({
                     fill="currentColor"
                   />
                 </svg>
-                {isEditingBatch ? "Guardando grupo..." : editingProductId ? "Guardando..." : "Creando..."}
+                {editingProductId ? "Guardando..." : "Creando..."}
               </>
             ) : (
               submitLabel

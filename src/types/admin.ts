@@ -15,8 +15,6 @@ export type AdminCategory = {
 
 export type AdminDashboardProduct = {
   artisan_id: string;
-  batch_code: string | null;
-  batch_id: string | null;
   categories?: {
     name: string;
   } | null;
@@ -40,8 +38,6 @@ export type AdminProductControlBoostLevel = "medio" | "moderado" | "maximo";
 export type AdminProductControlProduct = {
   artisan_id: string;
   availability_mode: "made_to_order" | "stock";
-  batch_code: string | null;
-  batch_id: string | null;
   categories?: {
     name: string;
   } | null;

@@ -6,15 +6,8 @@ import type {
   ArtisanStoreProfileInput,
 } from "../../types/artisan";
 import type { UserProfile } from "../../types/auth";
-import type {
-  ProductBatch,
-  ProductBatchInput,
-  ProductBatchMutationResult,
-} from "../../types/productBatch";
 import type { PaginationParams } from "../../types/pagination";
 import type { FulfillmentStatus } from "../../types/commerce";
-import type { ProductAttribute } from "../../types/productAttributes";
-import type { ProductOptionGroup } from "../../types/productAvailability";
 import { sanitizeProductAttributes } from "../../types/productAttributes";
 import {
   getProductImageMediaItems,
@@ -26,7 +19,6 @@ import { getSupabaseClient } from "../../lib/supabase/client";
 const ARTISAN_PROFILE_BUCKET = "artisan-profile-images";
 const ARTISAN_PRODUCT_BUCKET = "artisan-product-images";
 const productSelection = "*, categories(name)";
-const productBatchSelection = "*";
 const MAX_PRODUCT_PAGE_SIZE = 200;
 
 function serializeProductMediaItem(item: ProductMediaItem) {
@@ -56,17 +48,9 @@ function getPrimaryProductImagePayload(input: ArtisanProductInput) {
   };
 }
 
-export type ArtisanProductListParams = Partial<PaginationParams> & {
-  batchId?: string;
-  standaloneOnly?: boolean;
-};
-
-export type ArtisanProductBatchListParams = Partial<PaginationParams>;
+export type ArtisanProductListParams = Partial<PaginationParams>;
 
 export type ArtisanProductStats = {
-  batchProducts: number;
-  batches: number;
-  standaloneProducts: number;
   totalProducts: number;
 };
 
@@ -309,17 +293,10 @@ export async function getArtisanProducts(
     .eq("artisan_id", artisanId)
     .order("created_at", { ascending: false });
 
-  if (params?.batchId) {
-    query = query.eq("batch_id", params.batchId);
-  }
-
-  if (params?.standaloneOnly) {
-    query = query.is("batch_id", null);
-  }
 
   if (searchTerm) {
     query = query.or(
-      `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,batch_code.ilike.%${searchTerm}%`,
+      `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`,
     );
   }
 
@@ -351,110 +328,19 @@ export async function getEditableArtisanProductById(productId: string) {
     .single<ArtisanProduct>();
 }
 
-export async function getArtisanBatchProducts(
-  artisanId: string,
-  batchId: string,
-  expectedCount = 0,
-) {
-  const fetchedProducts: ArtisanProduct[] = [];
-  let currentPage = 1;
-  let totalCount = expectedCount;
-
-  while (fetchedProducts.length < totalCount || currentPage === 1) {
-    const response = await getArtisanProducts(artisanId, {
-      batchId,
-      limit: MAX_PRODUCT_PAGE_SIZE,
-      page: currentPage,
-    });
-
-    if (response.error) {
-      return {
-        data: fetchedProducts,
-        error: response.error,
-      };
-    }
-
-    const pageProducts = response.data ?? [];
-    totalCount = response.count ?? totalCount;
-    fetchedProducts.push(...pageProducts);
-
-    if (pageProducts.length < MAX_PRODUCT_PAGE_SIZE) {
-      break;
-    }
-
-    currentPage += 1;
-  }
-
-  return {
-    data: fetchedProducts,
-    error: null,
-  };
-}
-
-export async function getArtisanProductBatches(
-  artisanId: string,
-  params?: ArtisanProductBatchListParams,
-) {
-  const client = getSupabaseClient();
-  const pagination = normalizePagination(params);
-  const searchTerm = normalizeSearchTerm(params?.search);
-
-  let query = client
-    .from("product_batches")
-    .select(productBatchSelection, params ? { count: "exact" } : undefined)
-    .eq("artisan_id", artisanId)
-    .order("created_at", { ascending: false });
-
-  if (searchTerm) {
-    query = query.or(
-      `title_base.ilike.%${searchTerm}%,description_base.ilike.%${searchTerm}%,batch_code.ilike.%${searchTerm}%`,
-    );
-  }
-
-  if (params?.limit) {
-    query = query.range(pagination.from, pagination.to);
-  }
-
-  return query.returns<ProductBatch[]>();
-}
-
 export async function getArtisanProductStats(artisanId: string) {
   const client = getSupabaseClient();
-  const [productsResponse, standaloneResponse, batchesResponse] = await Promise.all([
-    client
-      .from("products")
-      .select("id", { count: "exact", head: true })
-      .eq("artisan_id", artisanId),
-    client
-      .from("products")
-      .select("id", { count: "exact", head: true })
-      .eq("artisan_id", artisanId)
-      .is("batch_id", null),
-    client
-      .from("product_batches")
-      .select("id", { count: "exact", head: true })
-      .eq("artisan_id", artisanId),
-  ]);
+  const response = await client
+    .from("products")
+    .select("id", { count: "exact", head: true })
+    .eq("artisan_id", artisanId);
 
-  const error = productsResponse.error ?? standaloneResponse.error ?? batchesResponse.error;
-
-  if (error) {
-    return {
-      data: null,
-      error,
-    };
+  if (response.error) {
+    return { data: null, error: response.error };
   }
 
-  const totalProducts = productsResponse.count ?? 0;
-  const standaloneProducts = standaloneResponse.count ?? 0;
-
   return {
-    data: {
-      batchProducts: Math.max(0, totalProducts - standaloneProducts),
-      batches: batchesResponse.count ?? 0,
-      standaloneProducts,
-      totalProducts,
-    } satisfies ArtisanProductStats,
+    data: { totalProducts: response.count ?? 0 } satisfies ArtisanProductStats,
     error: null,
   };
 }
@@ -465,11 +351,7 @@ export async function createArtisanProduct(artisanId: string, input: ArtisanProd
   const imagePayload = getPrimaryProductImagePayload(input);
   const basePayload = {
     artisan_id: artisanId,
-    batch_id: input.batch_id ?? null,
-    batch_code: input.batch_code ?? null,
-    batch_position: input.batch_position ?? null,
     category_id: input.category_id,
-    created_via_batch: input.created_via_batch ?? false,
     title: input.title.trim(),
     description: input.description.trim(),
     price: input.price,
@@ -509,10 +391,6 @@ export async function updateArtisanProduct(productId: string, input: ArtisanProd
   const imagePayload = getPrimaryProductImagePayload(input);
   const basePayload = {
     category_id: input.category_id,
-    batch_id: input.batch_id ?? null,
-    batch_code: input.batch_code ?? null,
-    batch_position: input.batch_position ?? null,
-    created_via_batch: input.created_via_batch ?? false,
     title: input.title.trim(),
     description: input.description.trim(),
     price: input.price,
@@ -573,159 +451,6 @@ export async function deleteArtisanProduct(productId: string) {
   return client.from("products").delete().eq("id", productId);
 }
 
-export async function createArtisanProductBatch(
-  artisanId: string,
-  input: ProductBatchInput,
-) {
-  const client = getSupabaseClient();
-
-  const response = await client.rpc("create_product_batch", {
-    p_artisan_id: artisanId,
-    p_batch: {
-      ...input,
-      description_base: input.description_base.trim(),
-      items: input.items.map((item) => ({
-        ...item,
-        description: item.description.trim(),
-        image_description: item.image_description.trim(),
-        title: item.title.trim(),
-      })),
-      product_attributes_base: sanitizeProductAttributes(input.product_attributes_base),
-      title_base: input.title_base.trim(),
-    },
-  });
-
-  return {
-    data: (response.data as ProductBatchMutationResult | null) ?? null,
-    error: response.error,
-  };
-}
-
-export async function updateArtisanProductBatch(batchId: string, input: ProductBatchInput) {
-  const client = getSupabaseClient();
-
-  const response = await client.rpc("update_product_batch", {
-    p_batch: {
-      ...input,
-      description_base: input.description_base.trim(),
-      items: input.items.map((item) => ({
-        ...item,
-        description: item.description.trim(),
-        image_description: item.image_description.trim(),
-        title: item.title.trim(),
-      })),
-      product_attributes_base: sanitizeProductAttributes(input.product_attributes_base),
-      title_base: input.title_base.trim(),
-    },
-    p_batch_id: batchId,
-  });
-
-  return {
-    data: (response.data as ProductBatchMutationResult | null) ?? null,
-    error: response.error,
-  };
-}
-
-export async function syncArtisanBatchProductAttributes(
-  batchId: string,
-  productIds: string[],
-  attributes: ProductAttribute[],
-) {
-  const client = getSupabaseClient();
-  const sanitizedAttributes = sanitizeProductAttributes(attributes);
-
-  const batchResponse = await client
-    .from("product_batches")
-    .update({
-      product_attributes_base: sanitizedAttributes,
-    })
-    .eq("id", batchId);
-
-  if (batchResponse.error && !isMissingColumnError(batchResponse.error, "product_attributes_base")) {
-    return batchResponse;
-  }
-
-  if (productIds.length === 0) {
-    return {
-      data: null,
-      error: null,
-    };
-  }
-
-  const productsResponse = await client
-    .from("products")
-    .update({
-      product_attributes: sanitizedAttributes,
-    })
-    .in("id", productIds);
-
-  if (productsResponse.error && !isMissingColumnError(productsResponse.error, "product_attributes")) {
-    return productsResponse;
-  }
-
-  return {
-    data: null,
-    error: null,
-  };
-}
-
-export async function syncArtisanBatchProductOptions(
-  batchId: string,
-  productIds: string[],
-  options: ProductOptionGroup[],
-) {
-  const client = getSupabaseClient();
-
-  const batchResponse = await client
-    .from("product_batches")
-    .update({
-      made_to_order_options_base: options,
-    })
-    .eq("id", batchId);
-
-  if (
-    batchResponse.error &&
-    !isMissingColumnError(batchResponse.error, "made_to_order_options_base")
-  ) {
-    return batchResponse;
-  }
-
-  if (productIds.length === 0) {
-    return {
-      data: null,
-      error: null,
-    };
-  }
-
-  const productsResponse = await client
-    .from("products")
-    .update({
-      made_to_order_options: options,
-    })
-    .in("id", productIds);
-
-  if (productsResponse.error && !isMissingColumnError(productsResponse.error, "made_to_order_options")) {
-    return productsResponse;
-  }
-
-  return {
-    data: null,
-    error: null,
-  };
-}
-
-export async function deleteArtisanProductBatch(batchId: string) {
-  const client = getSupabaseClient();
-
-  const response = await client.rpc("delete_product_batch", {
-    p_batch_id: batchId,
-  });
-
-  return {
-    data: (response.data as ProductBatchMutationResult | null) ?? null,
-    error: response.error,
-  };
-}
 
 type ArtisanSalesOrderRow = NonNullable<ArtisanSaleItem["orders"]> & {
   items?: Array<Omit<ArtisanSaleItem, "orders">>;

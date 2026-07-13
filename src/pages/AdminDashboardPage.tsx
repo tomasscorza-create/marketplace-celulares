@@ -6,10 +6,8 @@ import { PagePlaceholder } from "../components/PagePlaceholder";
 import {
   ADMIN_DASHBOARD_PANEL_META,
   buildArtisanSummaries,
-  buildBatchSummaries,
   buildCategorySummaries,
   filterAndSortArtisans,
-  filterAndSortBatches,
   filterAndSortCategories,
   filterAndSortProducts,
   filterAndSortSales,
@@ -59,11 +57,6 @@ export function AdminDashboardPage() {
       return;
     }
 
-    if (activePanel === "batches") {
-      setSortValue("most_items");
-      return;
-    }
-
     if (activePanel === "sales") {
       setSortValue("newest");
       return;
@@ -76,7 +69,6 @@ export function AdminDashboardPage() {
     () => buildArtisanSummaries(artisans, products, sales),
     [artisans, products, sales],
   );
-  const batchSummaries = useMemo(() => buildBatchSummaries(artisans, products), [artisans, products]);
   const categorySummaries = useMemo(
     () => buildCategorySummaries(categories, products),
     [categories, products],
@@ -91,10 +83,6 @@ export function AdminDashboardPage() {
   const filteredProducts = useMemo(
     () => filterAndSortProducts(artisans, products, deferredSearch, sortValue),
     [artisans, products, deferredSearch, sortValue],
-  );
-  const filteredBatches = useMemo(
-    () => filterAndSortBatches(batchSummaries, deferredSearch, sortValue),
-    [batchSummaries, deferredSearch, sortValue],
   );
   const filteredSales = useMemo(
     () => filterAndSortSales(artisans, sales, deferredSearch, sortValue),
@@ -153,7 +141,6 @@ export function AdminDashboardPage() {
         activeArtisansCount={artisanSummaries.length}
         activeBuyersCount={buyers.length}
         activeCategoriesCount={activeCategoriesCount}
-        batchesCount={batchSummaries.length}
         isLoading={isLoading}
         onOpenActiveArtisans={() => {
           void navigate("/panel/admin/vendedores/activos");
@@ -173,7 +160,6 @@ export function AdminDashboardPage() {
         <DashboardDetailDrawer
           activePanel={activePanel}
           artisans={filteredArtisans}
-          batches={filteredBatches}
           categories={filteredCategories}
           onClose={() => setActivePanel(null)}
           onSearchChange={setSearchValue}

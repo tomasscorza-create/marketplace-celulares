@@ -6,7 +6,7 @@ import type {
   AdminDashboardSale,
 } from "../../types/admin";
 
-export type DashboardPanelKey = "artisans" | "products" | "batches" | "sales" | "categories";
+export type DashboardPanelKey = "artisans" | "products" | "sales" | "categories";
 
 export type DashboardPanel = DashboardPanelKey | null;
 
@@ -14,16 +14,6 @@ export type ArtisanSummary = AdminArtisanProfile & {
   productsCount: number;
   revenueTotal: number;
   salesCount: number;
-};
-
-export type BatchSummary = {
-  artisanId: string;
-  artisanName: string;
-  batchCode: string;
-  batchId: string;
-  createdAt: string;
-  itemCount: number;
-  totalValue: number;
 };
 
 export type CategorySummary = AdminCategory & {
@@ -39,20 +29,16 @@ export const ADMIN_DASHBOARD_PANEL_META = {
     empty: "No hay vendedores para mostrar.",
     title: "Cuentas vendedoras",
   },
-  batches: {
-    empty: "No hay grupos creados todavía.",
-    title: "Grupos de productos",
-  },
   categories: {
-    empty: "No hay categorías para mostrar.",
-    title: "Categorías",
+    empty: "No hay categorÃ­as para mostrar.",
+    title: "CategorÃ­as",
   },
   products: {
-    empty: "No hay productos cargados todavía.",
+    empty: "No hay productos cargados todavÃ­a.",
     title: "Productos",
   },
   sales: {
-    empty: "No hay ventas registradas todavía.",
+    empty: "No hay ventas registradas todavÃ­a.",
     title: "Ventas",
   },
 } satisfies Record<DashboardPanelKey, { empty: string; title: string }>;
@@ -85,46 +71,6 @@ export function buildArtisanSummaries(
     };
   });
 }
-
-export function buildBatchSummaries(
-  artisans: AdminArtisanProfile[],
-  products: AdminDashboardProduct[],
-) {
-  const byBatch = new Map<string, BatchSummary>();
-  const artisanNames = new Map(
-    artisans.map((artisan) => [artisan.id, artisan.store_name?.trim() || artisan.full_name]),
-  );
-
-  products.forEach((product) => {
-    if (!product.batch_id || !product.batch_code) {
-      return;
-    }
-
-    const current = byBatch.get(product.batch_id);
-
-    if (!current) {
-      byBatch.set(product.batch_id, {
-        artisanId: product.artisan_id,
-        artisanName: artisanNames.get(product.artisan_id) ?? "Vendedor",
-        batchCode: product.batch_code,
-        batchId: product.batch_id,
-        createdAt: product.created_at,
-        itemCount: 1,
-        totalValue: Number(product.price),
-      });
-      return;
-    }
-
-    current.itemCount += 1;
-    current.totalValue += Number(product.price);
-    if (new Date(product.created_at) > new Date(current.createdAt)) {
-      current.createdAt = product.created_at;
-    }
-  });
-
-  return Array.from(byBatch.values());
-}
-
 export function buildCategorySummaries(
   categories: AdminCategory[],
   products: AdminDashboardProduct[],
@@ -234,38 +180,6 @@ export function filterAndSortProducts(
     artisanName: artisanNames.get(product.artisan_id) ?? "Vendedor",
   }));
 }
-
-export function filterAndSortBatches(
-  batchSummaries: BatchSummary[],
-  searchValue: string,
-  sortValue: string,
-) {
-  const normalizedSearch = normalizeSearchValue(searchValue);
-  const filtered = batchSummaries.filter((batch) => {
-    if (!normalizedSearch) {
-      return true;
-    }
-
-    return [batch.batchCode, batch.artisanName].join(" ").toLowerCase().includes(normalizedSearch);
-  });
-
-  const sorted = [...filtered];
-
-  switch (sortValue) {
-    case "newest":
-      sorted.sort((left, right) => +new Date(right.createdAt) - +new Date(left.createdAt));
-      break;
-    case "highest_value":
-      sorted.sort((left, right) => right.totalValue - left.totalValue);
-      break;
-    default:
-      sorted.sort((left, right) => right.itemCount - left.itemCount);
-      break;
-  }
-
-  return sorted;
-}
-
 export function filterAndSortSales(
   artisans: AdminArtisanProfile[],
   sales: AdminDashboardSale[],

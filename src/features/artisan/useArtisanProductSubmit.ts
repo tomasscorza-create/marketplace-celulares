@@ -26,7 +26,7 @@ type SubmitParams = {
   productForm: ArtisanProductInput;
   productImages: ProductImageDraft[];
   productModel3DFile: File | null;
-  refreshProductsAndBatches: () => Promise<boolean>;
+  refreshProducts: () => Promise<boolean>;
   targetArtisanId: string | null;
   updateProduct: (payload: {
     input: ArtisanProductInput;
@@ -198,7 +198,7 @@ export function useArtisanProductSubmit({
   productForm,
   productImages,
   productModel3DFile,
-  refreshProductsAndBatches,
+  refreshProducts,
   targetArtisanId,
   updateProduct,
 }: SubmitParams) {
@@ -299,7 +299,7 @@ export function useArtisanProductSubmit({
       return;
     }
 
-    const refreshed = await refreshProductsAndBatches();
+    const refreshed = await refreshProducts();
 
     if (editingProductId) {
       const removedUrls = editingOriginalImageUrls.filter(
@@ -326,7 +326,7 @@ export function useArtisanProductSubmit({
     productForm,
     productImages,
     productModel3DFile,
-    refreshProductsAndBatches,
+    refreshProducts,
     targetArtisanId,
     updateProduct,
   ]);

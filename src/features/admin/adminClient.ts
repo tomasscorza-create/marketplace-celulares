@@ -672,7 +672,7 @@ export async function getAdminDashboardProducts(params?: OptionalPaginationParam
   let query = client
     .from("products")
     .select(
-      "id, artisan_id, batch_id, batch_code, title, image_url, price, is_active, stock_quantity, created_at, categories(name)",
+      "id, artisan_id, title, image_url, price, is_active, stock_quantity, created_at, categories(name)",
       { count: "exact" },
     )
     .order("created_at", { ascending: false });
@@ -745,7 +745,7 @@ export async function getAdminProductControlProducts(params?: OptionalPagination
   let query = client
     .from("products")
     .select(
-      "id, artisan_id, batch_id, batch_code, title, description, image_url, price, is_active, stock_quantity, availability_mode, lead_time_days, created_at, categories(name)",
+      "id, artisan_id, title, description, image_url, price, is_active, stock_quantity, availability_mode, lead_time_days, created_at, categories(name)",
       { count: "exact" },
     )
     .order("created_at", { ascending: false });
@@ -753,7 +753,7 @@ export async function getAdminProductControlProducts(params?: OptionalPagination
   if (search) {
     const pattern = getSearchPattern(search);
     query = query.or(
-      `title.ilike.${pattern},description.ilike.${pattern},batch_code.ilike.${pattern}`,
+      `title.ilike.${pattern},description.ilike.${pattern}`,
     );
   }
 
