@@ -42,9 +42,9 @@ export type BuyerDeliveryDistance = {
 export function getItemStatusClasses(status: "ready" | "warning" | "error") {
   switch (status) {
     case "error":
-      return "border-brand-200 bg-[#FDF1EC] text-brand-500";
+      return "border-brand-200 bg-brand-50 text-brand-500";
     case "warning":
-      return "border-sun-200 bg-[#ECFEFF] text-[#0e7490]";
+      return "border-brand-200 bg-brand-50 text-[#0e7490]";
     default:
       return "border-emerald-200 bg-emerald-50 text-emerald-700";
   }

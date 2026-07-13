@@ -83,7 +83,7 @@ export function AdminActiveBuyersPage() {
   return (
     <PagePlaceholder description="" hideHeader title="">
       <div className="grid gap-4">
-        <section className="grid gap-3 rounded-[1.6rem] border border-stone-200 bg-white p-4 shadow-sm">
+        <section className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-4 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="space-y-1">
               <h1 className="text-xl font-semibold text-stone-900">Compradores activos</h1>
@@ -91,13 +91,13 @@ export function AdminActiveBuyersPage() {
                 {buyersQuery.isLoading ? "Cargando..." : `${filteredBuyers.length} visibles de ${buyersCount}`}
               </p>
             </div>
-            <span className="rounded-full bg-stone-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-stone-600">
+            <span className="rounded-full bg-stone-100 px-3 py-2 text-xs font-semibold uppercase tracking-widest text-stone-600">
               Activos
             </span>
           </div>
 
           <input
-            className="rounded-[1.2rem] border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
             onChange={(event) => {
               const nextValue = event.target.value;
               const nextSearchParams = new URLSearchParams(searchParams);
@@ -119,7 +119,7 @@ export function AdminActiveBuyersPage() {
           />
 
           <select
-            className="rounded-[1.2rem] border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
             onChange={(event) => {
               const nextValue = event.target.value as (typeof SORT_OPTIONS)[number]["value"];
               const nextSearchParams = new URLSearchParams(searchParams);
@@ -145,7 +145,7 @@ export function AdminActiveBuyersPage() {
         </section>
 
         {buyersQuery.error?.message ? (
-          <div className="rounded-[1.3rem] border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="rounded-2xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
             {buyersQuery.error.message}
           </div>
         ) : null}
@@ -153,12 +153,12 @@ export function AdminActiveBuyersPage() {
         {buyersQuery.isLoading ? (
           <LoadingPanel label="Cargando compradores..." />
         ) : filteredBuyers.length === 0 ? (
-          <div className="rounded-[1.6rem] border border-dashed border-stone-300 bg-white/85 p-6 text-sm text-stone-600">
+          <div className="rounded-3xl border border-dashed border-stone-300 bg-white/85 p-6 text-sm text-stone-600">
             No encontramos compradores con esa busqueda.
           </div>
         ) : (
-          <section className="grid gap-3 rounded-[1.6rem] border border-stone-200 bg-white p-3 shadow-sm sm:p-4">
-            <div className="grid gap-2 px-1 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500 md:grid-cols-[minmax(0,1.8fr)_96px_96px_140px] md:px-3">
+          <section className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-3 shadow-sm sm:p-4">
+            <div className="grid gap-2 px-1 text-xs font-semibold uppercase tracking-widest text-stone-500 md:grid-cols-[minmax(0,1.8fr)_96px_96px_140px] md:px-3">
               <span>Comprador</span>
               <span className="hidden md:block">Compras</span>
               <span className="hidden md:block">Favoritos</span>
@@ -170,7 +170,7 @@ export function AdminActiveBuyersPage() {
                 {filteredBuyers.map((buyer) => (
                   <Link
                     key={buyer.id}
-                    className="grid gap-3 rounded-[1.25rem] border border-stone-200 bg-stone-50/80 px-3 py-3 transition-colors hover:border-ocean-300 hover:bg-white md:grid-cols-[minmax(0,1.8fr)_96px_96px_140px] md:items-center"
+                    className="grid gap-3 rounded-2xl border border-stone-200 bg-stone-50/80 px-3 py-3 transition-colors hover:border-ocean-300 hover:bg-white md:grid-cols-[minmax(0,1.8fr)_96px_96px_140px] md:items-center"
                     to={`/cliente/${buyer.id}`}
                   >
                     <div className="min-w-0">
@@ -192,7 +192,7 @@ export function AdminActiveBuyersPage() {
                         <span>Desde {formatMemberSince(buyer.created_at)}</span>
                         <span>Actividad {formatShortDate(buyer.lastActivityAt)}</span>
                         {buyer.openOrdersCount > 0 ? (
-                          <span className="rounded-full bg-[#ECFEFF] px-2 py-1 font-medium text-brand-600">
+                          <span className="rounded-full bg-brand-50 px-2 py-1 font-medium text-brand-600">
                             {buyer.openOrdersCount} abierta{buyer.openOrdersCount === 1 ? "" : "s"}
                           </span>
                         ) : null}
@@ -225,7 +225,7 @@ export function AdminActiveBuyersPage() {
                     </div>
 
                     <div className="flex items-center justify-between gap-3 text-sm md:block md:text-center">
-                      <span className="text-xs uppercase tracking-[0.12em] text-stone-400 md:hidden">
+                      <span className="text-xs uppercase tracking-widest text-stone-400 md:hidden">
                         Compras
                       </span>
                       <div>
@@ -237,14 +237,14 @@ export function AdminActiveBuyersPage() {
                     </div>
 
                     <div className="flex items-center justify-between gap-3 text-sm md:block md:text-center">
-                      <span className="text-xs uppercase tracking-[0.12em] text-stone-400 md:hidden">
+                      <span className="text-xs uppercase tracking-widest text-stone-400 md:hidden">
                         Favoritos
                       </span>
                       <span className="font-semibold text-stone-800">{buyer.favoritesCount}</span>
                     </div>
 
                     <div className="flex items-center justify-between gap-3 text-sm md:block md:text-center">
-                      <span className="text-xs uppercase tracking-[0.12em] text-stone-400 md:hidden">
+                      <span className="text-xs uppercase tracking-widest text-stone-400 md:hidden">
                         Gasto
                       </span>
                       <span className="font-semibold text-stone-800">

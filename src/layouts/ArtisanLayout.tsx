@@ -79,9 +79,9 @@ export function ArtisanLayout() {
       links={links}
       notice={
         pendingNotificationCount > 0 ? (
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-sun-200 bg-sun-50 px-4 py-3 shadow-sm sm:px-5">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-brand-200 bg-brand-50 px-4 py-3 shadow-sm sm:px-5">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-sun-700">
+              <p className="text-xs font-semibold uppercase tracking-widest text-brand-700">
                 Notificaciones internas
               </p>
               <p className="mt-1 text-sm font-medium text-stone-900">
@@ -89,16 +89,16 @@ export function ArtisanLayout() {
               </p>
             </div>
             <Link
-              className="inline-flex min-h-10 items-center justify-center rounded-full bg-sun-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-sun-600"
+              className="inline-flex min-h-10 items-center justify-center rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
               to="/panel/vendedor/notificaciones"
             >
               Revisar
             </Link>
           </div>
         ) : pendingFulfillmentCount > 0 ? (
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-sun-500 bg-[#ECFEFF] px-4 py-3 shadow-sm sm:px-5">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-brand-500 bg-brand-50 px-4 py-3 shadow-sm sm:px-5">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-500">
+              <p className="text-xs font-semibold uppercase tracking-widest text-brand-500">
                 Ventas pendientes
               </p>
               <p className="mt-1 text-sm font-medium text-stone-900">

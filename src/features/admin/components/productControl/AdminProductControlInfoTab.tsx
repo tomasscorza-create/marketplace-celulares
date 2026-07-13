@@ -36,7 +36,7 @@ function AdminProductControlInfoTabInner({
 }: AdminProductControlInfoTabProps) {
   return (
     <div className="grid gap-4 p-5">
-      <div className="overflow-hidden rounded-[1.6rem] border border-stone-200 bg-[linear-gradient(180deg,_#fffdf7,_#ffffff)]">
+      <div className="overflow-hidden rounded-3xl border border-stone-200 bg-[linear-gradient(180deg,_#fffdf7,_#ffffff)]">
         {imageUrl ? (
           <img alt={productTitle} className="aspect-[16/10] w-full object-cover" src={imageUrl} />
         ) : (
@@ -61,19 +61,19 @@ function AdminProductControlInfoTabInner({
         <StatCard label="Producción" value={leadTimeLabel ?? "Sin demora configurada"} muted />
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        <div className="rounded-[1.3rem] border border-dashed border-stone-300 bg-stone-50/70 p-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">Vistas</p>
+        <div className="rounded-2xl border border-dashed border-stone-300 bg-stone-50/70 p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">Vistas</p>
           <p className="mt-2 text-sm font-medium text-stone-500">Disponible (próximo)</p>
         </div>
-        <div className="rounded-[1.3rem] border border-dashed border-stone-300 bg-stone-50/70 p-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">Conversión</p>
+        <div className="rounded-2xl border border-dashed border-stone-300 bg-stone-50/70 p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">Conversión</p>
           <p className="mt-2 text-sm font-medium text-stone-500">Disponible (próximo)</p>
         </div>
       </div>
 
       {productEditHref ? (
         <Link
-          className="inline-flex min-h-11 items-center justify-center rounded-[1.2rem] border border-ocean-500 bg-[#E0F2FE] px-4 py-3 text-sm font-semibold text-ocean-500 transition-colors hover:bg-[#bae6fd]"
+          className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-ocean-500 bg-brand-50 px-4 py-3 text-sm font-semibold text-ocean-500 transition-colors hover:bg-[#bae6fd]"
           to={productEditHref}
         >
           Ir a editar producto

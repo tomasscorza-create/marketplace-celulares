@@ -96,7 +96,7 @@ function AdminNotificationCard({
               {notification.title}
             </h2>
             {isSystemTermsNotification ? (
-              <span className="rounded-full bg-sun-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-sun-700">
+              <span className="rounded-full bg-brand-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-widest text-brand-700">
                 Base
               </span>
             ) : null}
@@ -236,7 +236,7 @@ export function AdminInternalNotificationsPage() {
           onSubmit={handleSubmit}
         >
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ocean-500">
+            <p className="text-xs font-semibold uppercase tracking-widest text-ocean-500">
               Nuevo aviso
             </p>
             <h2 className="mt-1 text-lg font-semibold text-stone-900">Publicar notificación</h2>
@@ -280,7 +280,7 @@ export function AdminInternalNotificationsPage() {
         <section className="grid min-w-0 gap-3">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">
+              <p className="text-xs font-semibold uppercase tracking-widest text-stone-500">
                 Publicadas
               </p>
               <h2 className="mt-1 text-lg font-semibold text-stone-900">

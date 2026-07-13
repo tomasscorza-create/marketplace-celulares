@@ -170,7 +170,7 @@ export function ArtisanProductFormSection({
       className="grid min-w-0 content-start gap-4 overflow-x-hidden rounded-3xl border border-brand-100 bg-white p-4 shadow-sm sm:p-6"
       onSubmit={onSubmit}
     >
-      <section className="grid gap-4 rounded-[1.75rem] border border-stone-200 bg-[linear-gradient(180deg,_#ffffff,_#f8f4eb)] p-4 sm:p-5">
+      <section className="grid gap-4 rounded-3xl border border-stone-200 bg-[linear-gradient(180deg,_#ffffff,_#f8f4eb)] p-4 sm:p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-1">
             <h2 className="text-xl font-semibold text-stone-900">
@@ -191,7 +191,7 @@ export function ArtisanProductFormSection({
                 className={[
                   "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium",
                   draftPersistenceState === "saved"
-                    ? "bg-[#E0F2FE] text-ocean-600"
+                    ? "bg-brand-50 text-ocean-600"
                     : draftPersistenceState === "saving"
                       ? "bg-stone-100 text-stone-600"
                       : "bg-[#FFF1EE] text-brand-500",
@@ -207,7 +207,7 @@ export function ArtisanProductFormSection({
 
             {showDiscardDraftButton ? (
               <button
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#E0F2FE] px-3 py-1.5 text-xs font-medium text-ocean-600 transition-colors hover:bg-ocean-100"
+                className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1.5 text-xs font-medium text-ocean-600 transition-colors hover:bg-ocean-100"
                 onClick={onDiscardDraft}
                 title="Descartar borrador"
                 type="button"
@@ -268,13 +268,13 @@ export function ArtisanProductFormSection({
       />
 
       {!isLoading && categories.length === 0 ? (
-        <p className="rounded-2xl border border-sun-500 bg-[#ECFEFF] px-4 py-3 text-sm text-brand-500">
+        <p className="rounded-2xl border border-brand-500 bg-brand-50 px-4 py-3 text-sm text-brand-500">
           No hay categorías disponibles en este momento. Cuando el equipo las
           active, vas a poder publicar.
         </p>
       ) : null}
 
-      <section className="grid gap-4 rounded-[1.75rem] border border-stone-200 bg-white p-4 sm:p-5">
+      <section className="grid gap-4 rounded-3xl border border-stone-200 bg-white p-4 sm:p-5">
         <div className="space-y-1">
           <p className="text-sm font-semibold text-stone-900">Datos base</p>
           <p className="text-sm text-stone-500">
@@ -353,7 +353,7 @@ export function ArtisanProductFormSection({
         </div>
       </section>
 
-      <section className="grid gap-4 rounded-[1.75rem] border border-stone-200 bg-stone-50/80 p-4 sm:p-5">
+      <section className="grid gap-4 rounded-3xl border border-stone-200 bg-stone-50/80 p-4 sm:p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-1">
             <p className="text-sm font-semibold text-stone-900">Atributos</p>
@@ -464,7 +464,7 @@ export function ArtisanProductFormSection({
                   {getProductAttributeValueSuggestions(attribute.key).length >
                   0 ? (
                     <div className="grid gap-2">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                      <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                         Ejemplos disponibles
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -480,7 +480,7 @@ export function ArtisanProductFormSection({
                                 className={[
                                   "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
                                   isActive
-                                    ? "border border-brand-200 bg-[#ECFEFF] text-brand-500"
+                                    ? "border border-brand-200 bg-brand-50 text-brand-500"
                                     : "border border-stone-200 bg-white text-stone-600 hover:border-brand-200 hover:bg-brand-50",
                                 ].join(" ")}
                                 onClick={() => {
@@ -507,7 +507,7 @@ export function ArtisanProductFormSection({
         )}
       </section>
 
-      <section className="grid gap-3 rounded-[1.75rem] border border-stone-200 bg-stone-50/80 p-4 sm:p-5">
+      <section className="grid gap-3 rounded-3xl border border-stone-200 bg-stone-50/80 p-4 sm:p-5">
         <div className="space-y-1">
           <p className="text-sm font-semibold text-stone-900">Modo de venta</p>
           <p className="text-sm text-stone-500">
@@ -520,7 +520,7 @@ export function ArtisanProductFormSection({
             className={[
               "rounded-2xl border px-4 py-3 text-left transition-colors",
               !isMadeToOrder
-                ? "border-ocean-300 bg-[#E0F2FE] text-ocean-600"
+                ? "border-ocean-300 bg-brand-50 text-ocean-600"
                 : "border-stone-200 bg-white text-stone-700 hover:border-ocean-200",
             ].join(" ")}
             onClick={() => {
@@ -538,7 +538,7 @@ export function ArtisanProductFormSection({
             className={[
               "rounded-2xl border px-4 py-3 text-left transition-colors",
               isMadeToOrder
-                ? "border-brand-300 bg-[#ECFEFF] text-brand-500"
+                ? "border-brand-300 bg-brand-50 text-brand-500"
                 : "border-stone-200 bg-white text-stone-700 hover:border-brand-200",
             ].join(" ")}
             onClick={() => {
@@ -572,7 +572,7 @@ export function ArtisanProductFormSection({
                 className={[
                   "inline-flex min-h-10 items-center justify-center rounded-full border px-4 py-2 text-sm font-semibold transition-colors",
                   isStockEditorOpen
-                    ? "border-ocean-300 bg-[#E0F2FE] text-ocean-600"
+                    ? "border-ocean-300 bg-brand-50 text-ocean-600"
                     : "border-stone-300 bg-white text-stone-700 hover:border-ocean-300 hover:bg-ocean-50 hover:text-ocean-600",
                 ].join(" ")}
                 onClick={() => {
@@ -642,7 +642,7 @@ export function ArtisanProductFormSection({
         )}
       </section>
 
-      <section className="grid gap-4 rounded-[1.75rem] border border-stone-200 bg-stone-50/80 p-4 sm:p-5">
+      <section className="grid gap-4 rounded-3xl border border-stone-200 bg-stone-50/80 p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-sm font-semibold text-stone-900">
@@ -880,7 +880,7 @@ export function ArtisanProductFormSection({
         selectedFile={productModel3DFile}
       />
 
-      <div className="grid gap-3 rounded-[1.75rem] border border-stone-200 bg-white p-4 sm:p-5">
+      <div className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-4 sm:p-5">
         <label className="flex items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-700">
           <input
             checked={productForm.is_active}
@@ -894,19 +894,19 @@ export function ArtisanProductFormSection({
         </label>
 
         {statusMessage ? (
-          <p className="rounded-2xl border border-sun-500 bg-[#ECFEFF] px-4 py-3 text-sm text-brand-500">
+          <p className="rounded-2xl border border-brand-500 bg-brand-50 px-4 py-3 text-sm text-brand-500">
             {statusMessage}
           </p>
         ) : null}
 
         {errorMessage ? (
-          <p className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+          <p className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
             {errorMessage}
           </p>
         ) : null}
 
         {uploadStatus ? (
-          <div className="flex items-center gap-3 rounded-2xl border border-ocean-100 bg-[#E0F2FE] px-4 py-3">
+          <div className="flex items-center gap-3 rounded-2xl border border-ocean-100 bg-brand-50 px-4 py-3">
             <svg
               className="h-4 w-4 shrink-0 animate-spin text-ocean-500"
               fill="none"
@@ -930,7 +930,7 @@ export function ArtisanProductFormSection({
           </div>
         ) : null}
 
-        <div className="sticky bottom-3 z-10 flex flex-col gap-3 rounded-[1.5rem] border border-stone-200 bg-white/95 p-3 shadow-[0_16px_40px_rgba(15,23,42,0.08)] backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+        <div className="sticky bottom-3 z-10 flex flex-col gap-3 rounded-3xl border border-stone-200 bg-white/95 p-3 shadow-[0_16px_40px_rgba(15,23,42,0.08)] backdrop-blur sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs leading-5 text-stone-500 sm:max-w-xl">
             "Desliza las fotos en horizontal para revisar portada, recortes y
             orden antes de guardar."

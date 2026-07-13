@@ -2,7 +2,7 @@ const baseInputClassName =
   "rounded-xl px-4 py-3 text-sm text-stone-900 outline-none transition focus:ring-2 focus:ring-offset-0";
 
 export const fieldMetaClassName =
-  "text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-400";
+  "text-[11px] font-semibold uppercase tracking-widest text-stone-400";
 
 export const fieldErrorClassName = "text-xs font-medium text-red-600";
 

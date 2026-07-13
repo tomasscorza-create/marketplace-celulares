@@ -30,7 +30,7 @@ export function CompactCheckoutSection({
         type="button"
       >
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+          <p className="text-xs font-semibold uppercase tracking-widest text-stone-500">
             {title}
           </p>
           <p
@@ -45,7 +45,7 @@ export function CompactCheckoutSection({
         <span
           className={[
             "shrink-0 rounded-full px-3 py-1 text-xs font-semibold",
-            isProblem ? "bg-[#FDF1EC] text-brand-500" : "bg-emerald-50 text-emerald-700",
+            isProblem ? "bg-brand-50 text-brand-500" : "bg-emerald-50 text-emerald-700",
           ].join(" ")}
         >
           {isExpanded ? "Cerrar" : "Ver"}

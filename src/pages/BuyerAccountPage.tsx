@@ -361,7 +361,7 @@ export function BuyerAccountPage() {
           </Link>
           {isOnlinePurchaseEnabled ? (
             <Link
-              className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-[#E0F2FE] sm:w-auto"
+              className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-brand-50 sm:w-auto"
               to="/panel/comprador"
             >
               Mis pedidos
@@ -374,13 +374,13 @@ export function BuyerAccountPage() {
       title="Editar perfil"
     >
       {accountError ? (
-        <div className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+        <div className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
           {accountError}
         </div>
       ) : null}
 
       {statusMessage ? (
-        <div className="rounded-2xl border border-sun-500 bg-[#ECFEFF] px-4 py-3 text-sm text-brand-500">
+        <div className="rounded-2xl border border-brand-500 bg-brand-50 px-4 py-3 text-sm text-brand-500">
           {statusMessage}
         </div>
       ) : null}
@@ -419,7 +419,7 @@ export function BuyerAccountPage() {
             <label className="grid gap-2 text-sm font-medium text-stone-700">
               Nombre
               <input
-                className="rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500"
+                className="rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500"
                 onChange={(event) => {
                   setStatusMessage(null);
                   if (errorMessage) {
@@ -439,7 +439,7 @@ export function BuyerAccountPage() {
             <label className="grid gap-2 text-sm font-medium text-stone-700">
               Descripcion
               <textarea
-                className="min-h-28 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500"
+                className="min-h-28 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500"
                 onChange={(event) => {
                   setStatusMessage(null);
                   if (errorMessage) {
@@ -473,7 +473,7 @@ export function BuyerAccountPage() {
                   </p>
                 </div>
                 <Link
-                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-ocean-200 bg-white px-4 py-2 text-sm font-semibold text-ocean-600 transition-colors hover:border-ocean-400 hover:bg-[#E0F2FE]"
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-ocean-200 bg-white px-4 py-2 text-sm font-semibold text-ocean-600 transition-colors hover:border-ocean-400 hover:bg-brand-50"
                   to="/panel/comprador/cuenta/contacto"
                 >
                   Editar datos de contacto
@@ -497,14 +497,14 @@ export function BuyerAccountPage() {
           ) : null}
 
           {!isNameValid && normalizedState.fullName.length > 0 ? (
-            <p className="rounded-2xl border border-brand-100 bg-[#FDF1EC] px-4 py-3 text-sm text-brand-500">
+            <p className="rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-sm text-brand-500">
               El nombre debe tener al menos 3 caracteres.
             </p>
           ) : null}
 
           <div className="flex flex-wrap items-center gap-3">
             <button
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-sun-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490] disabled:cursor-not-allowed disabled:opacity-50"
               disabled={!canSubmit}
               type="submit"
             >
@@ -513,9 +513,9 @@ export function BuyerAccountPage() {
           </div>
         </form>
 
-        <aside className="grid gap-3 self-start rounded-3xl border border-sun-100 bg-[linear-gradient(180deg,_#f8fafc,_#ffffff)] p-5 shadow-sm">
+        <aside className="grid gap-3 self-start rounded-3xl border border-brand-100 bg-[linear-gradient(180deg,_#f8fafc,_#ffffff)] p-5 shadow-sm">
           <div className="flex items-center gap-4 rounded-2xl border border-white/90 bg-white/90 px-4 py-4">
-            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-[1.25rem] bg-[#475569] text-xl font-semibold text-white">
+            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-[#475569] text-xl font-semibold text-white">
               {selectedImagePreviewUrl || formState.profileImageUrl ? (
                 <img
                   alt={normalizedState.fullName || "Perfil comprador"}

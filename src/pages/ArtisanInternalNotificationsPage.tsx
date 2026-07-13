@@ -61,7 +61,7 @@ function NotificationCard({
         <span
           className={[
             "rounded-full px-3 py-1 text-xs font-semibold",
-            isSigned ? "bg-emerald-50 text-emerald-700" : "bg-sun-50 text-sun-700",
+            isSigned ? "bg-emerald-50 text-emerald-700" : "bg-brand-50 text-brand-700",
           ].join(" ")}
         >
           {isSigned ? "Firmada" : "Pendiente"}
@@ -197,13 +197,13 @@ export function ArtisanInternalNotificationsPage() {
             className={[
               "rounded-2xl border px-4 py-3 text-left transition",
               activeTab === "pending"
-                ? "border-sun-200 bg-sun-50 text-sun-800"
+                ? "border-brand-200 bg-brand-50 text-brand-800"
                 : "border-stone-200 bg-white text-stone-700 hover:bg-stone-50",
             ].join(" ")}
             onClick={() => setActiveTab("pending")}
             type="button"
           >
-            <span className="block text-xs font-semibold uppercase tracking-[0.14em]">
+            <span className="block text-xs font-semibold uppercase tracking-widest">
               Pendientes
             </span>
             <span className="mt-1 block text-lg font-semibold">{pendingItems.length}</span>
@@ -218,7 +218,7 @@ export function ArtisanInternalNotificationsPage() {
             onClick={() => setActiveTab("signed")}
             type="button"
           >
-            <span className="block text-xs font-semibold uppercase tracking-[0.14em]">
+            <span className="block text-xs font-semibold uppercase tracking-widest">
               Firmadas
             </span>
             <span className="mt-1 block text-lg font-semibold">{signedItems.length}</span>
@@ -234,7 +234,7 @@ export function ArtisanInternalNotificationsPage() {
         <section className="grid gap-3">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">
+              <p className="text-xs font-semibold uppercase tracking-widest text-stone-500">
                 {activeTab === "pending" ? "Por revisar" : "Historial interno"}
               </p>
               <h2 className="mt-1 text-lg font-semibold text-stone-900">

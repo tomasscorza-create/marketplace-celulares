@@ -127,7 +127,7 @@ function CatalogStorefrontSectionInner({ group }: CatalogStorefrontSectionProps)
 
           {railState.canScrollLeft ? (
             <button
-              className="absolute left-2 top-1/2 z-20 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-stone-200 bg-white/95 text-stone-700 shadow-[0_12px_24px_-18px_rgba(15,23,42,0.65)] transition-all hover:-translate-y-1/2 hover:scale-105 hover:border-ocean-300 hover:text-ocean-600 sm:h-10 sm:w-10"
+              className="absolute left-2 top-1/2 z-20 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-stone-200 bg-white/95 text-stone-700 shadow-elev-2 transition-all hover:-translate-y-1/2 hover:scale-105 hover:border-ocean-300 hover:text-ocean-600 sm:h-10 sm:w-10"
               onClick={() => {
                 scrollRail("left");
               }}
@@ -147,7 +147,7 @@ function CatalogStorefrontSectionInner({ group }: CatalogStorefrontSectionProps)
 
           {railState.canScrollRight ? (
             <button
-              className="absolute right-2 top-1/2 z-20 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-stone-200 bg-white/95 text-stone-700 shadow-[0_12px_24px_-18px_rgba(15,23,42,0.65)] transition-all hover:-translate-y-1/2 hover:scale-105 hover:border-ocean-300 hover:text-ocean-600 sm:h-10 sm:w-10"
+              className="absolute right-2 top-1/2 z-20 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-stone-200 bg-white/95 text-stone-700 shadow-elev-2 transition-all hover:-translate-y-1/2 hover:scale-105 hover:border-ocean-300 hover:text-ocean-600 sm:h-10 sm:w-10"
               onClick={() => {
                 scrollRail("right");
               }}

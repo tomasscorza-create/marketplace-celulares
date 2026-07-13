@@ -93,7 +93,7 @@ export function ImageLightbox({
         <div className="flex items-start justify-between gap-4 border-b border-white/10 px-4 py-3 text-white sm:px-5">
           <div className="min-w-0">
             {subtitle ? (
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/60">
                 {subtitle}
               </p>
             ) : null}

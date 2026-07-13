@@ -71,7 +71,7 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
             independientes. Cualquier persona puede entrar, explorar y comprar desde aca.
           </p>
 
-          <div className="space-y-1 rounded-xl border border-sun-100 bg-sun-50 px-4 py-3">
+          <div className="space-y-1 rounded-xl border border-brand-100 bg-brand-50 px-4 py-3">
             <p className="font-semibold text-stone-700">Todos los productos tienen oportunidad</p>
             <p>
               El catalogo no muestra siempre lo mismo. Funciona de manera rotatoria para dar
@@ -84,7 +84,7 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
             <p className="font-semibold text-stone-700">Como esta organizado</p>
 
             <div className="flex gap-3">
-              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sun-100 text-xs font-bold text-sun-600">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-600">
                 1
               </span>
               <div>
@@ -97,7 +97,7 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
             </div>
 
             <div className="flex gap-3">
-              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sun-100 text-xs font-bold text-sun-600">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-600">
                 2
               </span>
               <div>
@@ -110,7 +110,7 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
             </div>
 
             <div className="flex gap-3">
-              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sun-100 text-xs font-bold text-sun-600">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-600">
                 3
               </span>
               <div>
@@ -146,7 +146,7 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
             className={[
               "w-full rounded-xl px-4 py-3 text-sm font-semibold transition-all",
               accepted
-                ? "bg-sun-500 text-white hover:bg-sun-600 active:scale-[0.98]"
+                ? "bg-brand-500 text-white hover:bg-brand-600 active:scale-[0.98]"
                 : "cursor-not-allowed bg-stone-100 text-stone-400",
             ].join(" ")}
             disabled={!accepted}

@@ -507,7 +507,7 @@ export function ArtisanStorePage() {
             </Link>
             {targetArtisanId ? (
               <Link
-                className="inline-flex items-center justify-center rounded-full border border-brand-100 bg-[#ECFEFF] px-4 py-2 text-sm font-medium text-brand-600 transition-colors hover:bg-[#CFFAFE]"
+                className="inline-flex items-center justify-center rounded-full border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-medium text-brand-600 transition-colors hover:bg-brand-100"
                 to={`/panel/admin/vendedores/${targetArtisanId}/productos`}
               >
                 Productos
@@ -526,7 +526,7 @@ export function ArtisanStorePage() {
       ) : null}
 
       {isManagedProfileMissing ? (
-        <div className="rounded-3xl border border-brand-200 bg-[#D1FAE5] px-5 py-8 text-sm text-brand-600">
+        <div className="rounded-3xl border border-brand-200 bg-brand-100 px-5 py-8 text-sm text-brand-600">
           No pudimos cargar este perfil vendedor. Volve a la lista e intenta abrirlo de nuevo.
         </div>
       ) : !isManagedProfileLoading ? (

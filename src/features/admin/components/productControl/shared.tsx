@@ -22,7 +22,7 @@ export const TAG_OPTIONS: Array<{ tag: AdminProductControlTag } & TagTone> = [
   {
     tag: "prueba/test",
     label: "Prueba / test",
-    activeClassName: "border-sun-300 bg-sun-50 text-sun-700",
+    activeClassName: "border-brand-300 bg-brand-50 text-brand-700",
     icon: (
       <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 16 16">
         <path d="M6 3h4m-3 0v2.25a4.25 4.25 0 0 1-1.42 3.17L4.5 9.4a1.75 1.75 0 0 0 1.17 3.1h4.66A1.75 1.75 0 0 0 11.5 9.4l-1.08-.98A4.25 4.25 0 0 1 9 5.25V3" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.4" />
@@ -32,7 +32,7 @@ export const TAG_OPTIONS: Array<{ tag: AdminProductControlTag } & TagTone> = [
   {
     tag: "bajar prioridad",
     label: "Bajar prioridad",
-    activeClassName: "border-sun-300 bg-sun-50 text-sun-700",
+    activeClassName: "border-brand-300 bg-brand-50 text-brand-700",
     icon: (
       <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 16 16">
         <path d="M8 4v8m0 0l-3.25-3.25M8 12l3.25-3.25" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" />
@@ -67,8 +67,8 @@ export function StatCard({
   muted?: boolean;
 }) {
   return (
-    <div className="rounded-[1.3rem] border border-stone-200 bg-stone-50/70 p-4">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">{label}</p>
+    <div className="rounded-2xl border border-stone-200 bg-stone-50/70 p-4">
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">{label}</p>
       <p className={["mt-2 font-semibold", muted ? "text-base text-stone-700" : "text-lg text-stone-900"].join(" ")}>
         {value}
       </p>
@@ -78,7 +78,7 @@ export function StatCard({
 
 export function SectionEmpty() {
   return (
-    <p className="rounded-[1.2rem] border border-dashed border-stone-200 px-4 py-3 text-sm text-stone-400">
+    <p className="rounded-2xl border border-dashed border-stone-200 px-4 py-3 text-sm text-stone-400">
       Sin productos en este grupo.
     </p>
   );

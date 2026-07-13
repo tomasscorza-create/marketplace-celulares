@@ -100,12 +100,12 @@ export function ProductImageCropModal({
       <div
         aria-labelledby="product-image-modal-title"
         aria-modal="true"
-        className="max-h-[90dvh] w-full max-w-5xl overflow-y-auto rounded-[2rem] bg-white shadow-2xl"
+        className="max-h-[90dvh] w-full max-w-5xl overflow-y-auto rounded-3xl bg-white shadow-2xl"
         role="dialog"
       >
         <div className="flex items-start justify-between gap-4 border-b border-stone-200 px-6 py-5">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-ocean-500">
+            <p className="text-sm font-semibold uppercase tracking-widest text-ocean-500">
               Editar foto del producto
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-stone-900" id="product-image-modal-title">
@@ -127,10 +127,10 @@ export function ProductImageCropModal({
         </div>
 
         <div className="grid gap-6 px-6 py-6 lg:grid-cols-[minmax(0,1.1fr)_320px]">
-          <div className="grid gap-4 rounded-3xl border border-sun-500 bg-[#ECFEFF] p-5">
+          <div className="grid gap-4 rounded-3xl border border-brand-500 bg-brand-50 p-5">
             <div className="flex flex-col items-center gap-4">
               <div
-                className="relative cursor-grab overflow-hidden rounded-[1.75rem] bg-stone-200 shadow-sm active:cursor-grabbing"
+                className="relative cursor-grab overflow-hidden rounded-3xl bg-stone-200 shadow-sm active:cursor-grabbing"
                 onPointerCancel={onPointerCancel}
                 onPointerDown={onPointerDown}
                 onPointerLeave={onPointerLeave}
@@ -149,7 +149,7 @@ export function ProductImageCropModal({
                   src={activeImageDraft.sourceUrl}
                   style={getScaledCropStyle(activeCropLayout, activeFrame, activeFrame)}
                 />
-                <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] border-4 border-ocean-500 ring-2 ring-white/90" />
+                <div className="pointer-events-none absolute inset-0 rounded-3xl border-4 border-ocean-500 ring-2 ring-white/90" />
               </div>
 
               <p className="text-center text-sm leading-6 text-stone-600">
@@ -171,8 +171,8 @@ export function ProductImageCropModal({
                     className={[
                       "rounded-2xl border px-4 py-3 text-sm font-medium transition-colors",
                       (activeImageDraft.crop.aspect ?? "square") === option.aspect
-                        ? "border-ocean-500 bg-[#E0F2FE] text-ocean-500"
-                        : "border-stone-200 bg-white text-stone-600 hover:border-sun-500 hover:bg-[#ECFEFF]",
+                        ? "border-ocean-500 bg-brand-50 text-ocean-500"
+                        : "border-stone-200 bg-white text-stone-600 hover:border-brand-500 hover:bg-brand-50",
                     ].join(" ")}
                     onClick={() => {
                       onSelectAspect(option.aspect);
@@ -240,7 +240,7 @@ export function ProductImageCropModal({
               </button>
 
               <button
-                className="inline-flex w-full items-center justify-center rounded-full border border-brand-500 px-5 py-3 text-sm font-medium text-brand-500 transition-colors hover:bg-[#D1FAE5] sm:w-auto"
+                className="inline-flex w-full items-center justify-center rounded-full border border-brand-500 px-5 py-3 text-sm font-medium text-brand-500 transition-colors hover:bg-brand-100 sm:w-auto"
                 onClick={onCancel}
                 type="button"
               >

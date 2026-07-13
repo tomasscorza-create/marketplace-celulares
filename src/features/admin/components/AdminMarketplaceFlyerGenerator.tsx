@@ -166,7 +166,7 @@ export function AdminMarketplaceFlyerGenerator({
     <section className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-center">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ocean-400">
+          <p className="text-xs font-semibold uppercase tracking-widest text-ocean-400">
             Pieza descargable
           </p>
           <h2 className="mt-2 text-xl font-semibold text-stone-900">Folleto del catalogo</h2>
@@ -187,7 +187,7 @@ export function AdminMarketplaceFlyerGenerator({
           </div>
 
           {errorMessage ? (
-            <p className="mt-3 rounded-2xl border border-brand-500 bg-[#D1FAE5] px-3 py-2 text-sm text-brand-500">
+            <p className="mt-3 rounded-2xl border border-brand-500 bg-brand-100 px-3 py-2 text-sm text-brand-500">
               {errorMessage}
             </p>
           ) : null}

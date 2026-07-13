@@ -24,7 +24,7 @@ export function PublicStorefrontCard({
 
   return (
     <article
-      className="catalog-card group min-w-0 w-full overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-ocean-300 hover:shadow-[0_20px_44px_-34px_rgba(15,23,42,0.34)] active:scale-[0.995]"
+      className="catalog-card group min-w-0 w-full overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-ocean-300 hover:shadow-elev-3 active:scale-[0.995]"
     >
       <div
         className="relative flex items-end border-b border-stone-100 px-4 pb-0 pt-5"

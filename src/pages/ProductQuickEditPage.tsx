@@ -175,7 +175,7 @@ export function ProductQuickEditPage() {
         }}
       >
         {errorMessage ? (
-          <p className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm font-semibold text-brand-500">
+          <p className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm font-semibold text-brand-500">
             {errorMessage}
           </p>
         ) : null}

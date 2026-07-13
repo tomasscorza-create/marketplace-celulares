@@ -69,8 +69,8 @@ export function WhatsAppButton({ message, className }: WhatsAppButtonProps) {
         "group/wa flex h-14 cursor-pointer items-center overflow-hidden rounded-full",
         "bg-stone-400/70 text-white shadow-lg",
         "transition-[background-color,box-shadow] duration-300",
-        "hover:bg-[#25D366] hover:shadow-[0_8px_32px_-8px_rgba(37,211,102,0.55)]",
-        isExpanded ? "bg-[#25D366] shadow-[0_8px_32px_-8px_rgba(37,211,102,0.55)]" : "",
+        "hover:bg-whatsapp hover:shadow-[0_8px_32px_-8px_rgba(37,211,102,0.55)]",
+        isExpanded ? "bg-whatsapp shadow-[0_8px_32px_-8px_rgba(37,211,102,0.55)]" : "",
         className ?? "",
       ]
         .filter(Boolean)

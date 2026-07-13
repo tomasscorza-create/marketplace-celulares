@@ -19,9 +19,9 @@ const HOME_CONTENT_KEYS = Object.values(HOME_CONTENT);
 
 const DEFAULT_HOME_CONTENT: SiteContentValues = {
   [HOME_CONTENT.heroDescription]:
-    "Encuentra los mejores accesorios y celulares en un solo lugar. Descubre fundas, cargadores y tecnología de vendedores verificados, con envío directo y al mejor precio.",
+    "Encontrá los mejores accesorios y celulares en un solo lugar. Descubrí fundas, cargadores y tecnología de vendedores verificados, con envío directo y al mejor precio.",
   [HOME_CONTENT.primaryButtonLabel]: "Ver catálogo",
-  [HOME_CONTENT.secondaryButtonLabel]: "Iniciar sesión",
+  [HOME_CONTENT.secondaryButtonLabel]: "Ingresar",
 };
 
 export function HomePage() {
@@ -78,20 +78,27 @@ export function HomePage() {
   };
 
   return (
-    <section className="relative -mx-4 flex min-h-[calc(100dvh-13rem)] items-center justify-center overflow-hidden px-4 py-12 sm:-mx-6 sm:px-6 sm:py-16">
-      <h1 className="sr-only">{marketplaceConfig.appName}</h1>
+    <section className="relative -mx-4 flex min-h-[calc(100dvh-13rem)] flex-col items-center justify-center overflow-hidden px-4 py-16 sm:-mx-6 sm:px-6 sm:py-24">
+      <div className="relative z-10 flex w-full max-w-2xl flex-col items-center gap-6 sm:gap-8">
+        <div className="flex flex-col items-center justify-center gap-4 animate-fade-in-up">
+          <img 
+            src={marketplaceConfig.logoPath} 
+            alt="Logo Nyzca" 
+            className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl shadow-elev-glow"
+          />
+          <h1 className="text-center font-display text-4xl font-extrabold tracking-tight text-ocean-900 sm:text-5xl lg:text-6xl drop-shadow-sm">
+            {marketplaceConfig.appName}
+          </h1>
+        </div>
 
-
-
-      <div className="relative z-10 flex w-full max-w-2xl flex-col items-center gap-8 sm:gap-10">
         {content ? (
-          <p className="max-w-2xl text-center text-2xl sm:text-3xl font-semibold tracking-tight text-slate-800 leading-snug drop-shadow-sm">
+          <p className="max-w-2xl text-center text-lg sm:text-xl font-medium tracking-normal text-ocean-600 leading-relaxed animate-fade-in-up" style={{ animationDelay: '100ms' }}>
             {content[HOME_CONTENT.heroDescription]}
           </p>
         ) : (
           <div
             aria-hidden="true"
-            className="h-[11.5rem] w-full max-w-2xl animate-pulse rounded-[1.75rem] bg-white/45 shadow-[0_18px_54px_-42px_rgba(95,45,20,0.75)] sm:h-[9.25rem]"
+            className="h-[11.5rem] w-full max-w-2xl animate-pulse rounded-3xl bg-white/45 shadow-[0_18px_54px_-42px_rgba(95,45,20,0.75)] sm:h-[9.25rem]"
           />
         )}
 
@@ -99,7 +106,7 @@ export function HomePage() {
           {content ? (
             <>
               <Link
-                className="group relative flex w-full sm:w-auto items-center justify-center gap-2 overflow-hidden rounded-full bg-slate-900 px-8 py-3.5 text-center font-medium text-white shadow-[0_0_0_1px_rgba(255,255,255,0.1)_inset,0_8px_20px_-6px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-[0_0_0_1px_rgba(255,255,255,0.2)_inset,0_10px_25px_-4px_rgba(59,130,246,0.5)]"
+                className="group relative flex w-full sm:w-auto items-center justify-center gap-2 overflow-hidden rounded-full bg-stone-900 px-8 py-3.5 text-center font-medium text-white shadow-elev-3 transition-all duration-500 hover:-translate-y-0.5 hover:bg-stone-800 hover:shadow-elev-3"
                 to="/catalogo"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/30 to-blue-500/0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -109,7 +116,7 @@ export function HomePage() {
                 </span>
               </Link>
               <Link
-                className="group flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-slate-200/50 bg-white/40 backdrop-blur-xl px-8 py-3.5 text-center font-medium text-slate-700 shadow-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-slate-300/60 hover:bg-white/60 hover:shadow-[0_8px_20px_-6px_rgba(0,0,0,0.05)]"
+                className="group flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-stone-200/50 bg-white/40 backdrop-blur-xl px-8 py-3.5 text-center font-medium text-ocean-700 shadow-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-stone-300/60 hover:bg-white/60 hover:shadow-elev-2"
                 to="/login"
               >
                 <span className="relative z-10">{content[HOME_CONTENT.secondaryButtonLabel]}</span>
@@ -119,11 +126,11 @@ export function HomePage() {
             <>
               <div
                 aria-hidden="true"
-                className="h-[52px] w-[180px] animate-pulse rounded-xl bg-slate-200"
+                className="h-[52px] w-[180px] animate-pulse rounded-xl bg-stone-200"
               />
               <div
                 aria-hidden="true"
-                className="h-[52px] w-[160px] animate-pulse rounded-xl bg-slate-200"
+                className="h-[52px] w-[160px] animate-pulse rounded-xl bg-stone-200"
               />
             </>
           )}
@@ -134,7 +141,7 @@ export function HomePage() {
             {!isEditing ? (
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <button
-                  className="rounded-full border border-slate-300 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50"
+                  className="rounded-full border border-stone-300 bg-white/90 px-4 py-2 text-sm font-semibold text-ocean-700 shadow-sm transition hover:border-stone-400 hover:bg-stone-50"
                   type="button"
                   onClick={() => {
                     setDraft(content);
@@ -152,14 +159,14 @@ export function HomePage() {
               </div>
             ) : (
               <form
-                className="rounded-3xl border border-white/40 bg-white/50 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl"
+                className="rounded-3xl border border-white/40 bg-white/50 p-6 shadow-elev-2 backdrop-blur-2xl"
                 onSubmit={handleSubmit}
               >
                 <div className="grid gap-3">
                   <label className="grid gap-1 text-sm font-semibold text-stone-700">
                     Texto principal
                     <textarea
-                      className="min-h-32 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-normal leading-6 text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="min-h-32 rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-normal leading-6 text-ocean-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                       value={draft[HOME_CONTENT.heroDescription] ?? ""}
                       onChange={(event) =>
                         handleDraftChange(HOME_CONTENT.heroDescription, event.target.value)
@@ -169,7 +176,7 @@ export function HomePage() {
                   <label className="grid gap-1 text-sm font-semibold text-stone-700">
                     Botón catálogo
                     <input
-                      className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-normal text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-normal text-ocean-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                       value={draft[HOME_CONTENT.primaryButtonLabel] ?? ""}
                       onChange={(event) =>
                         handleDraftChange(HOME_CONTENT.primaryButtonLabel, event.target.value)
@@ -179,7 +186,7 @@ export function HomePage() {
                   <label className="grid gap-1 text-sm font-semibold text-stone-700">
                     Botón ingreso
                     <input
-                      className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-normal text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-normal text-ocean-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                       value={draft[HOME_CONTENT.secondaryButtonLabel] ?? ""}
                       onChange={(event) =>
                         handleDraftChange(HOME_CONTENT.secondaryButtonLabel, event.target.value)
@@ -189,7 +196,7 @@ export function HomePage() {
                 </div>
 
                 {contentQuery.isError ? (
-                  <p className="mt-3 rounded-xl bg-sun-50 px-3 py-2 text-sm font-medium text-sun-800">
+                  <p className="mt-3 rounded-xl bg-brand-50 px-3 py-2 text-sm font-medium text-brand-800">
                     Todavía falta cargar la tabla site_content en Supabase.
                   </p>
                 ) : null}

@@ -42,7 +42,7 @@ export function AdminArtisanListSection({
                 : `${artisans.length} visibles de ${totalCount} cuenta(s).`}
             </p>
           </div>
-          <span className="rounded-full bg-stone-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-stone-600">
+          <span className="rounded-full bg-stone-100 px-3 py-2 text-xs font-semibold uppercase tracking-widest text-stone-600">
             Edicion
           </span>
         </div>
@@ -59,7 +59,7 @@ export function AdminArtisanListSection({
       </div>
 
       <div className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-3 shadow-sm sm:p-4">
-        <div className="flex items-center justify-between gap-3 px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
+        <div className="flex items-center justify-between gap-3 px-2 py-1 text-xs font-semibold uppercase tracking-widest text-stone-500">
           <span>Listado</span>
           <span>{artisans.length} resultado(s)</span>
         </div>

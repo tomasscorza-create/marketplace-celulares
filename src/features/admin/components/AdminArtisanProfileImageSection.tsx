@@ -59,7 +59,7 @@ export function AdminArtisanProfileImageSection({
         </label>
 
         {hasSelectedImage ? (
-          <span className="rounded-full bg-sun-50 px-3 py-2 text-xs font-medium text-brand-700">
+          <span className="rounded-full bg-brand-50 px-3 py-2 text-xs font-medium text-brand-700">
             Nueva foto lista para guardar
           </span>
         ) : hasCurrentImage ? (

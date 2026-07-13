@@ -144,9 +144,9 @@ export function AdminProductControlPage() {
           </div>
         ) : null}
 
-        <section className="grid gap-3 rounded-[1.6rem] border border-stone-200 bg-white p-4 shadow-sm">
+        <section className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-4 shadow-sm">
           <input
-            className="rounded-[1.2rem] border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
             onChange={(event) => {
               setSearch(event.target.value);
             }}
@@ -157,13 +157,13 @@ export function AdminProductControlPage() {
         </section>
 
         {errorMessage ? (
-          <div className="rounded-[1.3rem] border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="rounded-2xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
             {errorMessage}
           </div>
         ) : null}
 
         {warningMessage ? (
-          <div className="rounded-[1.3rem] border border-sun-300 bg-sun-50 px-4 py-3 text-sm text-sun-800">
+          <div className="rounded-2xl border border-brand-300 bg-brand-50 px-4 py-3 text-sm text-brand-800">
             {warningMessage}
           </div>
         ) : null}
@@ -171,12 +171,12 @@ export function AdminProductControlPage() {
         {isLoading ? (
           <LoadingPanel label="Cargando control de productos..." />
         ) : filteredItems.length === 0 ? (
-          <div className="rounded-[1.6rem] border border-dashed border-stone-300 bg-white/85 p-6 text-sm text-stone-600">
+          <div className="rounded-3xl border border-dashed border-stone-300 bg-white/85 p-6 text-sm text-stone-600">
             No encontramos productos con esa búsqueda.
           </div>
         ) : (
-          <section className="grid gap-3 rounded-[1.6rem] border border-stone-200 bg-white p-3 shadow-sm sm:p-4">
-            <div className="flex items-center justify-between gap-3 px-1 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
+          <section className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-3 shadow-sm sm:p-4">
+            <div className="flex items-center justify-between gap-3 px-1 text-xs font-semibold uppercase tracking-widest text-stone-500">
               <span>Productos</span>
               <span>
                 {productsCount} resultado(s)
@@ -189,9 +189,9 @@ export function AdminProductControlPage() {
                   <button
                     key={item.id}
                     className={[
-                      "grid w-full gap-3 rounded-[1.4rem] border p-4 text-left transition-colors",
+                      "grid w-full gap-3 rounded-2xl border p-4 text-left transition-colors",
                       selectedItem?.id === item.id
-                        ? "border-ocean-500/25 bg-[#E0F2FE]/65"
+                        ? "border-ocean-500/25 bg-brand-50/65"
                         : "border-stone-200 bg-stone-50/70 hover:border-ocean-500/18 hover:bg-white",
                     ].join(" ")}
                     onClick={() => {
@@ -218,19 +218,19 @@ export function AdminProductControlPage() {
 
                       <div className="min-w-0 flex-1 space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-[#CFFAFE] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-brand-500">
+                          <span className="rounded-full bg-brand-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-brand-500">
                             {item.categoryLabel}
                           </span>
-                          <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-stone-500">
+                          <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-stone-500">
                             {item.identifierLabel}
                           </span>
                           {item.currentTag ? (
-                            <span className="rounded-full bg-[#E0F2FE] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-ocean-500">
+                            <span className="rounded-full bg-brand-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-ocean-500">
                               {item.currentTag}
                             </span>
                           ) : null}
                           {item.boostSummaryLabel ? (
-                            <span className="rounded-full bg-[#CFFAFE] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#0e7490]">
+                            <span className="rounded-full bg-brand-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-[#0e7490]">
                               Boost {item.boostLevel}
                             </span>
                           ) : null}

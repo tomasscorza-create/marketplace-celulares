@@ -71,7 +71,7 @@ export function AdminActiveArtisansPage() {
   return (
     <PagePlaceholder description="" hideHeader title="">
       <div className="grid gap-4">
-        <section className="grid gap-3 rounded-[1.6rem] border border-stone-200 bg-white p-4 shadow-sm">
+        <section className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-4 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="space-y-1">
               <h1 className="text-xl font-semibold text-stone-900">Vendedores activos</h1>
@@ -79,13 +79,13 @@ export function AdminActiveArtisansPage() {
                 {isLoading ? "Cargando..." : `${filteredArtisans.length} perfiles`}
               </p>
             </div>
-            <span className="rounded-full bg-stone-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-stone-600">
+            <span className="rounded-full bg-stone-100 px-3 py-2 text-xs font-semibold uppercase tracking-widest text-stone-600">
               Activos
             </span>
           </div>
 
           <input
-            className="rounded-[1.2rem] border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
             onChange={(event) => {
               const nextValue = event.target.value;
               const nextSearchParams = new URLSearchParams(searchParams);
@@ -135,7 +135,7 @@ export function AdminActiveArtisansPage() {
           </div>
 
           <select
-            className="rounded-[1.2rem] border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
             onChange={(event) => {
               const nextValue = event.target.value as (typeof SORT_OPTIONS)[number]["value"];
               const nextSearchParams = new URLSearchParams(searchParams);
@@ -161,7 +161,7 @@ export function AdminActiveArtisansPage() {
         </section>
 
         {errorMessage ? (
-          <div className="rounded-[1.3rem] border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="rounded-2xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
             {errorMessage}
           </div>
         ) : null}
@@ -169,12 +169,12 @@ export function AdminActiveArtisansPage() {
         {isLoading ? (
           <LoadingPanel label="Cargando vendedores..." />
         ) : filteredArtisans.length === 0 ? (
-          <div className="rounded-[1.6rem] border border-dashed border-stone-300 bg-white/85 p-6 text-sm text-stone-600">
+          <div className="rounded-3xl border border-dashed border-stone-300 bg-white/85 p-6 text-sm text-stone-600">
             No encontramos vendedores con esa busqueda.
           </div>
         ) : (
-          <section className="grid gap-3 rounded-[1.6rem] border border-stone-200 bg-white p-3 shadow-sm sm:p-4">
-            <div className="grid gap-2 px-1 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500 md:grid-cols-[minmax(0,1.6fr)_120px_120px] md:px-3">
+          <section className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-3 shadow-sm sm:p-4">
+            <div className="grid gap-2 px-1 text-xs font-semibold uppercase tracking-widest text-stone-500 md:grid-cols-[minmax(0,1.6fr)_120px_120px] md:px-3">
               <span>Vendedor</span>
               <span className="hidden md:block">Productos</span>
               <span className="hidden md:block">Ventas</span>
@@ -185,7 +185,7 @@ export function AdminActiveArtisansPage() {
                 {filteredArtisans.map((artisan) => (
                   <Link
                     key={artisan.id}
-                    className="grid gap-3 rounded-[1.25rem] border border-stone-200 bg-stone-50/80 px-3 py-3 transition-colors hover:border-ocean-300 hover:bg-white md:grid-cols-[minmax(0,1.6fr)_120px_120px] md:items-center"
+                    className="grid gap-3 rounded-2xl border border-stone-200 bg-stone-50/80 px-3 py-3 transition-colors hover:border-ocean-300 hover:bg-white md:grid-cols-[minmax(0,1.6fr)_120px_120px] md:items-center"
                     state={{
                       adminSellerOrigin: `${location.pathname}${location.search}`,
                     }}
@@ -218,14 +218,14 @@ export function AdminActiveArtisansPage() {
                     </div>
 
                     <div className="flex items-center justify-between gap-3 text-sm md:block md:text-center">
-                      <span className="text-xs uppercase tracking-[0.12em] text-stone-400 md:hidden">
+                      <span className="text-xs uppercase tracking-widest text-stone-400 md:hidden">
                         Productos
                       </span>
                       <span className="font-semibold text-stone-800">{artisan.productsCount}</span>
                     </div>
 
                     <div className="flex items-center justify-between gap-3 text-sm md:block md:text-center">
-                      <span className="text-xs uppercase tracking-[0.12em] text-stone-400 md:hidden">
+                      <span className="text-xs uppercase tracking-widest text-stone-400 md:hidden">
                         Ventas
                       </span>
                       <span className="font-semibold text-stone-800">{artisan.salesCount}</span>

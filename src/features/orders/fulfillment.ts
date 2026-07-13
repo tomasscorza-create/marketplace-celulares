@@ -11,8 +11,8 @@ export const fulfillmentLabels: Record<FulfillmentStatus, string> = {
 export const fulfillmentClasses: Record<FulfillmentStatus, string> = {
   cancelled: "bg-stone-200 text-stone-600",
   delivered: "bg-emerald-50 text-emerald-700",
-  pending: "bg-[#CFFAFE] text-brand-500",
-  preparing: "bg-[#E0F2FE] text-ocean-500",
+  pending: "bg-brand-100 text-brand-500",
+  preparing: "bg-brand-50 text-ocean-500",
   ready: "bg-emerald-50 text-emerald-700",
 };
 

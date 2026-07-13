@@ -75,7 +75,7 @@ function DashboardDetailDrawerInner({
         <div className="grid h-full grid-rows-[auto_auto_1fr]">
           <div className="flex items-center justify-between gap-3 border-b border-stone-200 px-4 py-4 sm:px-6">
             <div className="space-y-1">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+              <p className="text-xs font-semibold uppercase tracking-widest text-stone-500">
                 Detalle
               </p>
               <h2 className="text-xl font-semibold text-stone-900">

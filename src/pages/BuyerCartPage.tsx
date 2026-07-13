@@ -309,13 +309,13 @@ export function BuyerCartPage() {
       title="Mi carrito"
     >
       {errorMessage ? (
-        <div className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+        <div className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
           {errorMessage}
         </div>
       ) : null}
 
       {cartMessage ? (
-        <div className="rounded-2xl border border-ocean-200 bg-[#E0F2FE] px-4 py-3 text-sm text-ocean-600">
+        <div className="rounded-2xl border border-ocean-200 bg-brand-50 px-4 py-3 text-sm text-ocean-600">
           {cartMessage}
         </div>
       ) : null}
@@ -336,8 +336,8 @@ export function BuyerCartPage() {
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
           <section className="grid gap-4">
             {cartValidation?.checkout_blockers.length ? (
-              <div className="rounded-3xl border border-brand-200 bg-[#FDF1EC] px-5 py-4">
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brand-500">
+              <div className="rounded-3xl border border-brand-200 bg-brand-50 px-5 py-4">
+                <p className="text-sm font-semibold uppercase tracking-widest text-brand-500">
                   Compra en revision
                 </p>
                 <div className="mt-3 grid gap-2 text-sm text-brand-500">
@@ -376,7 +376,7 @@ export function BuyerCartPage() {
                   >
                 <div className="flex flex-col gap-3 rounded-2xl border border-stone-200 bg-stone-50/80 px-4 py-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-stone-500">
                       {group.storeName}
                     </p>
                     <h2 className="mt-2 text-lg font-semibold text-stone-900">{group.artisanName}</h2>
@@ -427,7 +427,7 @@ export function BuyerCartPage() {
 
           <aside className="grid gap-3 self-start rounded-[1.65rem] border border-ocean-100 bg-[linear-gradient(180deg,_#ffffff,_#f5f8ff)] p-4 shadow-[0_18px_44px_-32px_rgba(11,58,130,0.35)] lg:mt-[3.15rem]">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ocean-600">
+              <p className="text-xs font-semibold uppercase tracking-widest text-ocean-600">
                 Listo para pagar
               </p>
               <h2 className="mt-1 text-lg font-semibold text-stone-900">Resumen de tu compra</h2>
@@ -470,7 +470,7 @@ export function BuyerCartPage() {
 
             <div className="grid gap-3">
               <button
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#0B3A82,#1A5FD0)] px-5 py-3 text-base font-semibold text-white shadow-[0_16px_32px_rgba(11,58,130,0.18)] transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_36px_rgba(11,58,130,0.22)] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#0B3A82,#1A5FD0)] px-5 py-3 text-base font-semibold text-white shadow-elev-3 transition-all hover:-translate-y-0.5 hover:shadow-elev-3 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
                 disabled={!canStartCheckout}
                 onClick={async () => {
                   setCartError(null);
@@ -521,10 +521,10 @@ export function BuyerCartPage() {
               {checkoutBlockedReason ? (
                 <p className="text-sm text-brand-500">{checkoutBlockedReason}</p>
               ) : null}
-              <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 rounded-2xl border border-[#25D366]/35 bg-[#25D366]/10 px-4 py-3 text-xs leading-5 text-stone-700">
+              <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 rounded-2xl border border-[#25D366]/35 bg-whatsapp/10 px-4 py-3 text-xs leading-5 text-stone-700">
                 Tienes alguna duda con tu compra? Escribenos por{" "}
                 <a
-                  className="inline-flex items-center rounded-full bg-[#25D366] px-3 py-1 text-xs font-bold text-white shadow-[0_8px_18px_-10px_rgba(37,211,102,0.85)] transition hover:bg-[#1ebe5d]"
+                  className="inline-flex items-center rounded-full bg-whatsapp px-3 py-1 text-xs font-bold text-white shadow-[0_8px_18px_-10px_rgba(37,211,102,0.85)] transition hover:bg-[#1ebe5d]"
                   href={purchaseHelpWhatsAppUrl}
                   rel="noopener noreferrer"
                   target="_blank"
@@ -555,7 +555,7 @@ export function BuyerCartPage() {
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-semibold ${
                         cartValidation?.missing_phone
-                          ? "bg-[#FDF1EC] text-brand-500"
+                          ? "bg-brand-50 text-brand-500"
                           : "bg-emerald-50 text-emerald-700"
                       }`}
                     >
@@ -567,7 +567,7 @@ export function BuyerCartPage() {
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-semibold ${
                         isShippingAddressMissingForCheckout
-                          ? "bg-[#ECFEFF] text-[#0e7490]"
+                          ? "bg-brand-50 text-[#0e7490]"
                           : "bg-emerald-50 text-emerald-700"
                       }`}
                     >
@@ -577,8 +577,8 @@ export function BuyerCartPage() {
                   <Link
                     className={`inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
                       cartValidation?.missing_phone || isShippingAddressMissingForCheckout
-                        ? "border-brand-300 bg-[#FDF1EC] text-brand-500 shadow-[0_0_0_2px_rgba(199,84,32,0.08)] hover:bg-[#F8E2D7]"
-                        : "border-stone-300 bg-white text-stone-600 hover:border-ocean-200 hover:bg-[#E0F2FE] hover:text-ocean-600"
+                        ? "border-brand-300 bg-brand-50 text-brand-500 shadow-[0_0_0_2px_rgba(199,84,32,0.08)] hover:bg-[#F8E2D7]"
+                        : "border-stone-300 bg-white text-stone-600 hover:border-ocean-200 hover:bg-brand-50 hover:text-ocean-600"
                     }`}
                     to="/panel/comprador/cuenta/contacto"
                     state={{ returnToCart: true }}
@@ -609,7 +609,7 @@ export function BuyerCartPage() {
                 <button
                   className={`inline-flex min-h-11 items-center justify-center rounded-2xl border px-4 py-3 text-sm font-semibold transition-colors ${
                     selectedDeliveryType === "pickup"
-                      ? "border-ocean-500 bg-[#E0F2FE] text-ocean-600"
+                      ? "border-ocean-500 bg-brand-50 text-ocean-600"
                       : "border-stone-300 bg-white text-stone-600 hover:border-ocean-200 hover:bg-stone-50"
                   }`}
                   onClick={() => {
@@ -622,7 +622,7 @@ export function BuyerCartPage() {
                 <button
                   className={`inline-flex min-h-11 items-center justify-center rounded-2xl border px-4 py-3 text-sm font-semibold transition-colors ${
                     selectedDeliveryType === "shipping"
-                      ? "border-ocean-500 bg-[#E0F2FE] text-ocean-600"
+                      ? "border-ocean-500 bg-brand-50 text-ocean-600"
                       : "border-stone-300 bg-white text-stone-600 hover:border-ocean-200 hover:bg-stone-50"
                   }`}
                   onClick={() => {
@@ -637,7 +637,7 @@ export function BuyerCartPage() {
               {selectedDeliveryType === "pickup" ? (
                 <div className="overflow-hidden rounded-2xl border border-stone-200 bg-stone-50">
                   <div className="border-b border-stone-200 px-4 py-3">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-500">
+                    <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-500">
                       Punto de retiro
                     </p>
                     <div className="mt-1 flex items-center gap-2">
@@ -672,11 +672,11 @@ export function BuyerCartPage() {
                 <div
                   className={`rounded-2xl border px-4 py-3 ${
                     isShippingAddressMissingForCheckout
-                      ? "border-brand-200 bg-[#FDF1EC]"
+                      ? "border-brand-200 bg-brand-50"
                       : "border-stone-200 bg-stone-50"
                   }`}
                 >
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-500">
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-500">
                     Direccion de envio
                   </p>
                   <p

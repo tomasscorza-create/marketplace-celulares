@@ -165,7 +165,7 @@ export function ArtisanProfilePage() {
 
       <div>
         <section
-          className="overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-[0_24px_70px_-48px_rgba(71,85,105,0.45)]"
+          className="overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-[0_24px_70px_-48px_rgba(71,85,105,0.45)]"
           style={{
             background: `linear-gradient(180deg, ${heroColor}14 0%, #ffffff 38%, #ffffff 100%)`,
           }}
@@ -178,11 +178,11 @@ export function ArtisanProfilePage() {
           />
 
           <div className="relative px-4 pb-6 sm:px-7">
-            <div className="-mt-14 rounded-[1.75rem] border border-white/80 bg-white/96 p-4 shadow-[0_28px_70px_-44px_rgba(71,85,105,0.35)] backdrop-blur-sm sm:-mt-16 sm:p-5">
+            <div className="-mt-14 rounded-3xl border border-white/80 bg-white/96 p-4 shadow-[0_28px_70px_-44px_rgba(71,85,105,0.35)] backdrop-blur-sm sm:-mt-16 sm:p-5">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex items-center gap-4">
                   <div
-                    className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] border-4 border-white text-3xl font-semibold text-white shadow-lg sm:h-28 sm:w-28"
+                    className="flex h-24 w-24 items-center justify-center rounded-3xl border-4 border-white text-3xl font-semibold text-white shadow-lg sm:h-28 sm:w-28"
                     style={{ backgroundColor: heroColor }}
                   >
                     {storefront.profile_image_url ? (
@@ -198,7 +198,7 @@ export function ArtisanProfilePage() {
                   </div>
 
                   <div className="min-w-0">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">
+                    <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-500">
                       Tienda independiente
                     </p>
                     <h2 className="text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
@@ -217,7 +217,7 @@ export function ArtisanProfilePage() {
                   </div>
                   {isOwnerViewing ? (
                     <Link
-                      className="inline-flex min-h-10 items-center justify-center rounded-full border border-ocean-500 bg-white px-4 py-2 text-sm font-semibold text-ocean-500 transition-colors hover:bg-[#E0F2FE]"
+                      className="inline-flex min-h-10 items-center justify-center rounded-full border border-ocean-500 bg-white px-4 py-2 text-sm font-semibold text-ocean-500 transition-colors hover:bg-brand-50"
                       to="/panel/vendedor/tienda"
                     >
                       Editar tienda
@@ -256,7 +256,7 @@ export function ArtisanProfilePage() {
       <section className="mt-8" id="catalogo-vendedor">
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-500">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-brand-500">
               Catalogo
             </p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-900">
@@ -293,7 +293,7 @@ export function ArtisanProfilePage() {
           {products.map((product) => (
             <Link
               key={product.id}
-              className="group overflow-hidden rounded-[1.5rem] transition-all hover:-translate-y-1"
+              className="group overflow-hidden rounded-3xl transition-all hover:-translate-y-1"
               onClick={() => {
                 saveProductDetailOrigin(location);
               }}
@@ -348,7 +348,7 @@ export function ArtisanProfilePage() {
               <div className="p-4">
                 <div className="flex items-center justify-between gap-2">
                   <span
-                    className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.13em]"
+                    className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-widest"
                     style={{
                       backgroundColor: productCardTheme.categoryBackground,
                       border: `1px solid ${productCardTheme.categoryBorder}`,
@@ -388,7 +388,7 @@ export function ArtisanProfilePage() {
         {recommendedStorefronts.length > 0 ? (
           <section className="mt-8 grid gap-4 border-t border-stone-200 pt-6">
             <div className="grid gap-1.5">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-500">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-brand-500">
                 Afinidad
               </p>
               <h3 className="text-xl font-semibold tracking-tight text-stone-900">
@@ -409,7 +409,7 @@ export function ArtisanProfilePage() {
         ) : null}
 
         {products.length === 0 ? (
-          <div className="mt-4 rounded-[1.75rem] border border-dashed border-stone-300 bg-white/85 p-6 text-sm leading-6 text-stone-600">
+          <div className="mt-4 rounded-3xl border border-dashed border-stone-300 bg-white/85 p-6 text-sm leading-6 text-stone-600">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <p>
                 Esta tienda todavia no tiene piezas activas publicadas. Cuando suba nuevas, van a aparecer aca.

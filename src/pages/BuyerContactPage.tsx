@@ -450,7 +450,7 @@ export function BuyerContactPage() {
             </Link>
           ) : null}
           <Link
-            className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-[#E0F2FE] sm:w-auto"
+            className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-brand-50 sm:w-auto"
             to="/panel/comprador/cuenta"
           >
             Volver a editar perfil
@@ -462,19 +462,19 @@ export function BuyerContactPage() {
       title="Datos de contacto"
     >
       {accountError ? (
-        <div className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+        <div className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
           {accountError}
         </div>
       ) : null}
 
       {geoError ? (
-        <div className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+        <div className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
           {geoError}
         </div>
       ) : null}
 
       {statusMessage ? (
-        <div className="rounded-2xl border border-sun-500 bg-[#ECFEFF] px-4 py-3 text-sm text-brand-500">
+        <div className="rounded-2xl border border-brand-500 bg-brand-50 px-4 py-3 text-sm text-brand-500">
           {statusMessage}
         </div>
       ) : null}
@@ -541,7 +541,7 @@ export function BuyerContactPage() {
               <label className="grid min-w-0 gap-2 text-sm font-medium text-stone-700">
                 Cod. area
                 <input
-                  className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500"
+                  className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500"
                   inputMode="numeric"
                   onChange={(event) => {
                     setStatusMessage(null);
@@ -563,7 +563,7 @@ export function BuyerContactPage() {
               <label className="grid min-w-0 gap-2 text-sm font-medium text-stone-700">
                 Numero
                 <input
-                  className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500"
+                  className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500"
                   inputMode="numeric"
                   onChange={(event) => {
                     setStatusMessage(null);
@@ -597,7 +597,7 @@ export function BuyerContactPage() {
                 </p>
               </div>
               <button
-                className="inline-flex min-h-10 items-center justify-center rounded-full border border-ocean-200 bg-white px-4 py-2 text-sm font-semibold text-ocean-600 transition-colors hover:border-ocean-400 hover:bg-[#E0F2FE]"
+                className="inline-flex min-h-10 items-center justify-center rounded-full border border-ocean-200 bg-white px-4 py-2 text-sm font-semibold text-ocean-600 transition-colors hover:border-ocean-400 hover:bg-brand-50"
                 onClick={() => {
                   setIsAddressEditorOpen((currentValue) => !currentValue);
                 }}
@@ -617,7 +617,7 @@ export function BuyerContactPage() {
                   <label className="grid min-w-0 gap-2 text-sm font-medium text-stone-700">
                     Calle
                     <input
-                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500"
+                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500"
                       onChange={(event) => {
                         setStatusMessage(null);
                         if (errorMessage) {
@@ -646,7 +646,7 @@ export function BuyerContactPage() {
                   <label className="grid min-w-0 gap-2 text-sm font-medium text-stone-700">
                     Numero
                     <input
-                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500"
+                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500"
                       onChange={(event) => {
                         setStatusMessage(null);
                         if (errorMessage) {
@@ -679,7 +679,7 @@ export function BuyerContactPage() {
                   <label className="grid min-w-0 gap-2 text-sm font-medium text-stone-700">
                     Provincia
                     <select
-                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500"
+                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500"
                       onChange={(event) => {
                         const province = getProvinceById(geoDataset, event.target.value);
 
@@ -718,7 +718,7 @@ export function BuyerContactPage() {
                   <label className="grid min-w-0 gap-2 text-sm font-medium text-stone-700">
                     Barrio
                     <input
-                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500"
+                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500"
                       onChange={(event) => {
                         setStatusMessage(null);
                         if (errorMessage) {
@@ -743,7 +743,7 @@ export function BuyerContactPage() {
                   <label className="grid min-w-0 gap-2 text-sm font-medium text-stone-700">
                     Ciudad o localidad
                     <input
-                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500 disabled:bg-stone-100 disabled:text-stone-400"
+                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500 disabled:bg-stone-100 disabled:text-stone-400"
                       disabled={!selectedProvince}
                       onFocus={() => {
                         if (selectedProvince) {
@@ -835,7 +835,7 @@ export function BuyerContactPage() {
                   <label className="grid min-w-0 gap-2 text-sm font-medium text-stone-700">
                     Piso
                     <input
-                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500"
+                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500"
                       onChange={(event) => {
                         setStatusMessage(null);
                         if (errorMessage) {
@@ -860,7 +860,7 @@ export function BuyerContactPage() {
                   <label className="grid min-w-0 gap-2 text-sm font-medium text-stone-700">
                     Departamento
                     <input
-                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500"
+                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500"
                       onChange={(event) => {
                         setStatusMessage(null);
                         if (errorMessage) {
@@ -883,7 +883,7 @@ export function BuyerContactPage() {
                   <label className="grid min-w-0 gap-2 text-sm font-medium text-stone-700">
                     Referencia adicional
                     <input
-                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500"
+                      className="w-full min-w-0 rounded-2xl border border-stone-300 px-4 py-3 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500"
                       onChange={(event) => {
                         setStatusMessage(null);
                         if (errorMessage) {
@@ -911,7 +911,7 @@ export function BuyerContactPage() {
 
           <div className="flex flex-wrap items-center gap-3">
             <button
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-sun-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490] disabled:cursor-not-allowed disabled:opacity-50"
               disabled={!canSubmit}
               type="submit"
             >

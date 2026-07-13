@@ -27,7 +27,7 @@ export function ActiveSessionCard({
   return (
     <div className="grid gap-4 rounded-2xl border border-ocean-100 bg-ocean-50 p-5 sm:p-6 md:max-w-2xl">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ocean-500">
+        <p className="text-sm font-semibold uppercase tracking-widest text-ocean-500">
           Sesion activa
         </p>
         <h2 className="mt-3 text-2xl font-semibold text-stone-900">Bienvenido de nuevo</h2>
@@ -39,13 +39,13 @@ export function ActiveSessionCard({
       </div>
 
       {errorMessage ? (
-        <p className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+        <p className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
           {errorMessage}
         </p>
       ) : null}
 
       {profileError ? (
-        <p className="rounded-2xl border border-sun-100 bg-sun-50 px-4 py-3 text-sm text-brand-700">
+        <p className="rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-sm text-brand-700">
           No pudimos preparar tu acceso correctamente. Si el problema continua, revisa tu cuenta
           con administracion.
         </p>

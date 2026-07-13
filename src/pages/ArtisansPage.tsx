@@ -108,7 +108,7 @@ export function ArtisansPage() {
                 />
               </svg>
               <input
-                className="h-10 w-full rounded-full border border-stone-300 bg-white py-2 pl-10 pr-12 text-sm text-stone-900 outline-none transition-colors focus:border-sun-500 sm:h-11"
+                className="h-10 w-full rounded-full border border-stone-300 bg-white py-2 pl-10 pr-12 text-sm text-stone-900 outline-none transition-colors focus:border-brand-500 sm:h-11"
                 onChange={(event) => {
                   setDraftSearch(event.target.value);
                 }}
@@ -155,7 +155,7 @@ export function ArtisansPage() {
         </section>
 
         {errorMessage ? (
-          <div className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+          <div className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
             {errorMessage}
           </div>
         ) : null}

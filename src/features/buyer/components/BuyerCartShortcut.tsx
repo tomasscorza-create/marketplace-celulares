@@ -22,7 +22,7 @@ export function BuyerCartShortcut({ buyerId }: BuyerCartShortcutProps) {
           isActive
             ? "border-2 border-ocean-500 bg-ocean-500 text-white shadow-[0_8px_24px_-12px_rgba(71,85,105,0.8)]"
             : hasCartItems
-              ? "border-2 border-sun-500 bg-[#ECFEFF] text-brand-500 shadow-[0_10px_30px_-18px_rgba(8,145,178,0.55)] hover:border-brand-500 hover:bg-[#CFFAFE]"
+              ? "border-2 border-brand-500 bg-brand-50 text-brand-500 shadow-[0_10px_30px_-18px_rgba(8,145,178,0.55)] hover:border-brand-500 hover:bg-brand-100"
               : "border-2 border-ocean-500 bg-white text-ocean-500 hover:bg-ocean-500 hover:text-white",
         ].join(" ")
       }

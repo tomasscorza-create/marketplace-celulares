@@ -24,8 +24,8 @@ export function WhatsAppProductButton({
   const href = buildWhatsAppUrl(message);
   
   const baseClasses = variant === "full"
-    ? "group/wa flex h-14 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full bg-[#25D366] text-white shadow-lg transition-[background-color,box-shadow,transform] duration-300 hover:bg-[#20b958] hover:shadow-[0_8px_32px_-8px_rgba(37,211,102,0.55)] active:scale-[0.98] font-semibold"
-    : "group/wa flex h-10 w-full cursor-pointer items-center justify-center gap-1.5 overflow-hidden rounded-full bg-[#25D366] text-white shadow-md transition-[background-color,box-shadow,transform] duration-300 hover:bg-[#20b958] hover:shadow-[0_4px_16px_-4px_rgba(37,211,102,0.55)] active:scale-[0.98] text-sm font-semibold";
+    ? "group/wa flex h-14 w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full bg-whatsapp text-white shadow-lg transition-[background-color,box-shadow,transform] duration-300 hover:bg-[#20b958] hover:shadow-[0_8px_32px_-8px_rgba(37,211,102,0.55)] active:scale-[0.98] font-semibold"
+    : "group/wa flex h-10 w-full cursor-pointer items-center justify-center gap-1.5 overflow-hidden rounded-full bg-whatsapp text-white shadow-md transition-[background-color,box-shadow,transform] duration-300 hover:bg-[#20b958] hover:shadow-[0_4px_16px_-4px_rgba(37,211,102,0.55)] active:scale-[0.98] text-sm font-semibold";
 
   return (
     <a

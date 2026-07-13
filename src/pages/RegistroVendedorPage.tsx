@@ -308,7 +308,7 @@ export function RegistroVendedorPage() {
           />
 
           {statusMessage ? (
-            <p className="mt-4 rounded-2xl border border-sun-300 bg-sun-50 px-4 py-3 text-sm text-brand-700">
+            <p className="mt-4 rounded-2xl border border-brand-300 bg-brand-50 px-4 py-3 text-sm text-brand-700">
               {statusMessage}
             </p>
           ) : null}

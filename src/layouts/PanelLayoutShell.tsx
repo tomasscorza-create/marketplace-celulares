@@ -165,7 +165,7 @@ export function PanelLayoutShell({
                 </NavLink>
               ))}
               <span
-                className={`ml-auto rounded-full bg-stone-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.13em] ${accentClassName}`}
+                className={`ml-auto rounded-full bg-stone-100 px-3 py-2 text-xs font-semibold uppercase tracking-widest ${accentClassName}`}
               >
                 {title}
               </span>

@@ -189,7 +189,7 @@ export function LoginPage() {
       title="Iniciar sesion"
     >
       {!isConfigured ? (
-        <div className="rounded-2xl border border-sun-100 bg-sun-50 p-6 text-sm leading-6 text-brand-700">
+        <div className="rounded-2xl border border-brand-100 bg-brand-50 p-6 text-sm leading-6 text-brand-700">
           El acceso no esta disponible en este momento. Intenta nuevamente en unos minutos.
         </div>
       ) : null}
@@ -202,7 +202,7 @@ export function LoginPage() {
 
       {!isLoading && isConfigured && !user ? (
         <div className="mx-auto max-w-md">
-          <div className="rounded-2xl border border-sun-100 bg-[#f8fafc] p-5 sm:p-6">
+          <div className="rounded-2xl border border-brand-100 bg-[#f8fafc] p-5 sm:p-6">
             <LoginForm
               email={loginEmail}
               fieldErrors={fieldErrors}
@@ -245,7 +245,7 @@ export function LoginPage() {
             />
 
             {statusMessage ? (
-              <p className="mt-4 rounded-2xl border border-sun-300 bg-sun-50 px-4 py-3 text-sm text-brand-700">
+              <p className="mt-4 rounded-2xl border border-brand-300 bg-brand-50 px-4 py-3 text-sm text-brand-700">
                 {statusMessage}
               </p>
             ) : null}

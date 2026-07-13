@@ -204,7 +204,7 @@ export function ArtisanSalesPage() {
       actions={
         <>
           <Link
-            className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-[#E0F2FE] sm:w-auto"
+            className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-brand-50 sm:w-auto"
             to="/panel/vendedor/productos"
           >
             Productos
@@ -230,7 +230,7 @@ export function ArtisanSalesPage() {
           <p className="text-sm text-stone-500">Por gestionar visibles</p>
           <p className="mt-2 text-3xl font-semibold text-ocean-500">{summary.openItems}</p>
         </article>
-        <article className="rounded-3xl border border-sun-100 bg-white p-5 shadow-sm">
+        <article className="rounded-3xl border border-brand-100 bg-white p-5 shadow-sm">
           <p className="text-sm text-stone-500">Unidades visibles</p>
           <p className="mt-2 text-3xl font-semibold text-ocean-500">{summary.totalUnits}</p>
         </article>
@@ -243,7 +243,7 @@ export function ArtisanSalesPage() {
       </div>
 
       {errorMessage ? (
-        <p className="mt-6 rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+        <p className="mt-6 rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
           {errorMessage}
         </p>
       ) : null}
@@ -251,7 +251,7 @@ export function ArtisanSalesPage() {
       <section className="mt-6 grid gap-3 rounded-3xl border border-stone-200 bg-white p-4 shadow-sm sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xl font-semibold text-stone-900">Bandeja de pedidos</h2>
-          <span className="rounded-full bg-stone-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-stone-600">
+          <span className="rounded-full bg-stone-100 px-3 py-2 text-xs font-semibold uppercase tracking-widest text-stone-600">
             {filteredGroups.length} visibles
           </span>
         </div>
@@ -304,7 +304,7 @@ export function ArtisanSalesPage() {
                         Pedido #{group.orderId.slice(0, 8).toUpperCase()}
                       </h3>
                       <span
-                        className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] ${fulfillmentClasses[groupFulfillment.status]}`}
+                        className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest ${fulfillmentClasses[groupFulfillment.status]}`}
                       >
                         {groupFulfillment.label}
                       </span>
@@ -364,7 +364,7 @@ export function ArtisanSalesPage() {
                             Cantidad {item.quantity} - {formatCurrency(item.subtotal)}
                           </p>
                           <span
-                            className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] ${fulfillmentClasses[item.fulfillment_status]}`}
+                            className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest ${fulfillmentClasses[item.fulfillment_status]}`}
                           >
                             {fulfillmentLabels[item.fulfillment_status]}
                           </span>
@@ -372,7 +372,7 @@ export function ArtisanSalesPage() {
 
                         <div className="col-span-2 grid gap-2 rounded-2xl border border-brand-100 bg-[#FFF9EC] p-3 lg:col-span-1">
                           <div className="flex items-center justify-between gap-3">
-                            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-500">
+                            <span className="text-xs font-semibold uppercase tracking-widest text-brand-500">
                               Gestion
                             </span>
                             <span

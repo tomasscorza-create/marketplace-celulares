@@ -20,11 +20,11 @@ export function CatalogExplorePagination({
   return (
     <nav
       aria-label="Paginacion de productos"
-      className="flex flex-wrap items-center justify-center gap-2 rounded-[1.6rem] border border-stone-200 bg-white px-3 py-3 shadow-sm"
+      className="flex flex-wrap items-center justify-center gap-2 rounded-3xl border border-stone-200 bg-white px-3 py-3 shadow-sm"
     >
       <button
         aria-label="Ir a la pagina anterior"
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-stone-50 text-stone-600 transition-colors hover:border-ocean-500 hover:bg-[#E0F2FE] hover:text-ocean-500 disabled:cursor-not-allowed disabled:opacity-45"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-stone-50 text-stone-600 transition-colors hover:border-ocean-500 hover:bg-brand-50 hover:text-ocean-500 disabled:cursor-not-allowed disabled:opacity-45"
         disabled={disabled || currentPage <= 1}
         onClick={() => {
           onPageChange(currentPage - 1);
@@ -60,7 +60,7 @@ export function CatalogExplorePagination({
               "inline-flex min-w-10 items-center justify-center rounded-full border px-3 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-55",
               pageNumber === currentPage
                 ? "border-ocean-500 bg-ocean-500 text-white"
-                : "border-stone-200 bg-white text-stone-600 hover:border-ocean-500 hover:bg-[#E0F2FE] hover:text-ocean-500",
+                : "border-stone-200 bg-white text-stone-600 hover:border-ocean-500 hover:bg-brand-50 hover:text-ocean-500",
             ].join(" ")}
             disabled={disabled}
             onClick={() => {
@@ -75,7 +75,7 @@ export function CatalogExplorePagination({
 
       <button
         aria-label="Ir a la pagina siguiente"
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-stone-50 text-stone-600 transition-colors hover:border-ocean-500 hover:bg-[#E0F2FE] hover:text-ocean-500 disabled:cursor-not-allowed disabled:opacity-45"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 bg-stone-50 text-stone-600 transition-colors hover:border-ocean-500 hover:bg-brand-50 hover:text-ocean-500 disabled:cursor-not-allowed disabled:opacity-45"
         disabled={disabled || currentPage >= totalPages}
         onClick={() => {
           onPageChange(currentPage + 1);
@@ -93,7 +93,7 @@ export function CatalogExplorePagination({
         <span className="sr-only">Pagina siguiente</span>
       </button>
 
-      <span aria-live="polite" className="px-2 text-xs font-semibold uppercase tracking-[0.14em] text-stone-400">
+      <span aria-live="polite" className="px-2 text-xs font-semibold uppercase tracking-widest text-stone-400">
         Pagina {currentPage} de {totalPages}
       </span>
     </nav>

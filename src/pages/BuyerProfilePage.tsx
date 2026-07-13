@@ -210,12 +210,12 @@ export function BuyerProfilePage() {
 
   return (
     <PagePlaceholder badge="Perfil" description="" hideHeader title="">
-      <section className="overflow-hidden rounded-[2rem] border border-stone-200 bg-[linear-gradient(180deg,_#fff9ef,_#ffffff_42%,_#ffffff)] shadow-[0_24px_70px_-48px_rgba(71,85,105,0.35)]">
+      <section className="overflow-hidden rounded-3xl border border-stone-200 bg-[linear-gradient(180deg,_#fff9ef,_#ffffff_42%,_#ffffff)] shadow-[0_24px_70px_-48px_rgba(71,85,105,0.35)]">
         <div className="h-24 w-full bg-[linear-gradient(120deg,_#0e7490,_#475569)] sm:h-28" />
         <div className="relative px-4 pb-5 sm:px-6 sm:pb-6">
-          <div className="-mt-12 rounded-[1.75rem] border border-white/80 bg-white/96 p-4 shadow-[0_28px_70px_-44px_rgba(71,85,105,0.35)] backdrop-blur-sm sm:-mt-14 sm:p-6">
+          <div className="-mt-12 rounded-3xl border border-white/80 bg-white/96 p-4 shadow-[0_28px_70px_-44px_rgba(71,85,105,0.35)] backdrop-blur-sm sm:-mt-14 sm:p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[1.5rem] border-4 border-white bg-[#475569] text-2xl font-semibold text-white shadow-lg sm:h-24 sm:w-24 sm:text-3xl">
+              <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-3xl border-4 border-white bg-[#475569] text-2xl font-semibold text-white shadow-lg sm:h-24 sm:w-24 sm:text-3xl">
                 {buyerProfile.profile_image_url ? (
                   <img
                     alt={buyerProfile.full_name}
@@ -237,7 +237,7 @@ export function BuyerProfilePage() {
           </div>
 
           <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_21rem]">
-            <div className="rounded-[1.5rem] border border-stone-200 bg-white px-5 py-5 shadow-sm">
+            <div className="rounded-3xl border border-stone-200 bg-white px-5 py-5 shadow-sm">
               {description ? (
                 <p className="min-h-24 text-base leading-7 text-stone-600">{description}</p>
               ) : (
@@ -246,13 +246,13 @@ export function BuyerProfilePage() {
             </div>
 
             {showInterestModule ? (
-              <section className="rounded-[1.5rem] border border-stone-200 bg-white p-4 shadow-sm">
+              <section className="rounded-3xl border border-stone-200 bg-white p-4 shadow-sm">
                 <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#475569]">
+                  <h2 className="text-sm font-semibold uppercase tracking-widest text-[#475569]">
                     Tus intereses
                   </h2>
                   <button
-                    className="rounded-full border border-stone-200 px-3 py-1 text-xs font-semibold text-stone-600 transition-colors hover:border-[#9b5735]/40 hover:text-[#7a4328]"
+                    className="rounded-full border border-stone-200 px-3 py-1 text-xs font-semibold text-stone-600 transition-colors hover:border-brand-900/40 hover:text-[#7a4328]"
                     onClick={handleOpenInterests}
                     type="button"
                   >
@@ -274,7 +274,7 @@ export function BuyerProfilePage() {
 
                         return (
                           <button
-                            className="group grid min-h-12 grid-cols-[2.5rem_minmax(0,1fr)] items-center gap-3 rounded-xl border border-stone-200 bg-white px-2 py-1.5 text-left transition-all hover:border-[#9b5735]/35 hover:bg-[#fff8ec]"
+                            className="group grid min-h-12 grid-cols-[2.5rem_minmax(0,1fr)] items-center gap-3 rounded-xl border border-stone-200 bg-white px-2 py-1.5 text-left transition-all hover:border-brand-900/35 hover:bg-[#fff8ec]"
                             key={product.id}
                             onClick={handleOpenInterests}
                             type="button"
@@ -336,7 +336,7 @@ export function BuyerProfilePage() {
             type="button"
           />
 
-          <section className="relative z-[1] w-full max-w-lg rounded-[1.5rem] border border-white/70 bg-[#fff9ef] p-4 shadow-[0_28px_80px_-36px_rgba(35,24,15,0.65)]">
+          <section className="relative z-[1] w-full max-w-lg rounded-3xl border border-white/70 bg-stone-50 p-4 shadow-[0_28px_80px_-36px_rgba(35,24,15,0.65)]">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2
                 className="text-lg font-semibold tracking-tight text-white"
@@ -362,7 +362,7 @@ export function BuyerProfilePage() {
 
                   return (
                     <button
-                      className="grid min-h-16 grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl border border-stone-200 bg-white px-2.5 py-2 text-left shadow-sm transition-all hover:border-[#9b5735]/40 hover:bg-white"
+                      className="grid min-h-16 grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl border border-stone-200 bg-white px-2.5 py-2 text-left shadow-sm transition-all hover:border-brand-900/40 hover:bg-white"
                       disabled={Boolean(pendingInterestId)}
                       key={product.id}
                       onClick={() => {

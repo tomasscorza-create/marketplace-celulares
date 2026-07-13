@@ -102,7 +102,7 @@ export function BuyerOrderDetailPage() {
     return (
       <PagePlaceholder badge="Pedido" description="" title="No encontramos este pedido">
         <Link
-          className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-[#E0F2FE] sm:w-auto"
+          className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-brand-50 sm:w-auto"
           to="/panel/comprador"
         >
           Volver a mis pedidos
@@ -157,7 +157,7 @@ export function BuyerOrderDetailPage() {
               <p className="mt-1 text-sm text-stone-500">{orderFulfillment.detail}</p>
             ) : null}
           </div>
-          <span className="rounded-full border border-ocean-100 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-ocean-500">
+          <span className="rounded-full border border-ocean-100 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-ocean-500">
             {getDeliveryLabel(order.delivery_type)}
           </span>
         </div>
@@ -173,7 +173,7 @@ export function BuyerOrderDetailPage() {
                   : "border-stone-200 bg-white/70 text-stone-500",
               ].join(" ")}
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.13em]">{step.label}</p>
+              <p className="text-xs font-semibold uppercase tracking-widest">{step.label}</p>
               <p className="mt-2 text-sm font-medium text-stone-900">{step.value || "Pendiente"}</p>
             </div>
           ))}
@@ -211,9 +211,9 @@ export function BuyerOrderDetailPage() {
           </div>
         </section>
 
-        <aside className="grid gap-3 self-start rounded-3xl border border-sun-100 bg-[linear-gradient(180deg,_#f8fafc,_#ffffff)] p-5 shadow-sm">
+        <aside className="grid gap-3 self-start rounded-3xl border border-brand-100 bg-[linear-gradient(180deg,_#f8fafc,_#ffffff)] p-5 shadow-sm">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-500">
+            <p className="text-xs font-semibold uppercase tracking-widest text-brand-500">
               Entrega
             </p>
             <p className="mt-2 text-sm font-medium text-stone-900">

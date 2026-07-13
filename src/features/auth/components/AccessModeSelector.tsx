@@ -17,7 +17,7 @@ function getModeButtonClass(isActive: boolean) {
     "rounded-2xl border px-4 py-3 text-left transition-colors",
     isActive
       ? "border-ocean-500 bg-ocean-500 text-white"
-      : "border-stone-200 bg-white text-stone-700 hover:border-sun-500 hover:bg-[#ECFEFF]",
+      : "border-stone-200 bg-white text-stone-700 hover:border-brand-500 hover:bg-brand-50",
   ].join(" ");
 }
 
@@ -28,7 +28,7 @@ export function AccessModeSelector({
 }: AccessModeSelectorProps) {
   return (
     <aside className="rounded-2xl border border-ocean-100 bg-[linear-gradient(180deg,_#ffffff,_#e0f2fe)] p-5 shadow-sm sm:p-6">
-      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ocean-500">
+      <p className="text-sm font-semibold uppercase tracking-widest text-ocean-500">
         Acceso a la plataforma
       </p>
       <h2 className="mt-4 text-2xl font-semibold tracking-tight text-stone-900">

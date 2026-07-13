@@ -44,7 +44,7 @@ export function CatalogProduct3DPreviewSlot({
   return (
     <aside
       aria-label={`Vista destacada de ${product.title}`}
-      className="catalog-card group relative aspect-square min-w-0 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-ocean-300 hover:shadow-[0_20px_44px_-34px_rgba(15,23,42,0.34)]"
+      className="catalog-card group relative aspect-square min-w-0 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-ocean-300 hover:shadow-elev-3"
       data-testid="catalog-product-3d-preview-slot"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_36%,_rgba(236,254,255,0.95),_rgba(240,253,250,0.78)_34%,_rgba(255,255,255,0.96)_72%)]" />
@@ -59,7 +59,7 @@ export function CatalogProduct3DPreviewSlot({
       ) : null}
       <div className="absolute inset-x-5 bottom-16 h-px bg-gradient-to-r from-transparent via-ocean-200 to-transparent" />
 
-      <span className="absolute left-3 top-3 z-10 max-w-[70%] truncate rounded bg-white/90 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-ocean-600 shadow-sm backdrop-blur-sm sm:text-[10px]">
+      <span className="absolute left-3 top-3 z-10 max-w-[70%] truncate rounded bg-white/90 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-ocean-600 shadow-sm backdrop-blur-sm sm:text-[10px]">
         {categoryLabel}
       </span>
 
@@ -76,7 +76,7 @@ export function CatalogProduct3DPreviewSlot({
               <div className="absolute inset-0 rounded-xl bg-brand-500/95 [transform:rotateX(90deg)_translateZ(34px)] [transform-origin:bottom]" />
               <div className="absolute inset-0 rounded-xl bg-ocean-800/95 [transform:rotateY(90deg)_translateZ(34px)] [transform-origin:right]" />
               <div className="absolute left-[16%] top-[20%] h-[18%] w-[68%] rounded-sm bg-white/85 [transform:translateZ(35px)]" />
-              <div className="absolute bottom-[20%] left-[18%] h-[18%] w-[28%] rounded-sm bg-sun-500 [transform:translateZ(35px)]" />
+              <div className="absolute bottom-[20%] left-[18%] h-[18%] w-[28%] rounded-sm bg-brand-500 [transform:translateZ(35px)]" />
               <div className="absolute bottom-[20%] right-[18%] h-[18%] w-[28%] rounded-sm bg-white/85 [transform:translateZ(35px)]" />
             </div>
           </div>

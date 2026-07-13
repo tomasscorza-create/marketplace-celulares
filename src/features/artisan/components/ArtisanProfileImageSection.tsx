@@ -45,7 +45,7 @@ export const ArtisanProfileImageSection = memo(function ArtisanProfileImageSecti
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <label className="inline-flex cursor-pointer items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-[#E0F2FE]">
+        <label className="inline-flex cursor-pointer items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-brand-50">
           Elegir foto
           <input
             accept="image/*"
@@ -60,7 +60,7 @@ export const ArtisanProfileImageSection = memo(function ArtisanProfileImageSecti
 
         {hasSelectedImage ? (
           <button
-            className="inline-flex items-center justify-center rounded-full border border-sun-500 bg-[#ECFEFF] px-5 py-3 text-sm font-medium text-brand-500 transition-colors hover:bg-[#A5F3FC]"
+            className="inline-flex items-center justify-center rounded-full border border-brand-500 bg-brand-50 px-5 py-3 text-sm font-medium text-brand-500 transition-colors hover:bg-[#A5F3FC]"
             onClick={onEditImage}
             type="button"
           >
@@ -78,7 +78,7 @@ export const ArtisanProfileImageSection = memo(function ArtisanProfileImageSecti
       </div>
 
       {hasSelectedImage ? (
-        <div className="rounded-2xl border border-sun-500 bg-[#ECFEFF] px-4 py-3 text-sm text-brand-500">
+        <div className="rounded-2xl border border-brand-500 bg-brand-50 px-4 py-3 text-sm text-brand-500">
           {pendingImageMessage}
         </div>
       ) : null}

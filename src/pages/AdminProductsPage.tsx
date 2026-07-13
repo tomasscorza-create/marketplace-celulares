@@ -38,7 +38,7 @@ export function AdminProductsPage() {
   return (
     <PagePlaceholder description="" hideHeader title="">
       <div className="grid gap-4">
-        <section className="grid gap-3 rounded-[1.5rem] border border-stone-200 bg-white p-4 shadow-sm">
+        <section className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-4 shadow-sm">
           <input
             className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
             onChange={(event) => {
@@ -50,7 +50,7 @@ export function AdminProductsPage() {
           />
 
           <Link
-            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-ocean-500/25 bg-[#E0F2FE] px-4 py-2.5 text-sm font-semibold text-ocean-500 transition-colors hover:bg-[#d4e3f5]"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-ocean-500/25 bg-brand-50 px-4 py-2.5 text-sm font-semibold text-ocean-500 transition-colors hover:bg-[#d4e3f5]"
             to="/panel/admin/control-productos"
           >
             <svg
@@ -86,7 +86,7 @@ export function AdminProductsPage() {
           </div>
         ) : (
           <section className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-3 shadow-sm sm:p-4">
-            <div className="flex items-center justify-between gap-3 px-2 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
+            <div className="flex items-center justify-between gap-3 px-2 py-1 text-xs font-semibold uppercase tracking-widest text-stone-500">
               <span>Cuentas vendedoras</span>
               <span>{filteredArtisans.length} resultado(s)</span>
             </div>

@@ -442,7 +442,7 @@ export function ProductDetailPage() {
                   </svg>
                   <span
                     className={[
-                      "text-[9px] font-bold leading-none tracking-[0.18em] transition-colors",
+                      "text-[9px] font-bold leading-none tracking-widest transition-colors",
                       isFavorite ? "text-brand-600" : "text-stone-400 group-hover/fav:text-brand-500/80",
                     ].join(" ")}
                   >
@@ -475,12 +475,12 @@ export function ProductDetailPage() {
             <div className="pointer-events-none absolute -right-8 bottom-12 h-28 w-28 rounded-full bg-[radial-gradient(circle,rgba(71,85,105,0.14),transparent_72%)] blur-2xl" />
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2.5">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-white/15 bg-[#010f20] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white shadow-[0_10px_24px_-18px_rgba(0,0,0,0.75)]">
+                <span className="rounded-full border border-white/15 bg-[#010f20] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-white shadow-[0_10px_24px_-18px_rgba(0,0,0,0.75)]">
                   {storefrontLabel}
                 </span>
               </div>
               {productImages.length > 1 ? (
-                <span className="rounded-full border border-ocean-500/15 bg-white/88 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-ocean-500 shadow-[0_12px_24px_-20px_rgba(71,85,105,0.45)]">
+                <span className="rounded-full border border-ocean-500/15 bg-white/88 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-ocean-500 shadow-[0_12px_24px_-20px_rgba(71,85,105,0.45)]">
                   {productImages.length} fotos
                 </span>
               ) : null}
@@ -497,7 +497,7 @@ export function ProductDetailPage() {
                       buttonClassName="!h-10 !w-10 !rounded-full !border !border-white/75 !bg-white/94 !text-ocean-500 !shadow-[0_16px_30px_-18px_rgba(15,23,42,0.55)] backdrop-blur-sm hover:!bg-white"
                       className="flex w-full items-center justify-center"
                       currentIndex={selectedImageIndex}
-                      imageClassName="max-h-[68dvh] w-auto max-w-full rounded-[1.1rem] object-contain"
+                      imageClassName="max-h-[68dvh] w-auto max-w-full rounded-2xl object-contain"
                       imageSizes="(max-width: 640px) 92vw, (max-width: 1024px) 82vw, 720px"
                       imageSrcSetWidths={[640, 960, 1200, 1440]}
                       imageWidth={1200}
@@ -538,10 +538,10 @@ export function ProductDetailPage() {
                           <button
                             key={`${mediaItem.url}-${index}`}
                             className={[
-                              "snap-start overflow-hidden rounded-[1rem] border-2 bg-white/94 transition-colors duration-200",
+                              "snap-start overflow-hidden rounded-2xl border-2 bg-white/94 transition-colors duration-200",
                               index === selectedImageIndex
                                 ? "border-ocean-500 shadow-[0_18px_34px_-26px_rgba(71,85,105,0.55)] ring-1 ring-ocean-200/70"
-                                : "border-white/60 hover:border-sun-500/80",
+                                : "border-white/60 hover:border-brand-500/80",
                             ].join(" ")}
                             data-thumbnail-index={index}
                             onClick={() => {
@@ -586,7 +586,7 @@ export function ProductDetailPage() {
 
                 {selectedProductImage.description ? (
                   <div className="rounded-[1.35rem] border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(247,241,233,0.9))] px-4 py-3 text-sm leading-6 text-stone-600 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.35)] ring-1 ring-white/85">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">
+                    <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                       Sobre esta foto
                     </p>
                     <p className="mt-2">{selectedProductImage.description}</p>
@@ -597,7 +597,7 @@ export function ProductDetailPage() {
               <div className="flex aspect-[4/3] items-center justify-center rounded-[1.7rem] border border-white/70 bg-white/72 px-4 text-center shadow-[0_18px_40px_-34px_rgba(15,23,42,0.35)] sm:aspect-[3/2]">
                 <div>
                   <p
-                    className="text-sm font-semibold uppercase tracking-[0.2em]"
+                    className="text-sm font-semibold uppercase tracking-widest"
                     style={{ color: accentColor }}
                   >
                     {storefrontLabel}
@@ -617,12 +617,12 @@ export function ProductDetailPage() {
           >
             <div className="flex flex-wrap items-center gap-2">
               {product.availability_mode === "made_to_order" ? (
-                <span className="rounded-full bg-white/96 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-ocean-500 ring-1 ring-ocean-500/12 shadow-[0_10px_24px_-20px_rgba(71,85,105,0.45)]">
+                <span className="rounded-full bg-white/96 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-ocean-500 ring-1 ring-ocean-500/12 shadow-[0_10px_24px_-20px_rgba(71,85,105,0.45)]">
                   A pedido
                 </span>
               ) : null}
               {selectedOptionsSummary ? (
-                <span className="rounded-full bg-white/96 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-500 ring-1 ring-stone-200 shadow-[0_10px_24px_-20px_rgba(15,23,42,0.2)]">
+                <span className="rounded-full bg-white/96 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-stone-500 ring-1 ring-stone-200 shadow-[0_10px_24px_-20px_rgba(15,23,42,0.2)]">
                   {selectedOptionsSummary}
                 </span>
               ) : null}
@@ -633,7 +633,7 @@ export function ProductDetailPage() {
             <div className="mt-4 grid gap-3">
               <div className="relative overflow-hidden rounded-[1.35rem] border border-stone-200/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.92),rgba(247,241,233,0.92)_55%,rgba(237,243,255,0.9))] px-4 py-4 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.2)]">
                 <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[radial-gradient(circle_at_left,rgba(8,145,178,0.12),transparent_72%)]" />
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                   Precio
                 </p>
                 <p className="mt-1.5 text-3xl font-semibold tracking-tight text-ocean-500">
@@ -651,7 +651,7 @@ export function ProductDetailPage() {
                   product.lead_time_days ? (
                     <>
                       Producción a pedido:{" "}
-                      <span className="text-sun-500">
+                      <span className="text-brand-500">
                         {product.lead_time_days} día{product.lead_time_days === 1 ? "" : "s"}
                       </span>
                     </>
@@ -663,7 +663,7 @@ export function ProductDetailPage() {
                 ) : (
                   <>
                     Unidades disponibles:{" "}
-                    <span className="text-sun-500">
+                    <span className="text-brand-500">
                       {Number(product.stock_quantity ?? 0)}
                     </span>
                   </>
@@ -687,13 +687,13 @@ export function ProductDetailPage() {
                     </Link>
                   </div>
                   <Link
-                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#0891b2] bg-sun-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490] sm:w-auto"
+                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#0891b2] bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490] sm:w-auto"
                     to={`/panel/admin/control-productos?productId=${product.id}`}
                   >
                     Control de producto
                   </Link>
                   <a
-                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-ocean-200 bg-white px-5 py-3 text-sm font-semibold text-ocean-500 transition-colors hover:bg-[#E0F2FE] sm:w-auto"
+                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-ocean-200 bg-white px-5 py-3 text-sm font-semibold text-ocean-500 transition-colors hover:bg-brand-50 sm:w-auto"
                     href="#qr-producto"
                   >
                     Generar QR
@@ -818,7 +818,7 @@ export function ProductDetailPage() {
             </div>
 
               {!isBuyer && !isAdmin ? (
-                <div className="rounded-[1.1rem] border border-stone-200 bg-stone-50 px-4 py-3 text-sm leading-6 text-stone-600">
+                <div className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm leading-6 text-stone-600">
                   <p className="font-semibold text-ocean-500">Siguiente paso</p>
                   <p className="mt-1">
                 {isAdmin
@@ -850,12 +850,12 @@ export function ProductDetailPage() {
                     <label key={option.id} className="grid gap-2 text-sm font-medium text-stone-700">
                       <span className="flex flex-wrap items-center gap-2">
                         <span>{option.label}</span>
-                        <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-500">
+                        <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-stone-500">
                           {option.required ? "Requerido" : "Opcional"}
                         </span>
                       </span>
                       <select
-                        className="rounded-[1rem] border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                        className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
                         onChange={(event) => {
                           setSelectedOptions((currentValue) => {
                             if (!event.target.value) {
@@ -887,10 +887,10 @@ export function ProductDetailPage() {
 
                   <div
                     className={[
-                      "rounded-[1rem] border px-4 py-2.5 text-sm leading-6",
+                      "rounded-2xl border px-4 py-2.5 text-sm leading-6",
                       missingRequiredOption
-                        ? "border-sun-200 bg-sun-50 text-stone-700"
-                        : "border-ocean-100 bg-[#E0F2FE] text-stone-700",
+                        ? "border-brand-200 bg-brand-50 text-stone-700"
+                        : "border-ocean-100 bg-brand-50 text-stone-700",
                     ].join(" ")}
                   >
                     {missingRequiredOption
@@ -903,10 +903,10 @@ export function ProductDetailPage() {
               ) : (
                 <div className="grid gap-2.5">
                   {product.made_to_order_options.map((option) => (
-                    <div key={option.id} className="rounded-[1rem] border border-stone-200 bg-stone-50 px-4 py-3">
+                    <div key={option.id} className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="text-sm font-semibold text-stone-700">{option.label}</p>
-                        <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-500 ring-1 ring-stone-200">
+                        <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-stone-500 ring-1 ring-stone-200">
                           {option.required ? "Requerido" : "Opcional"}
                         </span>
                       </div>

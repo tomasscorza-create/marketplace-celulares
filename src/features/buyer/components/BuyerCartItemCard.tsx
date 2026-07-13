@@ -68,7 +68,7 @@ export function BuyerCartItemCard({
             src={item.product_image_url}
           />
         ) : (
-          <div className="flex aspect-[4/3] items-center justify-center px-3 text-center text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
+          <div className="flex aspect-[4/3] items-center justify-center px-3 text-center text-xs font-semibold uppercase tracking-widest text-stone-500">
             Sin imagen
           </div>
         )}
@@ -89,7 +89,7 @@ export function BuyerCartItemCard({
                 {item.product_title}
               </Link>
               <span
-                className={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${getItemStatusClasses(item.status)}`}
+                className={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-widest ${getItemStatusClasses(item.status)}`}
               >
                 {getItemStatusLabel(item.status)}
               </span>
@@ -102,7 +102,7 @@ export function BuyerCartItemCard({
             ) : null}
             <p className="mt-1 text-sm text-stone-500">{getAvailabilityLabel(item)}</p>
             {item.category_name ? (
-              <p className="mt-1 text-xs font-medium uppercase tracking-[0.14em] text-stone-400">
+              <p className="mt-1 text-xs font-medium uppercase tracking-widest text-stone-400">
                 {item.category_name}
               </p>
             ) : null}
@@ -113,7 +113,7 @@ export function BuyerCartItemCard({
         </div>
 
         {item.blockers.length > 0 ? (
-          <div className="grid gap-2 rounded-2xl border border-brand-100 bg-[#FDF1EC] px-4 py-3 text-sm text-brand-500">
+          <div className="grid gap-2 rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-sm text-brand-500">
             {item.blockers.map((blocker: string) => (
               <p key={blocker}>{blocker}</p>
             ))}
@@ -121,7 +121,7 @@ export function BuyerCartItemCard({
         ) : null}
 
         {item.notices.length > 0 ? (
-          <div className="grid gap-2 rounded-2xl border border-sun-200 bg-[#ECFEFF] px-4 py-3 text-sm text-stone-700">
+          <div className="grid gap-2 rounded-2xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-stone-700">
             {item.notices.map((notice: string) => (
               <p key={notice}>{notice}</p>
             ))}
@@ -188,7 +188,7 @@ export function BuyerCartItemCard({
             +
           </button>
           <button
-            className="ml-auto inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-brand-300 hover:bg-[#D1FAE5] hover:text-brand-500 disabled:opacity-50"
+            className="ml-auto inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-brand-300 hover:bg-brand-100 hover:text-brand-500 disabled:opacity-50"
             disabled={removeCartItemMutation.isPending}
             onClick={async () => {
               onStartAction();

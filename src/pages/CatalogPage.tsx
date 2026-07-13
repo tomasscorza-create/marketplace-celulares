@@ -78,11 +78,11 @@ function scrollToExploreSection(section: HTMLElement | null) {
 function CatalogPageTransitionLoader() {
   return (
     <div className="catalog-page-loader pointer-events-none absolute inset-0 z-20 grid place-items-center rounded-xl bg-white/50 backdrop-blur-[2px]">
-      <div className="grid max-w-sm justify-items-center gap-4 rounded-xl border border-slate-200 bg-white/95 px-6 py-5 text-center shadow-xl">
-        <div className="h-6 w-6 animate-spin rounded-full border-[3px] border-slate-200 border-t-blue-600" />
+      <div className="grid max-w-sm justify-items-center gap-4 rounded-xl border border-stone-200 bg-white/95 px-6 py-5 text-center shadow-xl">
+        <div className="h-6 w-6 animate-spin rounded-full border-[3px] border-stone-200 border-t-blue-600" />
         <div className="grid gap-1">
-          <p className="text-sm font-semibold text-slate-800">Cargando productos</p>
-          <p className="text-xs text-slate-500">Actualizando catálogo...</p>
+          <p className="text-sm font-semibold text-ocean-800">Cargando productos</p>
+          <p className="text-xs text-ocean-500">Actualizando catálogo...</p>
         </div>
       </div>
     </div>
@@ -569,9 +569,9 @@ export function CatalogPage() {
           />
         </div>
 
-        <div className="grid gap-4 rounded-3xl border border-white/40 bg-white/40 p-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl sm:gap-5 sm:p-5">
+        <div className="grid gap-4 rounded-3xl border border-white/40 bg-white/40 p-3 shadow-elev-2 backdrop-blur-2xl sm:gap-5 sm:p-5">
           {catalogLoadErrorMessage ? (
-            <div className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+            <div className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
               {catalogLoadErrorMessage}
             </div>
           ) : null}
@@ -579,7 +579,7 @@ export function CatalogPage() {
           {feedCollections.personalizedShowcaseItems.length > 0 ? (
             <section
               aria-labelledby="catalog-personalized-title"
-              className="relative grid gap-5 overflow-hidden rounded-[2rem] border border-white/30 p-2 sm:p-4 shadow-sm"
+              className="relative grid gap-5 overflow-hidden rounded-3xl border border-white/30 p-2 sm:p-4 shadow-sm"
             >
               <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
               <div className="pointer-events-none absolute -inset-2 z-0 bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40 blur-[4px]" />
@@ -587,7 +587,7 @@ export function CatalogPage() {
               <div className="relative z-10 grid gap-5">
                 <div className="group relative overflow-hidden rounded-xl border border-white/20 px-3 py-2.5 shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-white/40 hover:shadow-2xl hover:shadow-ocean-900/30 sm:rounded-2xl sm:px-5 sm:py-5">
                   <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/badge_bg.webp')] bg-cover bg-center opacity-100 transition-transform duration-700 ease-out group-hover:scale-105" />
-                  <div className="pointer-events-none absolute inset-0 z-0 bg-slate-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-slate-900/65" />
+                  <div className="pointer-events-none absolute inset-0 z-0 bg-stone-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-stone-900/65" />
                   <div className="relative z-10">
                     <CatalogSectionHeader
                       action={
@@ -617,7 +617,7 @@ export function CatalogPage() {
 
           <section
             aria-labelledby="catalog-explore-title"
-            className="relative grid gap-5 overflow-hidden rounded-[2rem] border border-white/30 p-2 sm:p-4 shadow-sm"
+            className="relative grid gap-5 overflow-hidden rounded-3xl border border-white/30 p-2 sm:p-4 shadow-sm"
             ref={exploreSectionRef}
           >
             <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
@@ -626,7 +626,7 @@ export function CatalogPage() {
             <div className="relative z-10 grid gap-5">
               <div className="group relative overflow-hidden rounded-xl border border-white/20 px-3 py-2.5 shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-white/40 hover:shadow-2xl hover:shadow-ocean-900/30 sm:rounded-2xl sm:px-5 sm:py-5">
                 <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/badge_bg.webp')] bg-cover bg-center opacity-100 transition-transform duration-700 ease-out group-hover:scale-105" />
-                <div className="pointer-events-none absolute inset-0 z-0 bg-slate-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-slate-900/65" />
+                <div className="pointer-events-none absolute inset-0 z-0 bg-stone-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-stone-900/65" />
                 <div className="relative z-10">
                   <CatalogSectionHeader
                     id="catalog-explore-title"

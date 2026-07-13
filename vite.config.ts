@@ -20,14 +20,14 @@ export default defineConfig(({ mode }) => {
       registerType: "autoUpdate",
       injectRegister: false,
       manifest: {
-        name: "Mercado Base",
-        short_name: "Base",
-        description: "Plataforma base para publicar tiendas, explorar productos y probar flujos comerciales.",
+        name: "Nyzca",
+        short_name: "Nyzca",
+        description: "Nyzca — Marketplace premium de celulares y accesorios.",
         start_url: "/",
         scope: "/",
         display: "standalone",
         background_color: "#F8FAFC",
-        theme_color: "#0F766E",
+        theme_color: "#7F6BFF",
         orientation: "portrait-primary",
         icons: [
           { src: "/brand-mark.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },

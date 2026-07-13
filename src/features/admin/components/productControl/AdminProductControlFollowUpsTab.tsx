@@ -21,7 +21,7 @@ function FollowUpCard({
 }) {
   return (
     <button
-      className="flex w-full items-center gap-3 rounded-[1.2rem] border border-stone-200 bg-white p-3 text-left transition-colors hover:border-ocean-500/20 hover:bg-[#E0F2FE]/50"
+      className="flex w-full items-center gap-3 rounded-2xl border border-stone-200 bg-white p-3 text-left transition-colors hover:border-ocean-500/20 hover:bg-brand-50/50"
       onClick={onSelect}
       type="button"
     >
@@ -75,7 +75,7 @@ function AdminProductControlFollowUpsTabInner({
   return (
     <div className="grid gap-5 p-5">
       {totalFollowUp === 0 ? (
-        <div className="rounded-[1.4rem] border border-dashed border-stone-200 bg-stone-50/60 px-5 py-8 text-center text-sm text-stone-400">
+        <div className="rounded-2xl border border-dashed border-stone-200 bg-stone-50/60 px-5 py-8 text-center text-sm text-stone-400">
           Ningún producto tiene etiqueta, comentario o boost activo todavía.
         </div>
       ) : null}
@@ -83,7 +83,7 @@ function AdminProductControlFollowUpsTabInner({
       {/* Etiquetas */}
       <div className="grid gap-2">
         <div className="flex items-center gap-2 px-1">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">Etiquetas</p>
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">Etiquetas</p>
           {taggedItems.length > 0 ? (
             <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-bold text-stone-500">
               {taggedItems.length}
@@ -126,7 +126,7 @@ function AdminProductControlFollowUpsTabInner({
       {/* Comentarios */}
       <div className="grid gap-2">
         <div className="flex items-center gap-2 px-1">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">Comentarios</p>
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">Comentarios</p>
           {commentedItems.length > 0 ? (
             <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-bold text-stone-500">
               {commentedItems.length}
@@ -158,7 +158,7 @@ function AdminProductControlFollowUpsTabInner({
       {/* Boost */}
       <div className="grid gap-2">
         <div className="flex items-center gap-2 px-1">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">Boost activo</p>
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">Boost activo</p>
           {boostedItems.length > 0 ? (
             <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-bold text-stone-500">
               {boostedItems.length}
@@ -172,7 +172,7 @@ function AdminProductControlFollowUpsTabInner({
             <FollowUpCard
               key={item.id}
               badge={
-                <span className="rounded-full border border-sun-500/50 bg-[#CFFAFE] px-2.5 py-1 text-[10px] font-semibold text-[#0e7490]">
+                <span className="rounded-full border border-brand-500/50 bg-brand-100 px-2.5 py-1 text-[10px] font-semibold text-[#0e7490]">
                   Boost {item.boostLevel}
                 </span>
               }

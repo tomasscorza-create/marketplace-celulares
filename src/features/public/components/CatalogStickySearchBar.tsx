@@ -94,7 +94,7 @@ function CatalogStickySearchBarInner({
   return (
     <div className="fixed inset-x-0 top-[calc(env(safe-area-inset-top,0px)+4.15rem)] z-40 px-3 sm:top-[calc(env(safe-area-inset-top,0px)+4.55rem)] sm:px-6">
       <div className="mx-auto max-w-6xl" ref={panelRef}>
-        <div className="rounded-2xl border border-stone-200 bg-[#fffdf8] shadow-[0_16px_34px_-24px_rgba(15,23,42,0.65)]">
+        <div className="rounded-2xl border border-stone-200 bg-stone-50 shadow-[0_16px_34px_-24px_rgba(15,23,42,0.65)]">
           <button
             aria-expanded={isExpanded}
             className="flex min-h-10 w-full items-center justify-between gap-3 px-3 py-2 text-left sm:min-h-11 sm:px-4"
@@ -112,7 +112,7 @@ function CatalogStickySearchBarInner({
             type="button"
           >
             <span className="min-w-0">
-              <span className="block truncate text-xs font-semibold uppercase tracking-[0.16em] text-brand-500">
+              <span className="block truncate text-xs font-semibold uppercase tracking-widest text-brand-500">
                 Catalogo
               </span>
               <span className="block truncate text-[11px] text-stone-500 sm:text-xs">
@@ -126,11 +126,11 @@ function CatalogStickySearchBarInner({
           </button>
 
           {isExpanded ? (
-            <div className="grid max-h-[min(68dvh,32rem)] gap-3 overflow-y-auto border-t border-stone-100 bg-[#fffdf8] px-3 pb-3 pt-2 sm:px-4 sm:pb-4">
+            <div className="grid max-h-[min(68dvh,32rem)] gap-3 overflow-y-auto border-t border-stone-100 bg-stone-50 px-3 pb-3 pt-2 sm:px-4 sm:pb-4">
               <form className="grid gap-2" onSubmit={onSearchSubmit}>
                 <div className="flex gap-2">
                   <input
-                    className="h-10 min-w-0 flex-1 rounded-full border border-stone-300 bg-white px-4 text-sm text-stone-900 outline-none focus:border-sun-500 focus:shadow-[0_0_0_3px_rgba(8,145,178,0.18)]"
+                    className="h-10 min-w-0 flex-1 rounded-full border border-stone-300 bg-white px-4 text-sm text-stone-900 outline-none focus:border-brand-500 focus:shadow-[0_0_0_3px_rgba(8,145,178,0.18)]"
                     onChange={(event) => {
                       onDraftSearchChange(event.target.value);
                     }}
@@ -172,7 +172,7 @@ function CatalogStickySearchBarInner({
               {isFiltersMenuOpen ? (
                 <div className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-3 shadow-[0_18px_44px_-30px_rgba(15,23,42,0.45)]">
                   <div className="grid gap-1">
-                    <p className="px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                    <p className="px-2 text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                       Acceso
                     </p>
                     <Link
@@ -188,7 +188,7 @@ function CatalogStickySearchBarInner({
                   </div>
 
                   <div className="grid gap-1">
-                    <p className="px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                    <p className="px-2 text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                       Orden
                     </p>
                     {sortOptions.map((option) => (
@@ -212,7 +212,7 @@ function CatalogStickySearchBarInner({
 
                   {categories.length > 0 ? (
                     <div className="grid gap-1">
-                      <p className="px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                      <p className="px-2 text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                         Etiquetas
                       </p>
                       <button
@@ -221,7 +221,7 @@ function CatalogStickySearchBarInner({
                           isCategoriesOpen
                             ? "border-ocean-500/30 bg-ocean-50 text-ocean-500"
                             : selectedCategory !== null
-                              ? "border-sun-500/40 bg-sun-50 font-semibold text-brand-500"
+                              ? "border-brand-500/40 bg-brand-50 font-semibold text-brand-500"
                               : "border-stone-200 text-stone-700 hover:bg-stone-50",
                         ].join(" ")}
                         onClick={() => {
@@ -238,7 +238,7 @@ function CatalogStickySearchBarInner({
                         <div className="overflow-hidden rounded-2xl border border-stone-200 bg-stone-50">
                           <div className="border-b border-stone-200 p-2">
                             <input
-                              className="w-full rounded-xl border border-stone-200 bg-white px-3 py-1.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-sun-500"
+                              className="w-full rounded-xl border border-stone-200 bg-white px-3 py-1.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-brand-500"
                               onChange={(event) => {
                                 setCategorySearch(event.target.value);
                               }}
@@ -277,7 +277,7 @@ function CatalogStickySearchBarInner({
                                   className={[
                                     "w-full px-3 py-2 text-left text-sm transition-colors",
                                     selectedCategory?.id === category.id
-                                      ? "bg-sun-50 font-semibold text-brand-500"
+                                      ? "bg-brand-50 font-semibold text-brand-500"
                                       : "text-stone-700 hover:bg-stone-100",
                                   ].join(" ")}
                                   key={category.id}

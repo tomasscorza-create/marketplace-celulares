@@ -36,7 +36,7 @@ export function MarketplaceFlyerControls({
     <div className="mt-5 rounded-2xl border border-stone-200 bg-stone-50 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
+          <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
             Edicion manual
           </p>
           <h3 className="mt-1 text-base font-semibold text-stone-900">

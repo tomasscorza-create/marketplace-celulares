@@ -64,7 +64,7 @@ export function CatalogScrollControls() {
     <div className="pointer-events-none fixed bottom-[calc(env(safe-area-inset-bottom,0px)+6rem)] right-[calc(env(safe-area-inset-right,0px)+0.75rem)] z-30 grid gap-2 sm:bottom-[calc(env(safe-area-inset-bottom,0px)+7rem)] sm:right-[calc(env(safe-area-inset-right,0px)+1rem)]">
       {scrollState.canScrollUp ? (
         <button
-          className="pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-full border border-stone-200 bg-white/95 text-stone-700 shadow-[0_12px_24px_-18px_rgba(15,23,42,0.7)] transition-all hover:-translate-y-0.5 hover:scale-105 hover:border-ocean-300 hover:text-ocean-600"
+          className="pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-full border border-stone-200 bg-white/95 text-stone-700 shadow-elev-2 transition-all hover:-translate-y-0.5 hover:scale-105 hover:border-ocean-300 hover:text-ocean-600"
           onClick={() => {
             scrollPage("up");
           }}
@@ -84,7 +84,7 @@ export function CatalogScrollControls() {
 
       {scrollState.canScrollDown ? (
         <button
-          className="pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-full border border-stone-200 bg-white/95 text-stone-700 shadow-[0_12px_24px_-18px_rgba(15,23,42,0.7)] transition-all hover:translate-y-0.5 hover:scale-105 hover:border-ocean-300 hover:text-ocean-600"
+          className="pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-full border border-stone-200 bg-white/95 text-stone-700 shadow-elev-2 transition-all hover:translate-y-0.5 hover:scale-105 hover:border-ocean-300 hover:text-ocean-600"
           onClick={() => {
             scrollPage("down");
           }}

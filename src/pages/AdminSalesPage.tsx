@@ -269,7 +269,7 @@ export function AdminSalesPage() {
                 className={[
                   "inline-flex min-h-9 items-center justify-center rounded-full border px-3.5 py-2 text-xs font-semibold transition-colors",
                   approvedFulfillmentFilter === filter.key
-                    ? "border-brand-200 bg-[#ECFEFF] text-brand-600"
+                    ? "border-brand-200 bg-brand-50 text-brand-600"
                     : "border-stone-200 bg-white text-stone-500 hover:bg-stone-50 hover:text-stone-700",
                 ].join(" ")}
                 onClick={() => handleApprovedFulfillmentFilterChange(filter.key)}
@@ -291,7 +291,7 @@ export function AdminSalesPage() {
       </section>
 
       {errorMessage ? (
-        <p className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+        <p className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
           {errorMessage}
         </p>
       ) : null}
@@ -326,11 +326,11 @@ export function AdminSalesPage() {
                     <h2 className="text-base font-semibold text-stone-900">
                       Pedido #{group.orderId.slice(0, 8).toUpperCase()}
                     </h2>
-                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-stone-600">
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-widest text-stone-600">
                       {group.paymentStatus}
                     </span>
                     <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] ${fulfillmentClasses[groupFulfillment.status]}`}
+                      className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest ${fulfillmentClasses[groupFulfillment.status]}`}
                     >
                       {groupFulfillment.label}
                     </span>
@@ -381,7 +381,7 @@ export function AdminSalesPage() {
 
                       <div className="col-span-2 grid gap-2 rounded-2xl border border-ocean-100 bg-[#F7FAFF] p-3 lg:col-span-1">
                         <div className="flex items-center justify-between gap-3">
-                          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-ocean-500">
+                          <span className="text-xs font-semibold uppercase tracking-widest text-ocean-500">
                             Control
                           </span>
                           <span

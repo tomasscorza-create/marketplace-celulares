@@ -83,13 +83,13 @@ export const ArtisanStoreFormSection = memo(function ArtisanStoreFormSection({
       </div>
 
       {statusMessage ? (
-        <p className="rounded-2xl border border-sun-500 bg-[#ECFEFF] px-4 py-3 text-sm text-brand-500">
+        <p className="rounded-2xl border border-brand-500 bg-brand-50 px-4 py-3 text-sm text-brand-500">
           {statusMessage}
         </p>
       ) : null}
 
       {errorMessage ? (
-        <p className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+        <p className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
           {errorMessage}
         </p>
       ) : null}

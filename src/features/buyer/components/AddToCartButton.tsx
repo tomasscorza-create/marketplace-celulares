@@ -76,7 +76,7 @@ export function AddToCartButton({
     return (
       <div className="relative">
         {showBuyerOnlyNotice ? (
-          <div className="pointer-events-none absolute bottom-[calc(100%+0.55rem)] left-1/2 z-20 w-[min(17rem,calc(100vw-2rem))] -translate-x-1/2 rounded-2xl border border-sun-500/55 bg-white px-3.5 py-3 text-center text-xs font-medium leading-5 text-ocean-500 shadow-[0_18px_40px_-24px_rgba(71,85,105,0.55)]">
+          <div className="pointer-events-none absolute bottom-[calc(100%+0.55rem)] left-1/2 z-20 w-[min(17rem,calc(100vw-2rem))] -translate-x-1/2 rounded-2xl border border-brand-500/55 bg-white px-3.5 py-3 text-center text-xs font-medium leading-5 text-ocean-500 shadow-elev-2">
             {labels?.buyerOnlyNotice ?? "Ingresa como miembro de la comunidad para comprar"}
           </div>
         ) : null}

@@ -169,7 +169,7 @@ function CatalogSearchSectionInner({
             aria-label={termsButtonLabel}
             className={[
               "relative shrink-0 overflow-hidden rounded-xl px-4 py-2.5 text-sm font-bold tracking-wide text-white",
-              "bg-gradient-to-br from-sun-400 via-brand-500 to-red-500",
+              "bg-gradient-to-br from-brand-400 via-brand-500 to-red-500",
               "shadow-[0_4px_18px_-2px_rgba(234,88,12,0.65),inset_0_1px_0_rgba(255,255,255,0.35),inset_0_-1px_0_rgba(0,0,0,0.2)]",
               "transition-all duration-150 hover:brightness-110 hover:shadow-[0_6px_24px_-2px_rgba(234,88,12,0.75),inset_0_1px_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(0,0,0,0.25)]",
               "active:scale-[0.97] active:brightness-95",
@@ -200,7 +200,7 @@ function CatalogSearchSectionInner({
               />
             </svg>
             <input
-              className="h-10 w-full rounded-full border border-stone-300 bg-white py-2 pl-10 pr-12 text-sm text-stone-900 outline-none transition-all focus:border-sun-500 focus:shadow-[0_0_0_3px_rgba(8,145,178,0.18)] sm:h-11"
+              className="h-10 w-full rounded-full border border-stone-300 bg-white py-2 pl-10 pr-12 text-sm text-stone-900 outline-none transition-all focus:border-brand-500 focus:shadow-[0_0_0_3px_rgba(8,145,178,0.18)] sm:h-11"
               onChange={(event) => {
                 onDraftSearchChange(event.target.value);
               }}
@@ -262,11 +262,11 @@ function CatalogSearchSectionInner({
                     <div className="grid gap-3">
                       {/* Acceso */}
                       <div className="grid gap-1">
-                        <p className="px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                        <p className="px-2 text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                           Acceso
                         </p>
                         <Link
-                          className="rounded-2xl border border-stone-200 px-3 py-2.5 text-sm font-medium text-ocean-500 transition-colors hover:bg-[#E0F2FE]"
+                          className="rounded-2xl border border-stone-200 px-3 py-2.5 text-sm font-medium text-ocean-500 transition-colors hover:bg-brand-50"
                           onClick={() => {
                             setIsFiltersMenuOpen(false);
                           }}
@@ -278,7 +278,7 @@ function CatalogSearchSectionInner({
 
                       {/* Orden */}
                       <div className="grid gap-1">
-                        <p className="px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                        <p className="px-2 text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                           Orden
                         </p>
                         {[
@@ -291,7 +291,7 @@ function CatalogSearchSectionInner({
                             className={[
                               "rounded-2xl px-3 py-2.5 text-left text-sm transition-colors",
                               selectedSortOrder === option.value
-                                ? "bg-[#E0F2FE] font-semibold text-ocean-500"
+                                ? "bg-brand-50 font-semibold text-ocean-500"
                                 : "text-stone-700 hover:bg-stone-50",
                             ].join(" ")}
                             onClick={() => {
@@ -306,7 +306,7 @@ function CatalogSearchSectionInner({
 
                       {/* Etiquetas — sub-dropdown con buscador y scroll */}
                       <div className="grid gap-1">
-                        <p className="px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+                        <p className="px-2 text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                           Etiquetas
                         </p>
 
@@ -314,9 +314,9 @@ function CatalogSearchSectionInner({
                           className={[
                             "flex items-center justify-between rounded-2xl border px-3 py-2.5 text-left text-sm font-medium transition-colors",
                             isCategoriesOpen
-                              ? "border-ocean-500/30 bg-[#E0F2FE] text-ocean-500"
+                              ? "border-ocean-500/30 bg-brand-50 text-ocean-500"
                               : selectedCategory !== null
-                                ? "border-sun-500/40 bg-[#CFFAFE] font-semibold text-brand-500"
+                                ? "border-brand-500/40 bg-brand-100 font-semibold text-brand-500"
                                 : "border-stone-200 text-stone-700 hover:bg-stone-50",
                           ].join(" ")}
                           onClick={() => {
@@ -349,7 +349,7 @@ function CatalogSearchSectionInner({
                             <div className="border-b border-stone-200 p-2">
                               <input
                                 autoFocus
-                                className="w-full rounded-xl border border-stone-200 bg-white px-3 py-1.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-sun-500"
+                                className="w-full rounded-xl border border-stone-200 bg-white px-3 py-1.5 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-brand-500"
                                 onChange={(e) => {
                                   setCategorySearch(e.target.value);
                                 }}
@@ -366,7 +366,7 @@ function CatalogSearchSectionInner({
                                   className={[
                                     "w-full px-3 py-2 text-left text-sm transition-colors",
                                     selectedCategory === null
-                                      ? "bg-[#E0F2FE] font-semibold text-ocean-500"
+                                      ? "bg-brand-50 font-semibold text-ocean-500"
                                       : "text-stone-700 hover:bg-stone-100",
                                   ].join(" ")}
                                   onClick={() => {
@@ -389,7 +389,7 @@ function CatalogSearchSectionInner({
                                     className={[
                                       "w-full px-3 py-2 text-left text-sm transition-colors",
                                       selectedCategory?.id === category.id
-                                        ? "bg-[#CFFAFE] font-semibold text-brand-500"
+                                        ? "bg-brand-100 font-semibold text-brand-500"
                                         : "text-stone-700 hover:bg-stone-100",
                                     ].join(" ")}
                                     onClick={() => {
@@ -419,7 +419,7 @@ function CatalogSearchSectionInner({
 
                       {hasActiveFilters ? (
                         <button
-                          className="rounded-2xl border border-brand-500 px-3 py-2.5 text-sm font-semibold text-brand-500 transition-colors hover:bg-[#D1FAE5]"
+                          className="rounded-2xl border border-brand-500 px-3 py-2.5 text-sm font-semibold text-brand-500 transition-colors hover:bg-brand-100"
                           onClick={handleClearFiltersAndClose}
                           type="button"
                         >

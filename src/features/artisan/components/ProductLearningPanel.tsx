@@ -37,7 +37,7 @@ export function ProductLearningPanel({
   const titleSuggestions = getTitleSuggestions(learningProfile);
 
   return (
-    <section className="grid gap-3 rounded-[1.75rem] border border-ocean-100 bg-[#F8FBFF] p-4 sm:p-5">
+    <section className="grid gap-3 rounded-3xl border border-ocean-100 bg-[#F8FBFF] p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
           <p className="text-sm font-semibold text-stone-900">Precarga inteligente</p>
@@ -47,7 +47,7 @@ export function ProductLearningPanel({
             completar datos probables. Todo se puede editar.
           </p>
         </div>
-        <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.13em] text-ocean-600">
+        <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-ocean-600">
           {getConfidenceLabel(learningProfile.confidence)}
         </span>
       </div>
@@ -73,7 +73,7 @@ export function ProductLearningPanel({
 
       {titleSuggestions.length > 0 ? (
         <div className="grid gap-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.13em] text-stone-500">
+          <p className="text-xs font-semibold uppercase tracking-widest text-stone-500">
             Sugerencias de titulo
           </p>
           <div className="flex flex-wrap gap-2">

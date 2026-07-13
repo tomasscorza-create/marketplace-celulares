@@ -105,7 +105,7 @@ export function ArtisanDashboardPage() {
       actions={
         <>
           <Link
-            className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-[#E0F2FE] sm:w-auto"
+            className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-brand-50 sm:w-auto"
             to="/panel/vendedor/tienda"
           >
             Mi tienda
@@ -123,9 +123,9 @@ export function ArtisanDashboardPage() {
       title={profile?.store_name || "Panel de tu tienda"}
     >
       {summary.pendingFulfillmentItems > 0 ? (
-        <section className="mb-5 grid gap-3 rounded-3xl border border-sun-500 bg-[#ECFEFF] p-5 shadow-sm sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+        <section className="mb-5 grid gap-3 rounded-3xl border border-brand-500 bg-brand-50 p-5 shadow-sm sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-500">
+            <p className="text-xs font-semibold uppercase tracking-widest text-brand-500">
               Nueva actividad
             </p>
             <h2 className="mt-1 text-xl font-semibold text-stone-900">
@@ -147,7 +147,7 @@ export function ArtisanDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
         <article className="rounded-2xl border border-brand-100 bg-gradient-to-br from-[#ECFEFF] to-white p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-400">
+          <p className="text-xs font-semibold uppercase tracking-widest text-brand-400">
             Productos visibles
           </p>
           <p className="mt-3 text-3xl font-bold tabular-nums text-brand-600">
@@ -156,7 +156,7 @@ export function ArtisanDashboardPage() {
         </article>
 
         <article className="rounded-2xl border border-stone-200 bg-gradient-to-br from-stone-50 to-white p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
+          <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
             Productos ocultos
           </p>
           <p className="mt-3 text-3xl font-bold tabular-nums text-stone-500">
@@ -165,7 +165,7 @@ export function ArtisanDashboardPage() {
         </article>
 
         <article className="rounded-2xl border border-ocean-100 bg-gradient-to-br from-[#E0F2FE] to-white p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ocean-400">
+          <p className="text-xs font-semibold uppercase tracking-widest text-ocean-400">
             Ventas registradas
           </p>
           <p className="mt-3 text-3xl font-bold tabular-nums text-ocean-500">
@@ -173,8 +173,8 @@ export function ArtisanDashboardPage() {
           </p>
         </article>
 
-        <article className="rounded-2xl border border-sun-100 bg-gradient-to-br from-[#ECFEFF] to-white p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0e7490]">
+        <article className="rounded-2xl border border-brand-100 bg-gradient-to-br from-[#ECFEFF] to-white p-5 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#0e7490]">
             Monto vendido
           </p>
           <p className="mt-3 text-3xl font-bold tabular-nums text-brand-500">
@@ -191,7 +191,7 @@ export function ArtisanDashboardPage() {
         <section className="rounded-3xl border border-ocean-100 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ocean-400">
+              <p className="text-xs font-semibold uppercase tracking-widest text-ocean-400">
                 Tu espacio
               </p>
               <h2 className="mt-2 text-xl font-semibold text-stone-900">
@@ -200,7 +200,7 @@ export function ArtisanDashboardPage() {
             </div>
             {user ? (
               <Link
-                className="inline-flex items-center justify-center rounded-full border border-ocean-500 px-4 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-[#E0F2FE]"
+                className="inline-flex items-center justify-center rounded-full border border-ocean-500 px-4 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-brand-50"
                 to={`/vendedor/${user.id}`}
               >
                 Ver perfil público
@@ -215,19 +215,19 @@ export function ArtisanDashboardPage() {
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <Link
-              className="rounded-2xl border border-brand-100 bg-[#ECFEFF] px-4 py-4 text-sm font-medium text-brand-600 transition-colors hover:bg-[#CFFAFE]"
+              className="rounded-2xl border border-brand-100 bg-brand-50 px-4 py-4 text-sm font-medium text-brand-600 transition-colors hover:bg-brand-100"
               to="/panel/vendedor/tienda"
             >
               Mi tienda
             </Link>
             <Link
-              className="rounded-2xl border border-ocean-100 bg-[#E0F2FE] px-4 py-4 text-sm font-medium text-ocean-500 transition-colors hover:bg-ocean-50"
+              className="rounded-2xl border border-ocean-100 bg-brand-50 px-4 py-4 text-sm font-medium text-ocean-500 transition-colors hover:bg-ocean-50"
               to="/panel/vendedor/productos"
             >
               Productos
             </Link>
             <Link
-              className="rounded-2xl border border-stone-200 bg-white px-4 py-4 text-sm font-medium text-stone-700 transition-colors hover:border-brand-100 hover:bg-[#ECFEFF]"
+              className="rounded-2xl border border-stone-200 bg-white px-4 py-4 text-sm font-medium text-stone-700 transition-colors hover:border-brand-100 hover:bg-brand-50"
               to="/panel/vendedor/ventas"
             >
               Ventas
@@ -238,7 +238,7 @@ export function ArtisanDashboardPage() {
         {/* Siguiente foco */}
         <section className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">
+            <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
               Próximos pasos
             </p>
             <h2 className="mt-2 text-xl font-semibold text-stone-900">Siguiente foco</h2>
@@ -247,7 +247,7 @@ export function ArtisanDashboardPage() {
           {isLoading ? (
             <p className="mt-5 text-sm text-stone-400">Calculando estado de tu tienda…</p>
           ) : nextSteps.length === 0 ? (
-            <div className="mt-5 rounded-2xl border border-ocean-100 bg-[#E0F2FE] px-4 py-4 text-sm leading-6 text-ocean-500">
+            <div className="mt-5 rounded-2xl border border-ocean-100 bg-brand-50 px-4 py-4 text-sm leading-6 text-ocean-500">
               Tu tienda está completa y activa. Revisá tus ventas para seguir el movimiento.
             </div>
           ) : (
@@ -255,7 +255,7 @@ export function ArtisanDashboardPage() {
               {nextSteps.map((step, index) => (
                 <li key={step.label}>
                   <Link
-                    className="flex items-start gap-3 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-4 transition-colors hover:border-brand-100 hover:bg-[#ECFEFF] hover:text-brand-700"
+                    className="flex items-start gap-3 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-4 transition-colors hover:border-brand-100 hover:bg-brand-50 hover:text-brand-700"
                     to={step.to}
                   >
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-stone-200 text-xs font-bold text-stone-500">

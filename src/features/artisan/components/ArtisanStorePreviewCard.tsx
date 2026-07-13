@@ -19,7 +19,7 @@ export const ArtisanStorePreviewCard = memo(function ArtisanStorePreviewCard({
 }: ArtisanStorePreviewCardProps) {
   return (
     <aside className="rounded-3xl border border-ocean-100 bg-[linear-gradient(180deg,_#ffffff,_#e0f2fe)] p-5 shadow-sm sm:p-6">
-      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ocean-500">
+      <p className="text-sm font-semibold uppercase tracking-widest text-ocean-500">
         Vista previa
       </p>
       <div className="mt-5 rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">

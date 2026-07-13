@@ -214,7 +214,7 @@ export function AuthStatus() {
         aria-expanded={isOpen}
         aria-haspopup="menu"
         aria-label="Abrir menú de cuenta"
-        className="inline-flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-stone-300 bg-white transition-colors hover:border-sun-500 hover:bg-[#ECFEFF]"
+        className="inline-flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-stone-300 bg-white transition-colors hover:border-brand-500 hover:bg-brand-50"
         onClick={toggleMenu}
         type="button"
       >
@@ -228,12 +228,12 @@ export function AuthStatus() {
           role="menu"
         >
           {!isConfigured ? (
-            <p className="rounded-2xl border border-sun-500 bg-[#ECFEFF] px-4 py-3 text-sm text-brand-500">
+            <p className="rounded-2xl border border-brand-500 bg-brand-50 px-4 py-3 text-sm text-brand-500">
               El acceso no está disponible en este momento.
             </p>
           ) : (
             <>
-              <div className="rounded-2xl border border-sun-500 bg-[linear-gradient(135deg,_#ECFEFF,_#FFFFFF)] p-4">
+              <div className="rounded-2xl border border-brand-500 bg-[linear-gradient(135deg,_#ECFEFF,_#FFFFFF)] p-4">
                 <div className="flex items-center gap-3">
                   <UserAvatar
                     imageUrl={accountImageUrl}
@@ -241,7 +241,7 @@ export function AuthStatus() {
                     sizeClassName="h-12 w-12"
                   />
                   <div className="min-w-0">
-                    <span className="inline-flex rounded-full bg-[#CFFAFE] px-2.5 py-0.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-500">
+                    <span className="inline-flex rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-widest text-brand-500">
                       {isLoading ? "Revisando" : accountBadgeLabel}
                     </span>
                     <p className="mt-2 truncate text-sm font-semibold text-stone-900">
@@ -272,14 +272,14 @@ export function AuthStatus() {
                     key={section.title}
                     className="rounded-2xl border border-stone-200 bg-stone-50/70 p-2.5"
                   >
-                    <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-stone-500">
+                    <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-widest text-stone-500">
                       {section.title}
                     </p>
                     <div className="grid gap-1.5">
                       {section.links.map((link) => (
                         <Link
                           key={link.to}
-                          className="rounded-2xl bg-white px-4 py-3 text-sm font-medium text-stone-700 transition-colors hover:border-sun-500 hover:bg-[#ECFEFF] hover:text-ocean-500"
+                          className="rounded-2xl bg-white px-4 py-3 text-sm font-medium text-stone-700 transition-colors hover:border-brand-500 hover:bg-brand-50 hover:text-ocean-500"
                           onClick={closeMenu}
                           to={link.to}
                         >
@@ -292,7 +292,7 @@ export function AuthStatus() {
 
                 {user ? (
                   <button
-                    className="rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-medium text-stone-700 transition-colors hover:border-brand-500 hover:bg-[#D1FAE5] hover:text-brand-500"
+                    className="rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-medium text-stone-700 transition-colors hover:border-brand-500 hover:bg-brand-100 hover:text-brand-500"
                     onClick={() => {
                       void handleSignOut();
                     }}

@@ -21,7 +21,7 @@ export function PaginationControls({
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-[1.2rem] border border-stone-200 bg-white px-3 py-3 text-sm text-stone-600">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-stone-200 bg-white px-3 py-3 text-sm text-stone-600">
       <span>
         Pagina {normalizedPage} de {totalPages}
       </span>

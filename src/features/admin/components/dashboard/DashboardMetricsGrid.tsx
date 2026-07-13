@@ -30,11 +30,11 @@ function MetricCard({
 }) {
   return (
     <button
-      className="grid gap-2 rounded-[1.75rem] border border-stone-200 bg-white p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md"
+      className="grid gap-2 rounded-3xl border border-stone-200 bg-white p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-md"
       onClick={onClick}
       type="button"
     >
-      <span className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${accentClass}`}>
+      <span className={`text-[11px] font-semibold uppercase tracking-widest ${accentClass}`}>
         {label}
       </span>
       <span className="text-3xl font-semibold tracking-tight text-stone-900">{value}</span>
@@ -65,7 +65,7 @@ function DashboardMetricsGridInner({
         {Array.from({ length: 6 }).map((_, index) => (
           <div
             key={index}
-            className="rounded-[1.75rem] border border-stone-200 bg-white p-5 shadow-sm"
+            className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm"
           >
             <SkeletonBlock className="h-4 w-24 rounded-full" />
             <SkeletonBlock className="mt-4 h-10 w-20 rounded-full" />

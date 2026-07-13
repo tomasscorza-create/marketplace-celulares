@@ -33,7 +33,7 @@ export function CatalogSectionHeader({
     >
       <div className="space-y-0.5 sm:space-y-1">
         {eyebrow ? (
-          <p className={["text-[11px] font-semibold uppercase tracking-[0.18em]", eyebrowClassName].join(" ")}>
+          <p className={["text-[11px] font-semibold uppercase tracking-widest", eyebrowClassName].join(" ")}>
             {eyebrow}
           </p>
         ) : null}

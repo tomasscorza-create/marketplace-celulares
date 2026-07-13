@@ -29,7 +29,7 @@ export function PagePlaceholder({
       {!hideHeader ? (
         <>
           {badge ? (
-            <span className="inline-flex max-w-full whitespace-normal rounded-full bg-sun-100 px-3 py-1 text-xs font-semibold uppercase leading-4 tracking-[0.15em] text-brand-700">
+            <span className="inline-flex max-w-full whitespace-normal rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold uppercase leading-4 tracking-widest text-brand-700">
               {badge}
             </span>
           ) : null}

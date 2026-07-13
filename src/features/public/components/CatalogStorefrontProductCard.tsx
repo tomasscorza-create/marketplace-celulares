@@ -87,7 +87,7 @@ function CatalogStorefrontProductCardInner({ product }: CatalogStorefrontProduct
   }, []);
 
   return (
-    <article className="catalog-card group flex w-[148px] shrink-0 snap-start flex-col rounded-xl border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-ocean-300 hover:shadow-[0_18px_38px_-30px_rgba(15,23,42,0.32)] active:scale-[0.995] [content-visibility:auto] [contain-intrinsic-size:230px] sm:w-[164px] lg:w-[176px]">
+    <article className="catalog-card group flex w-[148px] shrink-0 snap-start flex-col rounded-xl border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-ocean-300 hover:shadow-elev-3 active:scale-[0.995] [content-visibility:auto] [contain-intrinsic-size:230px] sm:w-[164px] lg:w-[176px]">
       <Link className="group flex flex-1 flex-col" onClick={handleOpenProductDetail} to={`/producto/${product.id}`}>
         <div className="relative overflow-hidden rounded-t-xl border-b border-stone-100">
           {primaryImage && !hasImageError ? (
@@ -124,7 +124,7 @@ function CatalogStorefrontProductCardInner({ product }: CatalogStorefrontProduct
           )}
 
           {primaryImage && !hasImageError ? (
-            <span className="absolute left-1.5 top-1.5 max-w-[72%] truncate rounded bg-white/90 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-ocean-600 shadow-sm backdrop-blur-sm">
+            <span className="absolute left-1.5 top-1.5 max-w-[72%] truncate rounded bg-white/90 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-ocean-600 shadow-sm backdrop-blur-sm">
               {categoryLabel}
             </span>
           ) : null}

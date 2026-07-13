@@ -35,7 +35,7 @@ function getOrderAccentClass(order: OrderRecord) {
   }
 
   if (order.payment_status === "in_process") {
-    return "bg-[#CFFAFE] text-brand-500";
+    return "bg-brand-100 text-brand-500";
   }
 
   return "bg-white text-stone-600";
@@ -96,12 +96,12 @@ export function BuyerDashboardPage() {
       <section className="grid gap-4 rounded-3xl border border-ocean-100 bg-[linear-gradient(180deg,_#ffffff,_#f3f7ff)] p-5 shadow-sm sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ocean-500">
+            <p className="text-xs font-semibold uppercase tracking-widest text-ocean-500">
               Activos
             </p>
             <h2 className="mt-1 text-xl font-semibold text-stone-900">Pedidos en curso</h2>
           </div>
-          <span className="rounded-full border border-ocean-100 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-ocean-500">
+          <span className="rounded-full border border-ocean-100 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-ocean-500">
             {summary?.open_orders_count ?? 0}
           </span>
         </div>
@@ -142,7 +142,7 @@ export function BuyerDashboardPage() {
                   </div>
                   <span
                     className={[
-                      "rounded-full border border-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em]",
+                      "rounded-full border border-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest",
                       getOrderAccentClass(order),
                     ].join(" ")}
                   >
@@ -152,7 +152,7 @@ export function BuyerDashboardPage() {
 
                 <div className="mt-4 flex items-end justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-400">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
                       Total
                     </p>
                     <p className="mt-1 text-lg font-semibold text-stone-900">
@@ -160,7 +160,7 @@ export function BuyerDashboardPage() {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-400">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
                       Productos
                     </p>
                     <p className="mt-1 text-sm font-medium text-stone-700">
@@ -190,7 +190,7 @@ export function BuyerDashboardPage() {
           {historyOrders.map((order) => (
             <Link
               key={order.id}
-              className="grid gap-3 rounded-2xl border border-stone-200 bg-stone-50/70 px-4 py-3 transition-colors hover:border-ocean-200 hover:bg-[#E0F2FE] sm:grid-cols-[minmax(0,1fr)_auto_auto]"
+              className="grid gap-3 rounded-2xl border border-stone-200 bg-stone-50/70 px-4 py-3 transition-colors hover:border-ocean-200 hover:bg-brand-50 sm:grid-cols-[minmax(0,1fr)_auto_auto]"
               to={`/panel/comprador/pedidos/${order.id}`}
             >
               <div className="min-w-0">
@@ -207,7 +207,7 @@ export function BuyerDashboardPage() {
               </div>
               <span
                 className={[
-                  "self-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em]",
+                  "self-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-widest",
                   getOrderAccentClass(order),
                 ].join(" ")}
               >
@@ -233,7 +233,7 @@ export function BuyerDashboardPage() {
         <section className="grid gap-4">
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             <div className="rounded-2xl border border-stone-200 bg-white px-4 py-4 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-400">
+              <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
                 Compras totales
               </p>
               <p className="mt-2 text-3xl font-semibold text-stone-900">
@@ -241,7 +241,7 @@ export function BuyerDashboardPage() {
               </p>
             </div>
             <div className="rounded-2xl border border-stone-200 bg-white px-4 py-4 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-400">
+              <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
                 Pagadas
               </p>
               <p className="mt-2 text-3xl font-semibold text-stone-900">
@@ -249,7 +249,7 @@ export function BuyerDashboardPage() {
               </p>
             </div>
             <div className="rounded-2xl border border-stone-200 bg-white px-4 py-4 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-400">
+              <p className="text-xs font-semibold uppercase tracking-widest text-stone-400">
                 Total comprado
               </p>
               <p className="mt-2 text-2xl font-semibold text-stone-900">
@@ -259,9 +259,9 @@ export function BuyerDashboardPage() {
           </div>
         </section>
 
-        <aside className="grid gap-3 self-start rounded-3xl border border-sun-100 bg-[linear-gradient(180deg,_#f8fafc,_#ffffff)] p-5 shadow-sm">
+        <aside className="grid gap-3 self-start rounded-3xl border border-brand-100 bg-[linear-gradient(180deg,_#f8fafc,_#ffffff)] p-5 shadow-sm">
           <div className="rounded-2xl border border-white/90 bg-white/90 px-4 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-500">
+            <p className="text-xs font-semibold uppercase tracking-widest text-brand-500">
               Listos para coordinar
             </p>
             <p className="mt-2 text-2xl font-semibold text-stone-900">
@@ -270,7 +270,7 @@ export function BuyerDashboardPage() {
           </div>
 
           <div className="rounded-2xl border border-white/90 bg-white/90 px-4 py-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-500">
+            <p className="text-xs font-semibold uppercase tracking-widest text-brand-500">
               Ultima compra aprobada
             </p>
             <p className="mt-2 text-sm font-medium text-stone-900">

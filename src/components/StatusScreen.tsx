@@ -28,7 +28,7 @@ export function StatusScreen({
           .join(" ")}
       >
         {eyebrow ? (
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-500">
+          <p className="text-sm font-semibold uppercase tracking-widest text-brand-500">
             {eyebrow}
           </p>
         ) : null}

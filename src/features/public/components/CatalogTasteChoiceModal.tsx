@@ -80,7 +80,7 @@ export function CatalogTasteChoiceModal({
       />
 
       <section
-        className="relative z-[1] w-full max-w-3xl rounded-[1.6rem] border border-white/55 bg-[#fff8ec] p-4 shadow-[0_28px_80px_-36px_rgba(35,24,15,0.65)] outline-none sm:p-5"
+        className="relative z-[1] w-full max-w-3xl rounded-3xl border border-white/55 bg-[#fff8ec] p-4 shadow-[0_28px_80px_-36px_rgba(35,24,15,0.65)] outline-none sm:p-5"
         ref={dialogRef}
         tabIndex={-1}
       >
@@ -116,7 +116,7 @@ export function CatalogTasteChoiceModal({
 
               return (
                 <Link
-                  className="group overflow-hidden rounded-[1.15rem] border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#9b5735]/45 hover:shadow-[0_18px_34px_-26px_rgba(86,42,24,0.65)]"
+                  className="group overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-900/45 hover:shadow-elev-3"
                   key={`${option.categorySlug ?? option.categoryName}-${option.imageUrl}`}
                   onClick={onClose}
                   to={targetPath}

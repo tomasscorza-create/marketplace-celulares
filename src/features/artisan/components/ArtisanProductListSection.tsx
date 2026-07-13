@@ -96,9 +96,9 @@ export function ArtisanProductListSection({
                           <h3 className="text-lg font-semibold text-stone-900">{product.title}</h3>
                           <span
                             className={[
-                              "rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.13em]",
+                              "rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-widest",
                               product.is_active
-                                ? "bg-[#CFFAFE] text-brand-500"
+                                ? "bg-brand-100 text-brand-500"
                                 : "bg-stone-200 text-stone-600",
                             ].join(" ")}
                           >

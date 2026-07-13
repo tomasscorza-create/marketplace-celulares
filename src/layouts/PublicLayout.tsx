@@ -61,9 +61,9 @@ export function PublicLayout() {
   }, []);
 
   return (
-    <div className="relative min-h-dvh bg-slate-50 text-slate-900 selection:bg-blue-500/30">
+    <div className="relative min-h-dvh bg-stone-50 text-ocean-900 selection:bg-blue-500/30">
       {/* Hyper-Premium Graphic Background */}
-      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-slate-50">
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-stone-50">
         <img src="/tech_abstract_bg.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-90" />
         {/* Noise overlay for premium texture */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9IjAuMDIiLz4KPC9zdmc+')] opacity-60 mix-blend-overlay" />
@@ -79,7 +79,7 @@ export function PublicLayout() {
         className={[
           "sticky top-0 z-50 transition-all duration-300",
           isScrolled
-            ? "bg-white/60 border-b border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl"
+            ? "bg-white/60 border-b border-white/40 shadow-elev-2 backdrop-blur-2xl"
             : "bg-transparent border-b border-transparent",
         ].join(" ")}
       >
@@ -130,11 +130,11 @@ export function PublicLayout() {
         </Suspense>
       </div>
 
-      <footer className="relative z-10 mt-10 border-t border-slate-200/50 bg-white/40 backdrop-blur-xl">
+      <footer className="relative z-10 mt-10 border-t border-stone-200/50 bg-white/40 backdrop-blur-xl">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-500">
+              <p className="text-sm font-semibold uppercase tracking-widest text-brand-500">
                 {marketplaceConfig.appName}
               </p>
               <p className="mt-1 text-sm text-stone-500">

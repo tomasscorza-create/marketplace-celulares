@@ -101,22 +101,22 @@ export function AdminDashboardPage() {
   return (
     <PagePlaceholder description="" hideHeader title="">
       {errorMessage ? (
-        <p className="mb-5 rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+        <p className="mb-5 rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
           {errorMessage}
         </p>
       ) : null}
 
       {warningMessage ? (
-        <p className="mb-5 rounded-2xl border border-sun-500 bg-[#ECFEFF] px-4 py-3 text-sm text-brand-500">
+        <p className="mb-5 rounded-2xl border border-brand-500 bg-brand-50 px-4 py-3 text-sm text-brand-500">
           {warningMessage}
         </p>
       ) : null}
 
-      <div className="mb-4 flex items-center justify-between gap-3 rounded-[1.6rem] border border-stone-200 bg-[linear-gradient(135deg,rgba(255,255,255,0.95),rgba(230,238,248,0.9))] px-4 py-3 shadow-sm">
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-3xl border border-stone-200 bg-[linear-gradient(135deg,rgba(255,255,255,0.95),rgba(230,238,248,0.9))] px-4 py-3 shadow-sm">
         <p className="text-sm font-medium text-stone-700">
           Cada tarjeta abre su detalle para administrar esa capa del sistema.
         </p>
-        <span className="rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-ocean-500">
+        <span className="rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-ocean-500">
           Acceso directo
         </span>
       </div>

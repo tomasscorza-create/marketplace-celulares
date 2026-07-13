@@ -328,7 +328,7 @@ export function AdminArtisanProfileActions({ artisanId }: AdminArtisanProfileAct
       </button>
 
       {isOpen ? (
-        <section className="grid gap-4 rounded-[1.5rem] border border-red-100 bg-white p-4 shadow-[0_26px_70px_-48px_rgba(127,29,29,0.75)]">
+        <section className="grid gap-4 rounded-3xl border border-red-100 bg-white p-4 shadow-[0_26px_70px_-48px_rgba(127,29,29,0.75)]">
           <div className="flex flex-wrap gap-2">
             {actionTabs.map((tab) => {
               const isActive = activePanel === tab.key;
@@ -358,7 +358,7 @@ export function AdminArtisanProfileActions({ artisanId }: AdminArtisanProfileAct
                   {tab.badge ? (
                     <span
                       className={[
-                        "rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.12em]",
+                        "rounded-full px-2 py-0.5 text-[10px] uppercase tracking-widest",
                         isActive ? "bg-white text-red-700" : "bg-white text-stone-500",
                       ].join(" ")}
                     >

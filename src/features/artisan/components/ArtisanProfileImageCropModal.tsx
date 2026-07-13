@@ -102,12 +102,12 @@ export function ArtisanProfileImageCropModal({
       <div
         aria-labelledby="profile-image-modal-title"
         aria-modal="true"
-        className="max-h-[90dvh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-white shadow-2xl"
+        className="max-h-[90dvh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white shadow-2xl"
         role="dialog"
       >
         <div className="flex items-start justify-between gap-4 border-b border-stone-200 px-6 py-5">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-ocean-500">
+            <p className="text-sm font-semibold uppercase tracking-widest text-ocean-500">
               Editar foto de perfil
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-stone-900" id="profile-image-modal-title">
@@ -127,7 +127,7 @@ export function ArtisanProfileImageCropModal({
         </div>
 
         <div className="grid gap-6 px-6 py-6 lg:grid-cols-[minmax(0,1.1fr)_320px]">
-          <div className="grid gap-4 rounded-3xl border border-sun-500 bg-[#ECFEFF] p-5">
+          <div className="grid gap-4 rounded-3xl border border-brand-500 bg-brand-50 p-5">
             <div className="flex flex-col items-center gap-4">
               <div
                 className="relative h-[280px] w-[280px] cursor-grab overflow-hidden rounded-full bg-stone-200 shadow-sm active:cursor-grabbing"
@@ -201,7 +201,7 @@ export function ArtisanProfileImageCropModal({
               </button>
 
               <button
-                className="inline-flex w-full items-center justify-center rounded-full border border-brand-500 px-5 py-3 text-sm font-medium text-brand-500 transition-colors hover:bg-[#D1FAE5] sm:w-auto"
+                className="inline-flex w-full items-center justify-center rounded-full border border-brand-500 px-5 py-3 text-sm font-medium text-brand-500 transition-colors hover:bg-brand-100 sm:w-auto"
                 onClick={onCancel}
                 type="button"
               >

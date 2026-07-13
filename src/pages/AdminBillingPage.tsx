@@ -39,7 +39,7 @@ function normalizeText(value: string) {
 function MetricCard({ label, value }: { label: string; value: string | number }) {
   return (
     <article className="rounded-3xl border border-stone-200 bg-white p-4 shadow-sm">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-500">
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-500">
         {label}
       </p>
       <p className="mt-2 text-2xl font-semibold tracking-tight text-stone-900">{value}</p>
@@ -99,7 +99,7 @@ export function AdminBillingPage() {
       </section>
 
       {error ? (
-        <p className="mt-4 rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
+        <p className="mt-4 rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
           {error.message}
         </p>
       ) : null}
@@ -137,7 +137,7 @@ export function AdminBillingPage() {
           </span>
         </div>
 
-        <div className="hidden grid-cols-[minmax(0,1.5fr)_repeat(4,minmax(0,1fr))] gap-3 border-b border-stone-200 bg-stone-50 px-4 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-stone-500 md:grid">
+        <div className="hidden grid-cols-[minmax(0,1.5fr)_repeat(4,minmax(0,1fr))] gap-3 border-b border-stone-200 bg-stone-50 px-4 py-3 text-xs font-semibold uppercase tracking-widest text-stone-500 md:grid">
           <span>Vendedor</span>
           <span>Facturacion</span>
           <span>Ventas</span>

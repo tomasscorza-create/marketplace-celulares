@@ -32,7 +32,7 @@ const priceFormatter = new Intl.NumberFormat("es-AR", {
 });
 
 const storeActionClassName =
-  "inline-flex h-7 min-w-0 items-center justify-start rounded-md px-1.5 text-[10px] font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-blue-600 sm:text-[11px]";
+  "inline-flex h-7 min-w-0 items-center justify-start rounded-md px-1.5 text-[10px] font-medium text-ocean-500 transition-colors hover:bg-stone-100 hover:text-blue-600 sm:text-[11px]";
 
 const featuredBuyActionClassName =
   "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg bg-blue-600 px-3 text-xs font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:h-9 sm:px-3.5 sm:text-[13px]";
@@ -41,13 +41,13 @@ const compactBuyActionClassName =
   "inline-flex h-7 min-w-[4.9rem] items-center justify-center whitespace-nowrap rounded-md bg-blue-600 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:min-w-[5.25rem] sm:text-xs";
 
 const extraActionClassName =
-  "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 sm:h-9 sm:px-3.5 sm:text-[13px]";
+  "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg border border-stone-200 bg-white px-3 text-xs font-semibold text-ocean-700 transition-colors hover:border-stone-300 hover:bg-stone-50 sm:h-9 sm:px-3.5 sm:text-[13px]";
 
 const priceTextClassName =
   "block text-sm font-semibold leading-none text-stone-950 sm:text-[15px]";
 
 const categoryOverlayClassName =
-  "pointer-events-none absolute left-2 top-2 z-[5] max-w-[70%] truncate rounded bg-white/95 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm sm:text-[10px]";
+  "pointer-events-none absolute left-2 top-2 z-[5] max-w-[70%] truncate rounded bg-white/95 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-ocean-700 shadow-sm backdrop-blur-sm sm:text-[10px]";
 
 const compactBuyLabels = {
   added: "Carrito",
@@ -149,7 +149,7 @@ function CatalogProductFeedCardInner({
     return (
       <article
         className={[
-          "catalog-card group/focus flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/70 bg-gradient-to-br from-ocean-50/90 to-brand-50/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/90 hover:from-ocean-100/95 hover:to-brand-100/95 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] active:scale-[0.995] sm:grid sm:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]",
+          "catalog-card group/focus flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/70 bg-gradient-to-br from-ocean-50/90 to-brand-50/90 shadow-elev-2 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/90 hover:from-ocean-100/95 hover:to-brand-100/95 hover:shadow-elev-3 active:scale-[0.995] sm:grid sm:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]",
           boostCardClassName,
         ].join(" ")}
         ref={cardRef}
@@ -272,7 +272,7 @@ function CatalogProductFeedCardInner({
   return (
     <article
       className={[
-        "catalog-card group/focus flex h-full min-w-0 flex-col rounded-2xl border border-white/70 bg-gradient-to-br from-ocean-50/90 to-brand-50/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/90 hover:from-ocean-100/95 hover:to-brand-100/95 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] active:scale-[0.995] [content-visibility:auto] [contain-intrinsic-size:260px]",
+        "catalog-card group/focus flex h-full min-w-0 flex-col rounded-2xl border border-white/70 bg-gradient-to-br from-ocean-50/90 to-brand-50/90 shadow-elev-2 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/90 hover:from-ocean-100/95 hover:to-brand-100/95 hover:shadow-elev-3 active:scale-[0.995] [content-visibility:auto] [contain-intrinsic-size:260px]",
         boostCardClassName,
       ].join(" ")}
       ref={cardRef}

@@ -125,10 +125,10 @@ function AdminProductControlActionsTabInner({
 
   return (
     <div className="grid gap-4 p-5">
-      <div className="grid gap-3 rounded-[1.4rem] border border-stone-200 bg-white p-4">
+      <div className="grid gap-3 rounded-2xl border border-stone-200 bg-white p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
               Etiqueta interna
             </p>
             <p className="text-sm font-medium text-stone-700">
@@ -136,7 +136,7 @@ function AdminProductControlActionsTabInner({
             </p>
           </div>
           <button
-            className="inline-flex items-center gap-2 rounded-full border border-[#0891b2] bg-sun-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490]"
+            className="inline-flex items-center gap-2 rounded-full border border-[#0891b2] bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490]"
             onClick={() => {
               setIsHelpOpen((value) => !value);
             }}
@@ -156,7 +156,7 @@ function AdminProductControlActionsTabInner({
         </div>
 
         {isHelpOpen ? (
-          <div className="grid gap-2 rounded-[1.2rem] border border-sun-500/45 bg-[#ECFEFF] p-4 text-sm text-stone-700">
+          <div className="grid gap-2 rounded-2xl border border-brand-500/45 bg-brand-50 p-4 text-sm text-stone-700">
             <p>
               <strong>Destacado up:</strong> sube fuerte su prioridad y empuja su presencia.
             </p>
@@ -183,7 +183,7 @@ function AdminProductControlActionsTabInner({
             <button
               key={tagOption.tag}
               className={[
-                "flex items-center gap-3 rounded-[1.2rem] border px-4 py-3 text-left text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-medium transition-colors",
                 currentTag === tagOption.tag
                   ? tagOption.activeClassName
                   : "border-stone-200 bg-white text-stone-700 hover:border-stone-300 hover:bg-stone-50",
@@ -203,7 +203,7 @@ function AdminProductControlActionsTabInner({
         </div>
 
         <button
-          className="rounded-[1.2rem] border border-stone-300 bg-white px-4 py-3 text-sm font-medium text-stone-600 transition-colors hover:border-brand-500 hover:bg-[#D1FAE5] hover:text-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm font-medium text-stone-600 transition-colors hover:border-brand-500 hover:bg-brand-100 hover:text-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isSavingTag || currentTag === null}
           onClick={onClearTag}
           type="button"
@@ -212,12 +212,12 @@ function AdminProductControlActionsTabInner({
         </button>
       </div>
 
-      <div className="grid gap-3 rounded-[1.4rem] border border-stone-200 bg-white p-4">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+      <div className="grid gap-3 rounded-2xl border border-stone-200 bg-white p-4">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
           Comentario interno
         </p>
         <textarea
-          className="min-h-24 w-full rounded-[1rem] border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+          className="min-h-24 w-full rounded-2xl border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
           onChange={(event) => {
             setCommentDraft(event.target.value);
           }}
@@ -225,7 +225,7 @@ function AdminProductControlActionsTabInner({
           value={commentDraft}
         />
         <button
-          className="rounded-[1.1rem] border border-ocean-500 bg-[#E0F2FE] px-4 py-3 text-sm font-semibold text-ocean-500 transition-colors hover:bg-[#bae6fd] disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-2xl border border-ocean-500 bg-brand-50 px-4 py-3 text-sm font-semibold text-ocean-500 transition-colors hover:bg-[#bae6fd] disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isSavingTag}
           onClick={() => {
             onSaveComment(commentDraft.trim() || null);
@@ -236,9 +236,9 @@ function AdminProductControlActionsTabInner({
         </button>
       </div>
 
-      <div className="grid gap-3 rounded-[1.4rem] border border-stone-200 bg-white p-4">
+      <div className="grid gap-3 rounded-2xl border border-stone-200 bg-white p-4">
         <div className="space-y-1.5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-400">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
             Boost temporal
           </p>
           <p className="text-sm text-stone-600">{currentBoostSummaryLabel ?? "Sin boost activo"}</p>
@@ -255,7 +255,7 @@ function AdminProductControlActionsTabInner({
             <button
               key={boostOption.level}
               className={[
-                "rounded-[1rem] border px-3 py-2 text-sm font-semibold transition-colors",
+                "rounded-2xl border px-3 py-2 text-sm font-semibold transition-colors",
                 boostLevelDraft === boostOption.level
                   ? boostOption.tone
                   : "border-stone-200 bg-stone-50 text-stone-600 hover:bg-white",
@@ -272,7 +272,7 @@ function AdminProductControlActionsTabInner({
 
         <div className="grid gap-2 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)]">
           <input
-            className="rounded-[1rem] border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
             inputMode="numeric"
             min="1"
             onChange={(event) => {
@@ -283,7 +283,7 @@ function AdminProductControlActionsTabInner({
             value={boostAmountDraft}
           />
           <select
-            className="rounded-[1rem] border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
             onChange={(event) => {
               setBoostUnitDraft(event.target.value === "days" ? "days" : "hours");
             }}
@@ -296,7 +296,7 @@ function AdminProductControlActionsTabInner({
 
         <div className="grid gap-2 sm:grid-cols-2">
           <button
-            className="rounded-[1.1rem] border border-[#0e7490] bg-[#CFFAFE] px-4 py-3 text-sm font-semibold text-[#0e7490] transition-colors hover:bg-[#a5f3fc] disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-2xl border border-[#0e7490] bg-brand-100 px-4 py-3 text-sm font-semibold text-[#0e7490] transition-colors hover:bg-[#a5f3fc] disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isSavingTag || Number(boostAmountDraft) <= 0}
             onClick={() => {
               const amount = Number(boostAmountDraft);
@@ -310,7 +310,7 @@ function AdminProductControlActionsTabInner({
             Aplicar boost
           </button>
           <button
-            className="rounded-[1.1rem] border border-stone-300 bg-white px-4 py-3 text-sm font-medium text-stone-600 transition-colors hover:border-brand-500 hover:bg-[#D1FAE5] hover:text-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm font-medium text-stone-600 transition-colors hover:border-brand-500 hover:bg-brand-100 hover:text-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isSavingTag || (!currentBoostLevel && !currentBoostUntil)}
             onClick={onClearBoost}
             type="button"

@@ -35,7 +35,7 @@ export function SiteBrand({ isScrolled = false, subtitle = null }: SiteBrandProp
       <div className="min-w-0">
         <p
           className={[
-            "font-display truncate font-extrabold tracking-[0.02em] text-ocean-500 transition-all",
+            "font-display truncate font-extrabold tracking-normal text-ocean-500 transition-all",
             isScrolled ? "text-[13px] sm:text-sm" : "text-base sm:text-lg",
           ].join(" ")}
         >

@@ -220,7 +220,7 @@ export function RegistroCompradorPage() {
       title="Crear cuenta"
     >
       <div className="mx-auto max-w-md">
-        <div className="rounded-2xl border border-sun-100 bg-[#f8fafc] p-5 sm:p-6">
+        <div className="rounded-2xl border border-brand-100 bg-[#f8fafc] p-5 sm:p-6">
           <BuyerSignupForm
             email={email}
             fieldErrors={fieldErrors}
@@ -315,7 +315,7 @@ export function RegistroCompradorPage() {
           />
 
           {statusMessage ? (
-            <p className="mt-4 rounded-2xl border border-sun-300 bg-sun-50 px-4 py-3 text-sm text-brand-700">
+            <p className="mt-4 rounded-2xl border border-brand-300 bg-brand-50 px-4 py-3 text-sm text-brand-700">
               {statusMessage}
             </p>
           ) : null}

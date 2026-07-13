@@ -60,8 +60,8 @@ export function ProductImagesField({
   return (
     <section
       className={[
-        "grid gap-4 overflow-hidden rounded-[1.75rem] border border-stone-200 bg-[linear-gradient(180deg,_#ffffff,_#f8f4eb)] p-4 sm:p-5",
-        isDraggingFiles ? "border-ocean-400 bg-[#E0F2FE]" : "",
+        "grid gap-4 overflow-hidden rounded-3xl border border-stone-200 bg-[linear-gradient(180deg,_#ffffff,_#f8f4eb)] p-4 sm:p-5",
+        isDraggingFiles ? "border-ocean-400 bg-brand-50" : "",
       ].join(" ")}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
@@ -92,7 +92,7 @@ export function ProductImagesField({
 
       {productImages.length === 0 ? (
         <button
-          className="flex flex-col items-center gap-3 rounded-[1.5rem] border-2 border-dashed border-stone-300 bg-white px-5 py-10 text-center transition-colors hover:border-ocean-400 hover:bg-[#E0F2FE]"
+          className="flex flex-col items-center gap-3 rounded-3xl border-2 border-dashed border-stone-300 bg-white px-5 py-10 text-center transition-colors hover:border-ocean-400 hover:bg-brand-50"
           onClick={onTriggerBulkImagePicker}
           type="button"
         >
@@ -104,9 +104,9 @@ export function ProductImagesField({
           {productImages.map((draft, index) => (
             <article
               key={draft.id}
-              className="grid gap-3 rounded-[1.2rem] border border-stone-300 bg-white p-3 shadow-sm"
+              className="grid gap-3 rounded-2xl border border-stone-300 bg-white p-3 shadow-sm"
             >
-              <div className="relative overflow-hidden rounded-[1rem] border border-stone-200 bg-stone-100">
+              <div className="relative overflow-hidden rounded-2xl border border-stone-200 bg-stone-100">
                 <img
                   alt={`Foto ${index + 1}`}
                   className="h-36 w-full object-contain p-1.5"
@@ -114,12 +114,12 @@ export function ProductImagesField({
                 />
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-black/70 to-transparent p-2">
                   {index === 0 ? (
-                    <span className="rounded-full bg-black/60 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-white">
+                    <span className="rounded-full bg-black/60 px-2 py-1 text-[9px] font-semibold uppercase tracking-widest text-white">
                       Portada
                     </span>
                   ) : (
                     <button
-                      className="rounded-full bg-black/60 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-white"
+                      className="rounded-full bg-black/60 px-2 py-1 text-[9px] font-semibold uppercase tracking-widest text-white"
                       onClick={() => onSetPrimaryImage(index)}
                       type="button"
                     >
@@ -153,7 +153,7 @@ export function ProductImagesField({
                   Cambiar
                 </button>
                 <button
-                  className="rounded-full border border-sun-500 bg-[#ECFEFF] px-3 py-2 text-xs font-medium text-brand-500"
+                  className="rounded-full border border-brand-500 bg-brand-50 px-3 py-2 text-xs font-medium text-brand-500"
                   onClick={() => onOpenEditor(index)}
                   type="button"
                 >
