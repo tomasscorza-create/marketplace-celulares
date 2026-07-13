@@ -67,10 +67,10 @@ export function WhatsAppButton({ message, className }: WhatsAppButtonProps) {
       aria-label="Consultar por WhatsApp"
       className={[
         "group/wa flex h-14 cursor-pointer items-center overflow-hidden rounded-full",
-        "bg-stone-400/70 text-white shadow-lg",
+        "bg-whatsapp text-white shadow-elev-whatsapp",
         "transition-[background-color,box-shadow] duration-300",
-        "hover:bg-whatsapp hover:shadow-[0_8px_32px_-8px_rgba(37,211,102,0.55)]",
-        isExpanded ? "bg-whatsapp shadow-[0_8px_32px_-8px_rgba(37,211,102,0.55)]" : "",
+        "hover:bg-whatsapp hover:shadow-elev-whatsapp",
+        isExpanded ? "bg-whatsapp shadow-elev-whatsapp" : "",
         className ?? "",
       ]
         .filter(Boolean)

@@ -582,10 +582,10 @@ export function CatalogPage() {
               className="relative grid gap-5 overflow-hidden rounded-3xl border border-white/30 p-2 sm:p-4 shadow-sm"
             >
               <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
-              <div className="pointer-events-none absolute -inset-2 z-0 bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40 blur-[4px]" />
+              <div className="pointer-events-none absolute inset-0 z-0 rounded-3xl bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40" />
               <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
-              <div className="relative z-10 grid gap-5">
-                <div className="group relative overflow-hidden rounded-xl border border-white/20 px-3 py-2.5 shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-white/40 hover:shadow-2xl hover:shadow-ocean-900/30 sm:rounded-2xl sm:px-5 sm:py-5">
+              <div className="relative z-10 grid gap-4">
+                <div className="group relative min-h-[52px] overflow-hidden rounded-xl border border-white/20 px-3 py-2 shadow-elev-2 transition-all duration-300 hover:border-white/40 sm:rounded-2xl sm:px-4 sm:py-2">
                   <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/badge_bg.webp')] bg-cover bg-center opacity-100 transition-transform duration-700 ease-out group-hover:scale-105" />
                   <div className="pointer-events-none absolute inset-0 z-0 bg-stone-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-stone-900/65" />
                   <div className="relative z-10">
@@ -621,10 +621,10 @@ export function CatalogPage() {
             ref={exploreSectionRef}
           >
             <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
-            <div className="pointer-events-none absolute -inset-2 z-0 bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40 blur-[4px]" />
+            <div className="pointer-events-none absolute inset-0 z-0 rounded-3xl bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40" />
             <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
-            <div className="relative z-10 grid gap-5">
-              <div className="group relative overflow-hidden rounded-xl border border-white/20 px-3 py-2.5 shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-white/40 hover:shadow-2xl hover:shadow-ocean-900/30 sm:rounded-2xl sm:px-5 sm:py-5">
+            <div className="relative z-10 grid gap-4">
+              <div className="group relative min-h-[52px] overflow-hidden rounded-xl border border-white/20 px-3 py-2 shadow-elev-2 transition-all duration-300 hover:border-white/40 sm:rounded-2xl sm:px-4 sm:py-2">
                 <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/badge_bg.webp')] bg-cover bg-center opacity-100 transition-transform duration-700 ease-out group-hover:scale-105" />
                 <div className="pointer-events-none absolute inset-0 z-0 bg-stone-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-stone-900/65" />
                 <div className="relative z-10">
@@ -634,7 +634,7 @@ export function CatalogPage() {
                     title="Explorar"
                   />
                   {totalCount > 0 ? (
-                    <p className="mt-1 text-xs leading-[1.3] text-stone-300 sm:mt-2.5 sm:text-sm sm:leading-6">
+                    <p className="mt-0.5 truncate text-xs leading-4 text-stone-300 sm:mt-1 sm:text-sm">
                       Encuentra lo que buscas entre más de{" "}
                       <span className="font-semibold text-white">
                         {totalCount.toLocaleString("es-AR")}

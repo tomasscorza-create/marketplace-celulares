@@ -61,10 +61,10 @@ export function PublicLayout() {
   }, []);
 
   return (
-    <div className="relative min-h-dvh bg-stone-50 text-ocean-900 selection:bg-blue-500/30">
+    <div className="relative min-h-dvh bg-stone-50 text-ocean-900 selection:bg-brand-300/40">
       {/* Hyper-Premium Graphic Background */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-stone-50">
-        <img src="/tech_abstract_bg.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-90" />
+        <img src="/tech_abstract_bg.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-70 sm:opacity-90" />
         {/* Noise overlay for premium texture */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9IjAuMDIiLz4KPC9zdmc+')] opacity-60 mix-blend-overlay" />
       </div>

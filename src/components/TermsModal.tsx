@@ -135,7 +135,7 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
           <label className="flex cursor-pointer select-none items-start gap-3">
             <input
               checked={accepted}
-              className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-sun-500"
+              className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-brand-500"
               onChange={(e) => setAccepted(e.target.checked)}
               type="checkbox"
             />
