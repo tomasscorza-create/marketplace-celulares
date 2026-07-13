@@ -93,7 +93,7 @@ export function BuyerDashboardPage() {
       description=""
       title={profile?.full_name?.trim() ? `Mis pedidos, ${profile.full_name}` : "Mis pedidos"}
     >
-      <section className="grid gap-4 rounded-3xl border border-ocean-100 bg-[linear-gradient(180deg,_#ffffff,_#f3f7ff)] p-5 shadow-sm sm:p-6">
+      <section className="grid gap-4 rounded-3xl border border-ocean-100 bg-gradient-to-b from-white to-brand-50 p-5 shadow-sm sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-ocean-500">
@@ -259,7 +259,7 @@ export function BuyerDashboardPage() {
           </div>
         </section>
 
-        <aside className="grid gap-3 self-start rounded-3xl border border-brand-100 bg-[linear-gradient(180deg,_#f8fafc,_#ffffff)] p-5 shadow-sm">
+        <aside className="grid gap-3 self-start rounded-3xl border border-brand-100 bg-gradient-to-b from-stone-50 to-white p-5 shadow-sm">
           <div className="rounded-2xl border border-white/90 bg-white/90 px-4 py-4">
             <p className="text-xs font-semibold uppercase tracking-widest text-brand-500">
               Listos para coordinar

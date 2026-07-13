@@ -146,7 +146,7 @@ export function BuyerOrderDetailPage() {
       description=""
       title={`Pedido #${order.id.slice(0, 8).toUpperCase()}`}
     >
-      <section className="grid gap-4 rounded-3xl border border-ocean-100 bg-[linear-gradient(180deg,_#ffffff,_#f3f7ff)] p-5 shadow-sm sm:p-6">
+      <section className="grid gap-4 rounded-3xl border border-ocean-100 bg-gradient-to-b from-white to-brand-50 p-5 shadow-sm sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-sm text-stone-500">{formatDate(order.created_at)}</p>
@@ -211,7 +211,7 @@ export function BuyerOrderDetailPage() {
           </div>
         </section>
 
-        <aside className="grid gap-3 self-start rounded-3xl border border-brand-100 bg-[linear-gradient(180deg,_#f8fafc,_#ffffff)] p-5 shadow-sm">
+        <aside className="grid gap-3 self-start rounded-3xl border border-brand-100 bg-gradient-to-b from-stone-50 to-white p-5 shadow-sm">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-brand-500">
               Entrega

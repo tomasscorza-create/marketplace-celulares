@@ -172,7 +172,7 @@ function AdminProductControlFollowUpsTabInner({
             <FollowUpCard
               key={item.id}
               badge={
-                <span className="rounded-full border border-brand-500/50 bg-brand-100 px-2.5 py-1 text-[10px] font-semibold text-[#0e7490]">
+                <span className="rounded-full border border-brand-500/50 bg-brand-100 px-2.5 py-1 text-[10px] font-semibold text-brand-600">
                   Boost {item.boostLevel}
                 </span>
               }

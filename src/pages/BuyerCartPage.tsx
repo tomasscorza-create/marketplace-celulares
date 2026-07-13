@@ -567,7 +567,7 @@ export function BuyerCartPage() {
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-semibold ${
                         isShippingAddressMissingForCheckout
-                          ? "bg-brand-50 text-[#0e7490]"
+                          ? "bg-brand-50 text-brand-600"
                           : "bg-emerald-50 text-emerald-700"
                       }`}
                     >

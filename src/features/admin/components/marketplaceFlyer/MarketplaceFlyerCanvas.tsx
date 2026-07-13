@@ -1,4 +1,4 @@
-﻿import type { RefObject } from "react";
+import type { RefObject } from "react";
 import type { FlyerState, FlyerStats, ManualFlyerSettings } from "./flyerTypes";
 
 import { useEffect, useState } from "react";

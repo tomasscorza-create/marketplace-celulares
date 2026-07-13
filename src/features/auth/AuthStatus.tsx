@@ -233,7 +233,7 @@ export function AuthStatus() {
             </p>
           ) : (
             <>
-              <div className="rounded-2xl border border-brand-500 bg-[linear-gradient(135deg,_#ECFEFF,_#FFFFFF)] p-4">
+              <div className="rounded-2xl border border-brand-500 bg-gradient-to-br from-brand-50 to-white p-4">
                 <div className="flex items-center gap-3">
                   <UserAvatar
                     imageUrl={accountImageUrl}

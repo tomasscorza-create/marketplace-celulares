@@ -146,7 +146,7 @@ export function ArtisanDashboardPage() {
       {/* ── Métricas ─────────────────────────────────────────────────────── */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-        <article className="rounded-2xl border border-brand-100 bg-gradient-to-br from-[#ECFEFF] to-white p-5 shadow-sm">
+        <article className="rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-50 to-white p-5 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-widest text-brand-400">
             Productos visibles
           </p>
@@ -173,8 +173,8 @@ export function ArtisanDashboardPage() {
           </p>
         </article>
 
-        <article className="rounded-2xl border border-brand-100 bg-gradient-to-br from-[#ECFEFF] to-white p-5 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#0e7490]">
+        <article className="rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-50 to-white p-5 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-widest text-brand-600">
             Monto vendido
           </p>
           <p className="mt-3 text-3xl font-bold tabular-nums text-brand-500">

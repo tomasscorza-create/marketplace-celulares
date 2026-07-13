@@ -73,7 +73,7 @@ export function ArtisanLayout() {
     <PanelLayoutShell
       accentClassName="text-brand-500"
       activeLinkClassName="bg-brand-500 text-white"
-      backgroundClassName="bg-[radial-gradient(circle_at_top,_#f0fdfa,_#f8fafc_50%)]"
+      backgroundClassName="bg-gradient-to-b from-brand-50 to-stone-50"
       borderClassName="border-brand-100"
       inactiveLinkClassName="text-stone-600 hover:bg-brand-50 hover:text-brand-700"
       links={links}

@@ -18,7 +18,7 @@ export function StatusScreen({
   const isCentered = align === "center";
 
   return (
-    <main className="flex min-h-dvh items-center bg-[radial-gradient(circle_at_top,_#ecfeff,_#f8fafc_55%)] px-6 py-16 text-stone-900">
+    <main className="flex min-h-dvh items-center bg-gradient-to-b from-brand-50 to-stone-50 px-6 py-16 text-stone-900">
       <section
         className={[
           "mx-auto w-full max-w-2xl rounded-3xl border border-stone-200 bg-white p-10 shadow-[0_24px_80px_-48px_rgba(71,85,105,0.45)]",

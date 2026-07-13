@@ -173,7 +173,7 @@ export function AdminProductControlDetailModal({
                   activeTab === tab.id
                     ? "text-ocean-500 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:rounded-full after:bg-brand-500"
                     : tab.highlight
-                      ? "text-brand-500 hover:text-[#0e7490]"
+                      ? "text-brand-500 hover:text-brand-600"
                       : "text-stone-500 hover:text-stone-700",
                 ].join(" ")}
                 onClick={() => {

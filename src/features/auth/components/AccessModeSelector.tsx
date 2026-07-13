@@ -27,7 +27,7 @@ export function AccessModeSelector({
   options,
 }: AccessModeSelectorProps) {
   return (
-    <aside className="rounded-2xl border border-ocean-100 bg-[linear-gradient(180deg,_#ffffff,_#e0f2fe)] p-5 shadow-sm sm:p-6">
+    <aside className="rounded-2xl border border-ocean-100 bg-gradient-to-b from-white to-brand-100 p-5 shadow-sm sm:p-6">
       <p className="text-sm font-semibold uppercase tracking-widest text-ocean-500">
         Acceso a la plataforma
       </p>

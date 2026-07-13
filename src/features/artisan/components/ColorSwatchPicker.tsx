@@ -1,4 +1,4 @@
-﻿const PRESET_COLORS = [
+const PRESET_COLORS = [
   { label: "Teja",        value: "#0f766e" },
   { label: "Burdeos",     value: "#115e59" },
   { label: "Marino",      value: "#475569" },

@@ -12,9 +12,9 @@ export function BuyerLayout() {
 
   return (
     <PanelLayoutShell
-      accentClassName="text-[#0e7490]"
+      accentClassName="text-brand-600"
       activeLinkClassName="bg-brand-500 text-stone-900"
-      backgroundClassName="bg-[radial-gradient(circle_at_top,_#ecfeff,_#f8fafc_55%)]"
+      backgroundClassName="bg-gradient-to-b from-brand-50 to-stone-50"
       borderClassName="border-brand-100"
       inactiveLinkClassName="text-stone-600 hover:bg-brand-50 hover:text-brand-600"
       links={buyerLinks}

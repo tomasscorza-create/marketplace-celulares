@@ -220,7 +220,7 @@ export function RegistroCompradorPage() {
       title="Crear cuenta"
     >
       <div className="mx-auto max-w-md">
-        <div className="rounded-2xl border border-brand-100 bg-[#f8fafc] p-5 sm:p-6">
+        <div className="rounded-2xl border border-brand-100 bg-stone-50 p-5 sm:p-6">
           <BuyerSignupForm
             email={email}
             fieldErrors={fieldErrors}

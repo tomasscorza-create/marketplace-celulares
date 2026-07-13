@@ -146,7 +146,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(8, 145, 178, 0.08);
+  background: rgba(127, 107, 255, 0.08);
   border-radius: inherit;
   pointer-events: none;
   animation: neutralBreath 8s ease-in-out infinite;
@@ -157,7 +157,7 @@
   position: relative;
   /* Sin overflow:hidden aqui: los efectos se contienen en .search-section-fx */
   isolation: isolate;
-  background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
 }
 /* Capa contenedora de animaciones: overflow:hidden solo afecta a los efectos,
    no a los hijos posicionados (dropdown de filtros, etc.) */
@@ -174,7 +174,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(315deg, rgba(8,145,178,0.15) 0%, transparent 58%);
+  background: linear-gradient(315deg, rgba(127,107,255,0.15) 0%, transparent 58%);
   animation: searchBreath 9s ease-in-out infinite;
 }
 /* Metallic sheen: una pasada cada 10s, solo transform (GPU) */
@@ -248,8 +248,8 @@
 
 @layer base {
   :root {
-    --color-brand: #0f766e;
-    --color-sun: #0891b2;
+    --color-brand: #7F6BFF;
+    --color-sun: #7F6BFF;
     --color-ocean: #475569;
     --color-paper: #f8fafc;
   }
@@ -257,7 +257,7 @@
   html {
     font-family: "Inter Variable", Inter, system-ui, sans-serif;
     color: #1c1917;
-    background: linear-gradient(160deg, #f8fafc 0%, #f0fdfa 100%);
+    background: linear-gradient(160deg, #f5f3ff 0%, #ffffff 100%);
     min-height: 100dvh;
   }
 
@@ -298,7 +298,7 @@
   input[type="checkbox"]:focus-visible,
   input[type="radio"]:focus-visible,
   select:focus-visible {
-    outline: 2px solid #0f766e;
+    outline: 2px solid #7F6BFF;
     outline-offset: 3px;
     border-radius: 4px;
   }

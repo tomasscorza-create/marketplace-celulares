@@ -1,4 +1,4 @@
-﻿import { memo } from "react";
+import { memo } from "react";
 
 import { UserAvatar } from "../../../components/UserAvatar";
 
@@ -18,7 +18,7 @@ export const ArtisanStorePreviewCard = memo(function ArtisanStorePreviewCard({
   themeColor,
 }: ArtisanStorePreviewCardProps) {
   return (
-    <aside className="rounded-3xl border border-ocean-100 bg-[linear-gradient(180deg,_#ffffff,_#e0f2fe)] p-5 shadow-sm sm:p-6">
+    <aside className="rounded-3xl border border-ocean-100 bg-gradient-to-b from-white to-brand-100 p-5 shadow-sm sm:p-6">
       <p className="text-sm font-semibold uppercase tracking-widest text-ocean-500">
         Vista previa
       </p>

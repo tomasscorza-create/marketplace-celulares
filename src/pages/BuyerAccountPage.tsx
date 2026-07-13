@@ -504,7 +504,7 @@ export function BuyerAccountPage() {
 
           <div className="flex flex-wrap items-center gap-3">
             <button
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={!canSubmit}
               type="submit"
             >
@@ -513,9 +513,9 @@ export function BuyerAccountPage() {
           </div>
         </form>
 
-        <aside className="grid gap-3 self-start rounded-3xl border border-brand-100 bg-[linear-gradient(180deg,_#f8fafc,_#ffffff)] p-5 shadow-sm">
+        <aside className="grid gap-3 self-start rounded-3xl border border-brand-100 bg-gradient-to-b from-stone-50 to-white p-5 shadow-sm">
           <div className="flex items-center gap-4 rounded-2xl border border-white/90 bg-white/90 px-4 py-4">
-            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-[#475569] text-xl font-semibold text-white">
+            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-ocean-500 text-xl font-semibold text-white">
               {selectedImagePreviewUrl || formState.profileImageUrl ? (
                 <img
                   alt={normalizedState.fullName || "Perfil comprador"}

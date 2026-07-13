@@ -136,7 +136,7 @@ function AdminProductControlActionsTabInner({
             </p>
           </div>
           <button
-            className="inline-flex items-center gap-2 rounded-full border border-[#0891b2] bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490]"
+            className="inline-flex items-center gap-2 rounded-full border border-brand-400 bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
             onClick={() => {
               setIsHelpOpen((value) => !value);
             }}
@@ -225,7 +225,7 @@ function AdminProductControlActionsTabInner({
           value={commentDraft}
         />
         <button
-          className="rounded-2xl border border-ocean-500 bg-brand-50 px-4 py-3 text-sm font-semibold text-ocean-500 transition-colors hover:bg-[#bae6fd] disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-2xl border border-ocean-500 bg-brand-50 px-4 py-3 text-sm font-semibold text-ocean-500 transition-colors hover:bg-brand-100 disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isSavingTag}
           onClick={() => {
             onSaveComment(commentDraft.trim() || null);
@@ -296,7 +296,7 @@ function AdminProductControlActionsTabInner({
 
         <div className="grid gap-2 sm:grid-cols-2">
           <button
-            className="rounded-2xl border border-[#0e7490] bg-brand-100 px-4 py-3 text-sm font-semibold text-[#0e7490] transition-colors hover:bg-[#a5f3fc] disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-2xl border border-brand-600 bg-brand-100 px-4 py-3 text-sm font-semibold text-brand-600 transition-colors hover:bg-brand-200 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isSavingTag || Number(boostAmountDraft) <= 0}
             onClick={() => {
               const amount = Number(boostAmountDraft);

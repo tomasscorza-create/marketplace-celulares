@@ -687,7 +687,7 @@ export function ProductDetailPage() {
                     </Link>
                   </div>
                   <Link
-                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#0891b2] bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490] sm:w-auto"
+                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-brand-400 bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600 sm:w-auto"
                     to={`/panel/admin/control-productos?productId=${product.id}`}
                   >
                     Control de producto

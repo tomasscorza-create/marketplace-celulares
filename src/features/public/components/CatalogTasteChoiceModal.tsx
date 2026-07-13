@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import {
@@ -80,7 +80,7 @@ export function CatalogTasteChoiceModal({
       />
 
       <section
-        className="relative z-[1] w-full max-w-3xl rounded-3xl border border-white/55 bg-[#fff8ec] p-4 shadow-[0_28px_80px_-36px_rgba(35,24,15,0.65)] outline-none sm:p-5"
+        className="relative z-[1] w-full max-w-3xl rounded-3xl border border-white/55 bg-stone-50 p-4 shadow-[0_28px_80px_-36px_rgba(35,24,15,0.65)] outline-none sm:p-5"
         ref={dialogRef}
         tabIndex={-1}
       >

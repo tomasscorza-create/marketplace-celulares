@@ -60,7 +60,7 @@ export function ProductImagesField({
   return (
     <section
       className={[
-        "grid gap-4 overflow-hidden rounded-3xl border border-stone-200 bg-[linear-gradient(180deg,_#ffffff,_#f8f4eb)] p-4 sm:p-5",
+        "grid gap-4 overflow-hidden rounded-3xl border border-stone-200 bg-gradient-to-b from-white to-stone-50 p-4 sm:p-5",
         isDraggingFiles ? "border-ocean-400 bg-brand-50" : "",
       ].join(" ")}
       onDragEnter={handleDragEnter}

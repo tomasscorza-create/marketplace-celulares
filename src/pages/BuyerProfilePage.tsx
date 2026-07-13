@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { PagePlaceholder } from "../components/PagePlaceholder";
@@ -215,7 +215,7 @@ export function BuyerProfilePage() {
         <div className="relative px-4 pb-5 sm:px-6 sm:pb-6">
           <div className="-mt-12 rounded-3xl border border-white/80 bg-white/96 p-4 shadow-[0_28px_70px_-44px_rgba(71,85,105,0.35)] backdrop-blur-sm sm:-mt-14 sm:p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-3xl border-4 border-white bg-[#475569] text-2xl font-semibold text-white shadow-lg sm:h-24 sm:w-24 sm:text-3xl">
+              <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-3xl border-4 border-white bg-ocean-500 text-2xl font-semibold text-white shadow-lg sm:h-24 sm:w-24 sm:text-3xl">
                 {buyerProfile.profile_image_url ? (
                   <img
                     alt={buyerProfile.full_name}
@@ -248,7 +248,7 @@ export function BuyerProfilePage() {
             {showInterestModule ? (
               <section className="rounded-3xl border border-stone-200 bg-white p-4 shadow-sm">
                 <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-sm font-semibold uppercase tracking-widest text-[#475569]">
+                  <h2 className="text-sm font-semibold uppercase tracking-widest text-ocean-500">
                     Tus intereses
                   </h2>
                   <button
@@ -274,7 +274,7 @@ export function BuyerProfilePage() {
 
                         return (
                           <button
-                            className="group grid min-h-12 grid-cols-[2.5rem_minmax(0,1fr)] items-center gap-3 rounded-xl border border-stone-200 bg-white px-2 py-1.5 text-left transition-all hover:border-brand-900/35 hover:bg-[#fff8ec]"
+                            className="group grid min-h-12 grid-cols-[2.5rem_minmax(0,1fr)] items-center gap-3 rounded-xl border border-stone-200 bg-white px-2 py-1.5 text-left transition-all hover:border-brand-900/35 hover:bg-stone-50"
                             key={product.id}
                             onClick={handleOpenInterests}
                             type="button"

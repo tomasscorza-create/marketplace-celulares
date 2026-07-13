@@ -230,7 +230,7 @@ export function AdminProductControlPage() {
                             </span>
                           ) : null}
                           {item.boostSummaryLabel ? (
-                            <span className="rounded-full bg-brand-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-[#0e7490]">
+                            <span className="rounded-full bg-brand-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-brand-600">
                               Boost {item.boostLevel}
                             </span>
                           ) : null}

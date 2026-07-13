@@ -911,7 +911,7 @@ export function BuyerContactPage() {
 
           <div className="flex flex-wrap items-center gap-3">
             <button
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0e7490] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={!canSubmit}
               type="submit"
             >

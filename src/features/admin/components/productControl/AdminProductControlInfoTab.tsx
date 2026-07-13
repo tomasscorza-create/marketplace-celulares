@@ -73,7 +73,7 @@ function AdminProductControlInfoTabInner({
 
       {productEditHref ? (
         <Link
-          className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-ocean-500 bg-brand-50 px-4 py-3 text-sm font-semibold text-ocean-500 transition-colors hover:bg-[#bae6fd]"
+          className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-ocean-500 bg-brand-50 px-4 py-3 text-sm font-semibold text-ocean-500 transition-colors hover:bg-brand-100"
           to={productEditHref}
         >
           Ir a editar producto
