@@ -1,7 +1,6 @@
 import type { FormEvent, PointerEvent as ReactPointerEvent } from "react";
 import type { ArtisanProduct, ArtisanProductInput } from "../types/artisan";
 import type { ProductImageDraft } from "../features/artisan/imageEditorTypes";
-import { isProductModel3DMediaItem } from "../types/productMedia";
 
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -45,6 +44,8 @@ import {
   serializeProductImageDrafts,
 } from "../features/artisan/productDraftUtils";
 import { useArtisanProductSubmit } from "../features/artisan/useArtisanProductSubmit";
+import { useArtisanProductModel3D } from "../features/artisan/useArtisanProductModel3D";
+import { useManagementProductPagination } from "../features/artisan/useManagementProductPagination";
 import { useAuth } from "../features/auth/useAuth";
 import { loadProductDraft, removeProductDraft, saveProductDraft } from "../lib/browser/productDraftStorage";
 import {
@@ -73,7 +74,6 @@ export function ArtisanProductsPage() {
   // Cache automática + revalidación + estado loading/error sin useState manual.
   const [productForm, setProductForm] = useState<ArtisanProductInput>(initialProductForm);
   const [productImages, setProductImages] = useState<ProductImageDraft[]>([]);
-  const [productModel3DFile, setProductModel3DFile] = useState<File | null>(null);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
@@ -90,9 +90,9 @@ export function ArtisanProductsPage() {
     "idle" | "saving" | "saved" | "error"
   >("idle");
   const [hasAppliedRequestedEdit, setHasAppliedRequestedEdit] = useState(false);
-  const [managementSearch, setManagementSearch] = useState("");
-  const [managementProductsPage, setManagementProductsPage] = useState(1);
   const [hasAppliedLearningDefaults, setHasAppliedLearningDefaults] = useState(false);
+  const { managementProductsPage, managementSearch, setManagementProductsPage, setManagementSearch } =
+    useManagementProductPagination();
   const isAdminManaging = role === "admin" && Boolean(artisanId);
   const isCreateFocus = searchParams.get("focus") === "create";
   const isEditFocus = searchParams.get("mode") === "edit";
@@ -109,37 +109,12 @@ export function ArtisanProductsPage() {
   const deferredManagementSearch = useDeferredValue(managementSearch);
   const normalizedManagementSearch = deferredManagementSearch.trim();
 
-  const handleModel3DFileChange = useCallback((file: File | null) => {
-    if (!file) {
-      setProductModel3DFile(null);
-      return;
-    }
-
-    const extension = file.name.split(".").pop()?.toLowerCase();
-
-    if (extension !== "glb" && extension !== "gltf") {
-      setSaveErrorMessage("El modelo 3D debe estar en formato .glb o .gltf.");
-      return;
-    }
-
-    if (file.size > 8 * 1024 * 1024) {
-      setSaveErrorMessage("El modelo 3D no puede superar 8 MB en esta fase.");
-      return;
-    }
-
-    setSaveErrorMessage(null);
-    setProductModel3DFile(file);
-  }, []);
-
-  const handleRemoveModel3D = useCallback(() => {
-    setProductModel3DFile(null);
-    setProductForm((currentValue) => ({
-      ...currentValue,
-      product_media: currentValue.product_media.filter(
-        (mediaItem) => !isProductModel3DMediaItem(mediaItem),
-      ),
-    }));
-  }, []);
+  const {
+    handleModel3DFileChange,
+    handleRemoveModel3D,
+    productModel3DFile,
+    setProductModel3DFile,
+  } = useArtisanProductModel3D({ setProductForm, setSaveErrorMessage });
 
   // ─── Fetching via React Query ─────────────────────────────────────────
   // Cuando el admin gestiona el perfil de un vendedor, cargamos su perfil.
@@ -205,16 +180,12 @@ export function ArtisanProductsPage() {
   const errorMessage = saveErrorMessage ?? loadErrorMessage;
 
   useEffect(() => {
-    setManagementProductsPage(1);
-  }, [managementSearch]);
-
-  useEffect(() => {
     const totalPages = Math.max(1, Math.ceil(productsTotalCount / MANAGEMENT_PRODUCTS_PAGE_SIZE));
 
     if (managementProductsPage > totalPages) {
       setManagementProductsPage(totalPages);
     }
-  }, [managementProductsPage, productsTotalCount]);
+  }, [managementProductsPage, productsTotalCount, setManagementProductsPage]);
 
 
   useEffect(() => {
