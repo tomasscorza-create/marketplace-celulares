@@ -108,33 +108,33 @@ function DashboardDetailDrawerInner({
               >
                 {activePanel === "artisans" ? (
                   <>
-                    <option value="most_sales">MÃ¡s ventas</option>
-                    <option value="most_products">MÃ¡s productos</option>
-                    <option value="newest">MÃ¡s nueva</option>
-                    <option value="oldest">MÃ¡s antigua</option>
+                    <option value="most_sales">Más ventas</option>
+                    <option value="most_products">Más productos</option>
+                    <option value="newest">Más nueva</option>
+                    <option value="oldest">Más antigua</option>
                     <option value="alphabetical">A-Z</option>
                   </>
                 ) : null}
                 {activePanel === "products" ? (
                   <>
-                    <option value="newest">MÃ¡s nuevo</option>
-                    <option value="oldest">MÃ¡s antiguo</option>
+                    <option value="newest">Más nuevo</option>
+                    <option value="oldest">Más antiguo</option>
                     <option value="active_first">Visibles primero</option>
                     <option value="highest_price">Mayor precio</option>
                   </>
                 ) : null}
                 {activePanel === "sales" ? (
                   <>
-                    <option value="newest">MÃ¡s nueva</option>
+                    <option value="newest">Más nueva</option>
                     <option value="highest_amount">Mayor monto</option>
-                    <option value="highest_quantity">MÃ¡s unidades</option>
+                    <option value="highest_quantity">Más unidades</option>
                   </>
                 ) : null}
                 {activePanel === "categories" ? (
                   <>
                     <option value="active_first">Activas primero</option>
                     <option value="name">A-Z</option>
-                    <option value="newest">MÃ¡s nueva</option>
+                    <option value="newest">Más nueva</option>
                   </>
                 ) : null}
               </select>
@@ -206,7 +206,7 @@ function DashboardDetailDrawerInner({
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <DetailChip>
-                        {product.categories?.name ?? "Sin categorÃ­a"}
+                        {product.categories?.name ?? "Sin categoría"}
                       </DetailChip>
                       <DetailChip>{formatCurrency(product.price)}</DetailChip>
                       <DetailChip>

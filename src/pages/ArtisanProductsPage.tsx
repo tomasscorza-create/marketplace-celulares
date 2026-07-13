@@ -805,7 +805,7 @@ export function ArtisanProductsPage() {
     setIsCropModalOpen(false);
     setStatusMessage(null);
     setSaveErrorMessage(null);
-  }, [productImages]);
+  }, [productImages, setProductModel3DFile]);
 
 
   useEffect(() => {

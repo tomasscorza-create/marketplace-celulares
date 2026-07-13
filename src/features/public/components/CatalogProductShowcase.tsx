@@ -36,6 +36,22 @@ export function CatalogProductShowcase({
   const supportingGridClassName = isSingleColumnViewport
     ? "grid grid-cols-1 content-start gap-3.5"
     : "grid grid-cols-2 content-start gap-3.5 sm:gap-4";
+  const itemsWith3D = items.filter((item) => Boolean(getPrimaryProductModel3D(item.product.product_media)));
+  const [active3DIndex, setActive3DIndex] = useState(0);
+
+  useEffect(() => {
+    if (itemsWith3D.length === 0) return;
+
+    const rotationIntervalMs = 30 * 60 * 1000;
+    const updateIndex = () => {
+      const globalTimeSlice = Math.floor(Date.now() / rotationIntervalMs);
+      setActive3DIndex(globalTimeSlice % itemsWith3D.length);
+    };
+
+    updateIndex();
+    const interval = setInterval(updateIndex, 60_000);
+    return () => clearInterval(interval);
+  }, [itemsWith3D.length]);
 
   if (!featuredItem) {
     return null;
@@ -61,25 +77,6 @@ export function CatalogProductShowcase({
       </RevealSequenceGroup>
     );
   }
-
-  const itemsWith3D = items.filter((item) => Boolean(getPrimaryProductModel3D(item.product.product_media)));
-  const [active3DIndex, setActive3DIndex] = useState(0);
-
-  useEffect(() => {
-    if (itemsWith3D.length === 0) return;
-    
-    // Rota globalmente cada 30 minutos (30 * 60 * 1000 = 1800000 ms)
-    const ROTATION_INTERVAL_MS = 1800000;
-    
-    const updateIndex = () => {
-      const globalTimeSlice = Math.floor(Date.now() / ROTATION_INTERVAL_MS);
-      setActive3DIndex(globalTimeSlice % itemsWith3D.length);
-    };
-
-    updateIndex();
-    const interval = setInterval(updateIndex, 60000);
-    return () => clearInterval(interval);
-  }, [itemsWith3D.length]);
 
   const preview3DItem = itemsWith3D.length > 0 ? itemsWith3D[active3DIndex] : featuredItem;
 

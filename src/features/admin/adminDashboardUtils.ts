@@ -30,15 +30,15 @@ export const ADMIN_DASHBOARD_PANEL_META = {
     title: "Cuentas vendedoras",
   },
   categories: {
-    empty: "No hay categorÃ­as para mostrar.",
-    title: "CategorÃ­as",
+    empty: "No hay categorías para mostrar.",
+    title: "Categorías",
   },
   products: {
-    empty: "No hay productos cargados todavÃ­a.",
+    empty: "No hay productos cargados todavía.",
     title: "Productos",
   },
   sales: {
-    empty: "No hay ventas registradas todavÃ­a.",
+    empty: "No hay ventas registradas todavía.",
     title: "Ventas",
   },
 } satisfies Record<DashboardPanelKey, { empty: string; title: string }>;

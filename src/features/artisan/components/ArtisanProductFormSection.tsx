@@ -231,39 +231,8 @@ export function ArtisanProductFormSection({
           </div>
         </div>
 
-        <div
-          className={
-            showTopSummary
-              ? "grid gap-3 lg:grid-cols-[1.2fr_0.8fr]"
-              : "grid gap-3"
-          }
-        >
-          <div className="grid gap-3 rounded-2xl border border-stone-200 bg-white p-4">
-            <div className="space-y-1">
-              <p className="text-sm font-semibold text-stone-900">
-                Modo de carga
-              </p>
-              <p className="text-sm text-stone-500">
-                Elige una sola forma de trabajo y sigue ese camino hasta
-                guardar.
-              </p>
-            </div>
-
-            <div className="grid gap-2">
-              <button
-                className="rounded-2xl border border-ocean-300 bg-[#E0F2FE] px-4 py-3 text-left text-ocean-600 transition-colors"
-                type="button"
-              >
-                <p className="text-sm font-semibold">Un solo producto</p>
-                <p className="mt-1 text-xs text-current/80">
-                  Varias fotos para una misma ficha con una portada principal.
-                </p>
-              </button>
-            </div>
-          </div>
-
-          {showTopSummary ? (
-            <div className="grid gap-3 rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
+        {showTopSummary ? (
+          <div className="grid gap-3 rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
               <p className="text-sm font-semibold text-stone-900">
                 Resumen rapido
               </p>
@@ -285,12 +254,11 @@ export function ArtisanProductFormSection({
                 </span>
               </div>
               <p className="text-xs leading-5 text-stone-500">
-                "Esta vista estÃƒÂ¡ pensada para completar una ficha comÃƒÂºn
+                "Esta vista está pensada para completar una ficha común
                 con el menor esfuerzo posible."
               </p>
-            </div>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </section>
 
       <ProductLearningPanel
@@ -475,7 +443,7 @@ export function ArtisanProductFormSection({
                       onChange={(event) => {
                         onUpdateAttribute(index, "value", event.target.value);
                       }}
-                      placeholder="Ej. cerÃƒÂ¡mica esmaltada"
+                      placeholder="Ej. cerámica esmaltada"
                       type="text"
                       value={attribute.value}
                     />
@@ -580,7 +548,7 @@ export function ArtisanProductFormSection({
           >
             <p className="text-sm font-semibold">Produccion bajo demanda</p>
             <p className="mt-1 text-xs text-current/80">
-              El cliente ve la demora de producciÃƒÂ³n y, si hace falta, puede
+              El cliente ve la demora de producción y, si hace falta, puede
               elegir variables.
             </p>
           </button>
@@ -922,7 +890,7 @@ export function ArtisanProductFormSection({
             }}
             type="checkbox"
           />
-          Publicar en el catÃƒÂ¡logo apenas se guarde
+          Publicar en el catálogo apenas se guarde
         </label>
 
         {statusMessage ? (
