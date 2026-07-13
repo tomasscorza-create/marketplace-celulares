@@ -406,8 +406,8 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - [x] Fase 2.7 - Sin referencias batch en src/
 - [x] Fase 3 - Migracion creada
 - [x] Fase 3 - Migracion aplicada al backend confirmado
-- [ ] Fase 4.1 â€” CÃ³digo muerto de borrado de imÃ¡genes eliminado
-- [ ] Fase 4.2 â€” Vestigios de refresh manual eliminados
+- [x] Fase 4.1 â€” CÃ³digo muerto de borrado de imÃ¡genes eliminado
+- [x] Fase 4.2 â€” Vestigios de refresh manual eliminados
 - [ ] Fase 4.3 â€” `isMissingColumnError` acotado o eliminado
 - [ ] Fase 4.4 â€” Autosave con debounce y carrera resuelta
 - [ ] Fase 4.5 â€” `ArtisanProductsPage` dividido en hooks
@@ -418,8 +418,9 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 
 ### Notas de ejecuciÃ³n
 
-_(El agente anota acÃ¡ desvÃ­os, deuda nueva detectada fuera de alcance, y decisiones
-tomadas, con fecha. VacÃ­o al inicio.)_
+- 2026-07-13: Fase 4.1-4.2. Se conserva Storage append-only por la migraciÃ³n 020;
+  se retirÃ³ el rollback no operativo y sus mensajes. Las mutations de React Query
+  invalidan la lista, por lo que se eliminÃ³ el refresh stub.
 
 ## Criterios de aceptaciÃ³n
 
@@ -431,4 +432,3 @@ tomadas, con fecha. VacÃ­o al inicio.)_
 - NingÃºn archivo del feature de carga supera ~400 lÃ­neas.
 - Los hallazgos 6.1, 6.3, 6.4, 6.5 y los vestigios de 6.8 quedan resueltos o
   explÃ­citamente descartados con justificaciÃ³n escrita en este documento.
-

@@ -6,7 +6,6 @@ import {
   type ProductMediaItem,
 } from "../../types/productMedia";
 import {
-  removeArtisanProductImages,
   uploadArtisanProductModel,
   uploadArtisanProductImage,
 } from "./artisanClient";
@@ -17,32 +16,20 @@ import { compressImage, createProcessedImageFile } from "../../lib/compressImage
 
 type SubmitParams = {
   createProduct: (input: ArtisanProductInput) => Promise<ArtisanProduct>;
-  editingOriginalImageUrls: string[];
   editingProductId: string | null;
   onError: (message: string) => void;
   onSavingChange: (isSaving: boolean) => void;
-  onSuccess: (message: string, refreshed: boolean) => void;
+  onSuccess: (message: string) => void;
   onUploadStatusChange: (message: string | null) => void;
   productForm: ArtisanProductInput;
   productImages: ProductImageDraft[];
   productModel3DFile: File | null;
-  refreshProducts: () => Promise<boolean>;
   targetArtisanId: string | null;
   updateProduct: (payload: {
     input: ArtisanProductInput;
     productId: string;
   }) => Promise<ArtisanProduct>;
 };
-
-function getProductMediaStoredUrls(mediaItems: ProductMediaItem[]) {
-  return Array.from(
-    new Set(
-      mediaItems
-        .flatMap((item) => [item.url, item.original_url, item.thumbnail_url])
-        .filter((value): value is string => Boolean(value)),
-    ),
-  );
-}
 
 function getModelFormat(fileName: string) {
   const extension = fileName.split(".").pop()?.toLowerCase();
@@ -87,15 +74,13 @@ async function uploadProductMedia(params: {
 }) {
   const { onUploadStatusChange, productImages, targetArtisanId } = params;
   const uploadedMedia: ProductMediaItem[] = [];
-  const newUploadedUrls: string[] = [];
   const draftsToUpload = productImages.filter(
     (draft) => draft.previewUrl && (draft.file || draft.isEdited),
   );
   const totalUploads = draftsToUpload.length;
   let uploadCount = 0;
 
-  try {
-    for (const draft of productImages) {
+  for (const draft of productImages) {
       if (!draft.previewUrl) {
         continue;
       }
@@ -126,7 +111,6 @@ async function uploadProductMedia(params: {
         }
 
         originalImageUrl = originalUploadResponse.data.publicUrl;
-        newUploadedUrls.push(originalUploadResponse.data.publicUrl);
       }
 
       const compressedImage = draft.file
@@ -152,8 +136,6 @@ async function uploadProductMedia(params: {
         throw new Error(uploadResponse.error?.message ?? "No pudimos subir una de las fotos.");
       }
 
-      newUploadedUrls.push(uploadResponse.data.publicUrl);
-
       const thumbnailUploadResponse = await uploadProductThumbnail(targetArtisanId, draft);
 
       if (thumbnailUploadResponse.error || !thumbnailUploadResponse.data) {
@@ -162,8 +144,6 @@ async function uploadProductMedia(params: {
         );
       }
 
-      newUploadedUrls.push(thumbnailUploadResponse.data.publicUrl);
-
       uploadedMedia.push({
         crop: draft.crop,
         description: draft.description.trim(),
@@ -171,25 +151,17 @@ async function uploadProductMedia(params: {
         thumbnail_url: thumbnailUploadResponse.data.publicUrl,
         url: uploadResponse.data.publicUrl,
       });
-    }
-  } catch (error) {
-    if (newUploadedUrls.length > 0) {
-      await removeArtisanProductImages(newUploadedUrls);
-    }
-    throw error;
   }
 
   onUploadStatusChange(null);
 
   return {
-    newUploadedUrls,
     uploadedMedia,
   };
 }
 
 export function useArtisanProductSubmit({
   createProduct,
-  editingOriginalImageUrls,
   editingProductId,
   onError,
   onSavingChange,
@@ -198,7 +170,6 @@ export function useArtisanProductSubmit({
   productForm,
   productImages,
   productModel3DFile,
-  refreshProducts,
   targetArtisanId,
   updateProduct,
 }: SubmitParams) {
@@ -220,7 +191,6 @@ export function useArtisanProductSubmit({
     onSavingChange(true);
     onUploadStatusChange(null);
 
-    let newUploadedUrls: string[] = [];
     let uploadedMedia: ProductMediaItem[] = [];
     let uploadedModelMedia: ProductMediaItem | null = null;
 
@@ -231,7 +201,6 @@ export function useArtisanProductSubmit({
         targetArtisanId,
       });
 
-      newUploadedUrls = uploadResult.newUploadedUrls;
       uploadedMedia = uploadResult.uploadedMedia;
       if (productModel3DFile) {
         onUploadStatusChange("Subiendo modelo 3D...");
@@ -246,7 +215,6 @@ export function useArtisanProductSubmit({
           );
         }
 
-        newUploadedUrls.push(modelUploadResponse.data.publicUrl);
         uploadedModelMedia = {
           description: productModel3DFile.name,
           format: getModelFormat(productModel3DFile.name),
@@ -259,9 +227,6 @@ export function useArtisanProductSubmit({
         onUploadStatusChange(null);
       }
     } catch (error) {
-      if (newUploadedUrls.length > 0) {
-        await removeArtisanProductImages(newUploadedUrls);
-      }
       onError(getErrorMessage(error, "No pudimos preparar una de las fotos."));
       onUploadStatusChange(null);
       onSavingChange(false);
@@ -291,33 +256,14 @@ export function useArtisanProductSubmit({
         await createProduct(payload);
       }
     } catch (error) {
-      if (newUploadedUrls.length > 0) {
-        await removeArtisanProductImages(newUploadedUrls);
-      }
       onError(getErrorMessage(error, "No pudimos guardar el producto."));
       onSavingChange(false);
       return;
     }
 
-    const refreshed = await refreshProducts();
-
-    if (editingProductId) {
-      const removedUrls = editingOriginalImageUrls.filter(
-        (imageUrl) => !getProductMediaStoredUrls(uploadedMedia).includes(imageUrl),
-      );
-
-      if (removedUrls.length > 0) {
-        await removeArtisanProductImages(removedUrls);
-      }
-    }
-
-    onSuccess(
-      editingProductId ? "Producto actualizado correctamente." : "Producto creado correctamente.",
-      refreshed,
-    );
+    onSuccess(editingProductId ? "Producto actualizado correctamente." : "Producto creado correctamente.");
   }, [
     createProduct,
-    editingOriginalImageUrls,
     editingProductId,
     onError,
     onSavingChange,
@@ -326,7 +272,6 @@ export function useArtisanProductSubmit({
     productForm,
     productImages,
     productModel3DFile,
-    refreshProducts,
     targetArtisanId,
     updateProduct,
   ]);

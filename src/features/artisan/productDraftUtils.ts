@@ -34,7 +34,6 @@ export type PersistedProductDraftState = {
   availability_mode: "made_to_order" | "stock";
   category_id: string;
   description: string;
-  editingOriginalImageUrls: string[];
   editingProductId: string | null;
   imageDrafts: PersistedProductDraftImage[];
   is_active: boolean;

@@ -215,6 +215,7 @@ export async function removeArtisanProfileImages(imageUrls: string[]) {
 }
 
 export async function uploadArtisanProductImage(artisanId: string, file: File, subfolder = "") {
+  // Product storage is append-only by policy; failed/replaced uploads are not deleted here.
   const client = getSupabaseClient();
   const safeSubfolder = subfolder
     ? `${subfolder.toLowerCase().replace(/[^a-z0-9\-_]/g, "-").replace(/-+/g, "-")}/`
@@ -257,15 +258,6 @@ export async function uploadArtisanProductImage(artisanId: string, file: File, s
 
 export async function uploadArtisanProductModel(artisanId: string, file: File) {
   return uploadArtisanProductImage(artisanId, file, "models");
-}
-
-export async function removeArtisanProductImages(imageUrls: string[]) {
-  void imageUrls;
-
-  return {
-    data: [],
-    error: null,
-  };
 }
 
 export async function getArtisanCategories() {

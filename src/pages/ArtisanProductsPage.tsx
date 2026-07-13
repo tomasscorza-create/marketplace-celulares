@@ -7,10 +7,7 @@ import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } f
 import { useParams, useSearchParams } from "react-router-dom";
 import { PagePlaceholder } from "../components/PagePlaceholder";
 import { useAdminArtisanProfile } from "../features/admin/adminQueries";
-import {
-  getArtisanProductById,
-  removeArtisanProductImages,
-} from "../features/artisan/artisanClient";
+import { getArtisanProductById } from "../features/artisan/artisanClient";
 import {
   useArtisanCategories,
   useArtisanProductLearningProfile,
@@ -36,7 +33,6 @@ import {
   formatImageCount,
   getPrimaryProductImage,
   getProductMedia,
-  getProductStoredImageUrls,
   initialProductForm,
 } from "../features/artisan/artisanProductsPageUtils";
 import {
@@ -87,7 +83,6 @@ export function ArtisanProductsPage() {
   const [activeCropIndex, setActiveCropIndex] = useState<number | null>(null);
   const [isCropModalOpen, setIsCropModalOpen] = useState(false);
   const [dragState, setDragState] = useState<DragState | null>(null);
-  const [editingOriginalImageUrls, setEditingOriginalImageUrls] = useState<string[]>([]);
   const [hasDraft, setHasDraft] = useState(false);
   const [isDraftReady, setIsDraftReady] = useState(false);
   const [draftPersistenceState, setDraftPersistenceState] = useState<
@@ -243,7 +238,6 @@ export function ArtisanProductsPage() {
       persisted: [],
     };
     setEditingProductId(null);
-    setEditingOriginalImageUrls([]);
     setStatusMessage(null);
     setSaveErrorMessage(null);
     setHasDraft(false);
@@ -284,7 +278,6 @@ export function ArtisanProductsPage() {
         setHasDraft(true);
         setDraftPersistenceState("saved");
             setEditingProductId(draft.editingProductId ?? null);
-        setEditingOriginalImageUrls(draft.editingOriginalImageUrls ?? []);
         setProductForm((prev) => ({
           ...prev,
           availability_mode: draft.availability_mode ?? prev.availability_mode,
@@ -363,7 +356,6 @@ export function ArtisanProductsPage() {
           availability_mode: productForm.availability_mode,
           category_id: productForm.category_id,
           description: productForm.description,
-          editingOriginalImageUrls,
           editingProductId,
           imageDrafts,
           is_active: productForm.is_active,
@@ -407,7 +399,6 @@ export function ArtisanProductsPage() {
     productForm.made_to_order_options,
     productForm.product_attributes,
     productImages,
-    editingOriginalImageUrls,
     editingProductId,
     isDraftReady,
   ]);
@@ -429,17 +420,8 @@ export function ArtisanProductsPage() {
     };
   }, [editingProductId, showProductForm]);
 
-  // Las mutations invalidan automáticamente las queries de productos,
-  // así que no hace falta refetch manual. Devolvemos true para mantener
-  // la firma que espera `finalizeSuccessfulSave`.
-  const refreshProducts = async () => true;
-
-  const finalizeSuccessfulSave = (
-    successMessage: string,
-    refreshed: boolean,
-    staleDataWarning = "Guardamos los cambios, pero no pudimos refrescar la lista todavía.",
-  ) => {
-    setStatusMessage(refreshed ? successMessage : `${successMessage} ${staleDataWarning}`);
+  const finalizeSuccessfulSave = (successMessage: string) => {
+    setStatusMessage(successMessage);
     resetForm();
     setUploadStatus(null);
     setIsSaving(false);
@@ -448,7 +430,6 @@ export function ArtisanProductsPage() {
   const resetForm = () => {
     cleanupDraftUrls(productImages);
     setEditingProductId(null);
-    setEditingOriginalImageUrls([]);
     setProductImages([]);
     setProductModel3DFile(null);
     setActiveCropIndex(null);
@@ -475,7 +456,6 @@ export function ArtisanProductsPage() {
     setDragState(null);
     setProductForm(createInitialProductForm(categories, learningProfile));
     setEditingProductId(null);
-    setEditingOriginalImageUrls([]);
     void removeProductDraft(draftKey);
     setHasDraft(false);
     setDraftPersistenceState("idle");
@@ -777,7 +757,6 @@ export function ArtisanProductsPage() {
 
   const submitProductForm = useArtisanProductSubmit({
     createProduct: createProductMutation.mutateAsync,
-    editingOriginalImageUrls,
     editingProductId,
     onError: setSaveErrorMessage,
     onSavingChange: setIsSaving,
@@ -786,7 +765,6 @@ export function ArtisanProductsPage() {
     productForm,
     productImages,
     productModel3DFile,
-    refreshProducts,
     targetArtisanId,
     updateProduct: updateProductMutation.mutateAsync,
   });
@@ -826,7 +804,6 @@ export function ArtisanProductsPage() {
     );
 
     setEditingProductId(product.id);
-    setEditingOriginalImageUrls(getProductStoredImageUrls(product));
     setProductImages(draftsWithDimensions);
     setProductModel3DFile(null);
     setProductForm({
@@ -919,24 +896,10 @@ export function ArtisanProductsPage() {
       return;
     }
 
-    const productImageUrls = getProductStoredImageUrls(productToDelete);
-    const imageCleanupResponse =
-      productImageUrls.length > 0 ? await removeArtisanProductImages(productImageUrls) : null;
-
-    const refreshed = await refreshProducts();
-
-    if (!refreshed) {
-      return;
-    }
-
     if (editingProductId === productId) {
       resetForm();
     }
-    setStatusMessage(
-      imageCleanupResponse?.error
-        ? "Producto eliminado correctamente. No pudimos quitar algunas fotos viejas."
-        : "Producto eliminado correctamente.",
-    );
+    setStatusMessage("Producto eliminado correctamente.");
   };
 
 
