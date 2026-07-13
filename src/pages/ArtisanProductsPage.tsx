@@ -70,7 +70,7 @@ export function ArtisanProductsPage() {
   });
   const draftSaveRequestIdRef = useRef(0);
   const isBulkUploadRef = useRef(false);
-  // Categorías, productos y lotes ahora se cargan vía React Query.
+  // Categorías y productos se cargan vía React Query.
   // Cache automática + revalidación + estado loading/error sin useState manual.
   const [productForm, setProductForm] = useState<ArtisanProductInput>(initialProductForm);
   const [productImages, setProductImages] = useState<ProductImageDraft[]>([]);
@@ -141,7 +141,7 @@ export function ArtisanProductsPage() {
     }),
     [managementProductsPage, normalizedManagementSearch],
   );
-  // Productos individuales y lotes del vendedor objetivo, paginados para no
+  // Productos del vendedor objetivo, paginados para no
   // traer todo el catalogo cuando la cuenta crece.
   const productsQuery = useArtisanProducts(
     targetArtisanId ?? undefined,
@@ -165,7 +165,7 @@ export function ArtisanProductsPage() {
       productsQuery.isLoading ||
       productStatsQuery.isLoading);
 
-  // Mutations de productos y lotes — invalidan automáticamente las queries.
+  // Las mutations de productos invalidan automáticamente las queries.
   const createProductMutation = useCreateArtisanProduct(targetArtisanId ?? undefined);
   const updateProductMutation = useUpdateArtisanProduct(targetArtisanId ?? undefined);
   const deleteProductMutation = useDeleteArtisanProduct(targetArtisanId ?? undefined);
@@ -194,7 +194,7 @@ export function ArtisanProductsPage() {
 
   useEffect(() => {
     productImagesRef.current = productImages;
-  }, [productImages]);
+  }, [productImages, setProductModel3DFile]);
 
   useEffect(() => {
     return () => {

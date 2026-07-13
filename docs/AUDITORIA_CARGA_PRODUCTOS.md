@@ -414,7 +414,7 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - [x] Fase 4.6 â€” `ArtisanProductFormSection` dividido
 - [x] Fase 4.7 â€” Subidas paralelizadas con orden preservado
 - [x] Fase 4.8 â€” Textos unificados
-- [ ] Fase 5 â€” VerificaciÃ³n final completa y docs actualizadas
+- [ ] Fase 5 â€” VerificaciÃ³n final pendiente de bloqueos preexistentes
 
 ### Notas de ejecuciÃ³n
 
@@ -437,6 +437,12 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - 2026-07-13: Fase 4.8. Se normalizaron los mensajes principales del flujo a espaÃ±ol
   rioplatense y la confirmaciÃ³n de borrado ahora refleja la retenciÃ³n append-only de
   las fotos.
+- 2026-07-13: Fase 5. `typecheck`, build, `git diff --check`, migraciones alineadas y
+  `supabase db lint --linked` pasaron; `src/` no conserva referencias a lotes. El cierre
+  queda pendiente por errores de lint preexistentes en `CatalogProductShowcase.tsx`,
+  archivos locales `supabase/.temp/` detectados por las auditorÃ­as y 245 lÃ­neas con
+  codificaciÃ³n sospechosa. TambiÃ©n exceden el objetivo de tamaÃ±o `ArtisanProductsPage`
+  (1134 lÃ­neas) y `ArtisanProductFormSection` (1008 lÃ­neas).
 
 ## Criterios de aceptaciÃ³n
 
