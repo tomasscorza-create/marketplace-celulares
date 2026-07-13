@@ -40,7 +40,7 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
 
       <div className="relative z-10 flex max-h-[90svh] min-h-0 w-full max-w-lg flex-col rounded-2xl bg-white shadow-2xl">
         <div className="flex items-center justify-between border-b border-stone-100 px-6 py-4">
-          <h2 className="text-base font-semibold text-stone-800">Informacion importante</h2>
+          <h2 className="text-base font-semibold text-stone-800">Información importante</h2>
           <button
             ref={closeButtonRef}
             aria-label="Cerrar"
@@ -63,20 +63,20 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
 
         <div className="flex-1 space-y-5 overflow-y-auto px-6 py-6 text-sm leading-relaxed text-stone-600">
           <p className="text-base font-semibold text-stone-800">
-            Como funciona el catalogo de {marketplaceConfig.appName}
+            Cómo funciona el catálogo de {marketplaceConfig.appName}
           </p>
 
           <p>
-            Este catalogo reune en un solo lugar productos de tiendas y vendedores
-            independientes. Cualquier persona puede entrar, explorar y comprar desde aca.
+            Este catálogo reúne en un solo lugar productos de tiendas y vendedores
+            independientes. Cualquier persona puede entrar, explorar y comprar desde acá.
           </p>
 
           <div className="space-y-1 rounded-xl border border-brand-100 bg-brand-50 px-4 py-3">
             <p className="font-semibold text-stone-700">Todos los productos tienen oportunidad</p>
             <p>
-              El catalogo no muestra siempre lo mismo. Funciona de manera rotatoria para dar
-              visibilidad a distintas tiendas, productos y categorias. Ademas, el sistema puede
-              priorizar lo que parece mas relevante para cada comprador segun su actividad.
+              El catálogo no muestra siempre lo mismo. Funciona de manera rotatoria para dar
+              visibilidad a distintas tiendas, productos y categorías. Además, el sistema puede
+              priorizar lo que parece más relevante para cada comprador según su actividad.
             </p>
           </div>
 
@@ -88,10 +88,10 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
                 1
               </span>
               <div>
-                <p className="font-semibold text-stone-700">Seccion personalizada</p>
+                <p className="font-semibold text-stone-700">Sección personalizada</p>
                 <p>
-                  Es la primera que aparece al ingresar. Aca puede influir el historial de cada
-                  comprador para mostrar productos relacionados con lo que vio o busco antes.
+                  Es la primera que aparece al ingresar. Acá puede influir el historial de cada
+                  comprador para mostrar productos relacionados con lo que vio o buscó antes.
                 </p>
               </div>
             </div>
@@ -101,9 +101,9 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
                 2
               </span>
               <div>
-                <p className="font-semibold text-stone-700">Seccion de exploracion</p>
+                <p className="font-semibold text-stone-700">Sección de exploración</p>
                 <p>
-                  Es la parte mas amplia y variada del catalogo. Presenta productos de distintas
+                  Es la parte más amplia y variada del catálogo. Presenta productos de distintas
                   tiendas y grillas destacadas que rotan para repartir mejor la visibilidad.
                 </p>
               </div>
@@ -114,9 +114,9 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
                 3
               </span>
               <div>
-                <p className="font-semibold text-stone-700">Seccion de perfiles de vendedores</p>
+                <p className="font-semibold text-stone-700">Sección de perfiles de vendedores</p>
                 <p>
-                  Al final aparecen perfiles de tiendas y vendedores. Esta seccion tambien rota para
+                  Al final aparecen perfiles de tiendas y vendedores. Esta sección también rota para
                   ayudar a que los compradores descubran nuevas propuestas.
                 </p>
               </div>
@@ -125,8 +125,8 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
 
           <div className="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3">
             <p>
-              En resumen: el catalogo trabaja para que mas productos sean vistos, lleguen a personas
-              interesadas y mantengan una experiencia de exploracion dinamica.
+              En resumen: el catálogo trabaja para que más productos sean vistos, lleguen a personas
+              interesadas y mantengan una experiencia de exploración dinámica.
             </p>
           </div>
         </div>
@@ -139,7 +139,7 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
               onChange={(e) => setAccepted(e.target.checked)}
               type="checkbox"
             />
-            <span className="text-sm text-stone-600">Acepto terminos y usos</span>
+            <span className="text-sm text-stone-600">Acepto términos y usos</span>
           </label>
 
           <button
@@ -155,7 +155,7 @@ export function TermsModal({ isOpen, onClose, onConfirm }: TermsModalProps) {
             }}
             type="button"
           >
-            Confirmo que lei y entendi
+            Confirmo que leí y entendí
           </button>
         </div>
       </div>

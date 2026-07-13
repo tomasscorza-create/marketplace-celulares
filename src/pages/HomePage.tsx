@@ -78,16 +78,19 @@ export function HomePage() {
   };
 
   return (
-    <section className="relative -mx-4 flex min-h-[calc(100dvh-13rem)] flex-col items-center justify-center overflow-hidden px-4 py-16 sm:-mx-6 sm:px-6 sm:py-24">
-      <div className="relative z-10 flex w-full max-w-2xl flex-col items-center gap-6 sm:gap-8">
+    <section className="relative -mx-4 flex min-h-[calc(100dvh-13rem)] flex-col items-center justify-center overflow-hidden px-4 py-14 sm:-mx-6 sm:px-6 sm:py-20">
+      <div className="relative z-10 flex w-full max-w-2xl flex-col items-center gap-6 sm:gap-7">
         <div className="flex flex-col items-center justify-center gap-4 animate-fade-in-up">
           <img 
             src={marketplaceConfig.logoPath} 
             alt="Logo Nyzca" 
             className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl shadow-elev-glow"
           />
-          <h1 className="text-center font-display text-4xl font-extrabold tracking-tight text-ocean-900 sm:text-5xl lg:text-6xl drop-shadow-sm">
+          <p className="text-center text-xs font-bold uppercase tracking-widest text-brand-600">
             {marketplaceConfig.appName}
+          </p>
+          <h1 className="text-center font-display text-4xl font-extrabold tracking-tight text-ocean-900 sm:text-5xl lg:text-6xl drop-shadow-sm">
+            Tu próxima tecnología, más cerca.
           </h1>
         </div>
 
@@ -106,10 +109,10 @@ export function HomePage() {
           {content ? (
             <>
               <Link
-                className="group relative flex w-full sm:w-auto items-center justify-center gap-2 overflow-hidden rounded-full bg-stone-900 px-8 py-3.5 text-center font-medium text-white shadow-elev-3 transition-all duration-500 hover:-translate-y-0.5 hover:bg-stone-800 hover:shadow-elev-3"
+                className="group relative flex w-full sm:w-auto items-center justify-center gap-2 overflow-hidden rounded-full bg-brand-500 px-8 py-3.5 text-center font-medium text-white shadow-elev-2 transition-all duration-500 hover:-translate-y-0.5 hover:bg-brand-600 hover:shadow-elev-3"
                 to="/catalogo"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/30 to-blue-500/0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-300/0 via-brand-300/30 to-brand-300/0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 <span className="relative z-10 flex items-center gap-2">
                   {content[HOME_CONTENT.primaryButtonLabel]}
                   <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/></svg>
@@ -220,7 +223,7 @@ export function HomePage() {
                     Cancelar
                   </button>
                   <button
-                    className="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-elev-1 transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-60"
                     disabled={saveContent.isPending}
                     type="submit"
                   >
