@@ -104,8 +104,8 @@ function CatalogProductFeedCardInner({
     ? "border-brand-300 bg-brand-50/45 hover:border-brand-400"
     : "";
   const boostImageShellClassName = item.isBoosted
-    ? "bg-blue-50"
-    : "bg-slate-50";
+    ? "bg-blue-50/50"
+    : "bg-white/30";
   const navigate = useNavigate();
   const cardRef = useRef<HTMLElement | null>(null);
   const handleOpenProductDetail = () => {
@@ -147,7 +147,7 @@ function CatalogProductFeedCardInner({
     return (
       <article
         className={[
-          "catalog-card group/focus flex min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg active:scale-[0.995] sm:grid sm:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]",
+          "catalog-card group/focus flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/50 bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/80 hover:bg-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] active:scale-[0.995] sm:grid sm:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]",
           boostCardClassName,
         ].join(" ")}
         ref={cardRef}
@@ -257,7 +257,7 @@ function CatalogProductFeedCardInner({
   return (
     <article
       className={[
-        "catalog-card group/focus flex h-full min-w-0 flex-col rounded-lg border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md active:scale-[0.995] [content-visibility:auto] [contain-intrinsic-size:260px]",
+        "catalog-card group/focus flex h-full min-w-0 flex-col rounded-2xl border border-white/50 bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/80 hover:bg-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] active:scale-[0.995] [content-visibility:auto] [contain-intrinsic-size:260px]",
         boostCardClassName,
       ].join(" ")}
       ref={cardRef}

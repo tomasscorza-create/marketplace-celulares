@@ -61,7 +61,13 @@ export function PublicLayout() {
   }, []);
 
   return (
-    <div className="min-h-dvh bg-slate-50 text-slate-900 selection:bg-blue-500/30">
+    <div className="relative min-h-dvh bg-slate-50 text-slate-900 selection:bg-blue-500/30">
+      {/* Hyper-Premium Graphic Background */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-slate-50">
+        <img src="/tech_abstract_bg.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-90" />
+        {/* Noise overlay for premium texture */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9IjAuMDIiLz4KPC9zdmc+')] opacity-60 mix-blend-overlay" />
+      </div>
       <a
         className="sr-only absolute left-4 top-4 z-[60] rounded-full bg-ocean-600 px-4 py-2 text-sm font-medium text-white focus:not-sr-only"
         href="#main-content"
@@ -73,8 +79,8 @@ export function PublicLayout() {
         className={[
           "sticky top-0 z-50 transition-all duration-300",
           isScrolled
-            ? "bg-white/80 border-b border-slate-200/80 shadow-sm backdrop-blur-md"
-            : "bg-white/50 border-b border-transparent backdrop-blur-sm",
+            ? "bg-white/60 border-b border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl"
+            : "bg-transparent border-b border-transparent",
         ].join(" ")}
       >
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -103,7 +109,7 @@ export function PublicLayout() {
       </header>
 
       <main
-        className="mx-auto max-w-6xl px-4 pb-6 pt-4 sm:px-6 sm:py-10"
+        className="relative z-10 mx-auto max-w-6xl px-4 pb-6 pt-4 sm:px-6 sm:py-10"
         id="main-content"
         tabIndex={-1}
       >
@@ -124,7 +130,7 @@ export function PublicLayout() {
         </Suspense>
       </div>
 
-      <footer className="mt-10 border-t border-slate-200 bg-white">
+      <footer className="relative z-10 mt-10 border-t border-slate-200/50 bg-white/40 backdrop-blur-xl">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div>

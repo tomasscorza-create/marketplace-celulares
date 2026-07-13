@@ -569,7 +569,7 @@ export function CatalogPage() {
           />
         </div>
 
-        <div className="grid gap-7 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <div className="grid gap-7 rounded-3xl border border-white/40 bg-white/40 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl sm:p-7">
           {catalogLoadErrorMessage ? (
             <div className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
               {catalogLoadErrorMessage}
@@ -602,7 +602,7 @@ export function CatalogPage() {
             className="grid gap-5 border-t border-stone-200/80 pt-6"
             ref={exploreSectionRef}
           >
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 sm:px-5 sm:py-5">
+            <div className="rounded-2xl border border-white/50 bg-white/50 px-4 py-4 shadow-sm backdrop-blur-md sm:px-5 sm:py-5">
               <CatalogSectionHeader
                 id="catalog-explore-title"
                 title="Explorar"
@@ -623,7 +623,7 @@ export function CatalogPage() {
                 {Array.from({ length: CATALOG_FEED_PAGE_SIZE }).map((_, index) => (
                   <div
                     key={index}
-                    className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+                    className="rounded-2xl border border-white/40 bg-white/40 p-4 shadow-sm backdrop-blur-xl"
                   >
                     <SkeletonBlock className="aspect-square w-full rounded-lg" />
                     <SkeletonBlock className="mt-4 h-4 w-20" />
