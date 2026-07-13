@@ -9,6 +9,8 @@ import {
 import { getProductImageMediaItems } from "../../../types/productMedia";
 import type { PublicProduct } from "../../../types/public";
 import { AddToCartButton } from "../../buyer/components/AddToCartButton";
+import { isOnlinePurchaseEnabled } from "../../../config/marketplace";
+import { WhatsAppProductButton } from "../../../components/WhatsAppProductButton";
 
 type CatalogStorefrontProductCardProps = {
   product: PublicProduct;
@@ -139,19 +141,32 @@ function CatalogStorefrontProductCardInner({ product }: CatalogStorefrontProduct
       </Link>
 
       <div className="flex justify-end px-2 pb-1.5">
-        <AddToCartButton
-          className={railBuyActionClassName}
-          disabled={isSoldOut}
-          disabledLabel="Sin stock"
-          labels={{
-            added: "Carrito",
-            buyerOnlyNotice: "Ingresa como comprador para comprar",
-            idle: "Comprar",
-            login: "Ingresar",
-            pending: "Agregando",
-          }}
-          product={product}
-        />
+        {!isOnlinePurchaseEnabled ? (
+          <WhatsAppProductButton
+            product={{
+              id: product.id,
+              title: product.title,
+              price: Number(product.price),
+            }}
+            variant="compact"
+            className={railBuyActionClassName}
+            label={isSoldOut ? "Consultar" : "WhatsApp"}
+          />
+        ) : (
+          <AddToCartButton
+            className={railBuyActionClassName}
+            disabled={isSoldOut}
+            disabledLabel="Sin stock"
+            labels={{
+              added: "Carrito",
+              buyerOnlyNotice: "Ingresa como comprador para comprar",
+              idle: "Comprar",
+              login: "Ingresar",
+              pending: "Agregando",
+            }}
+            product={product}
+          />
+        )}
       </div>
     </article>
   );

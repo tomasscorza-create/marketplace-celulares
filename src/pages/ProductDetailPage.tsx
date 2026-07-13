@@ -1,8 +1,10 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { DownloadableQr } from "../components/DownloadableQr";
 import { PagePlaceholder } from "../components/PagePlaceholder";
+import { isOnlinePurchaseEnabled } from "../config/marketplace";
+import { WhatsAppProductButton } from "../components/WhatsAppProductButton";
 import { ProductImageCarousel } from "../components/ProductImageCarousel";
 import { useAuth } from "../features/auth/useAuth";
 import { AddToCartButton } from "../features/buyer/components/AddToCartButton";
@@ -771,32 +773,45 @@ export function ProductDetailPage() {
                       {updateCartItemSelectionMutation.isPending ? "Guardando..." : "Guardar cambios"}
                     </button>
                   ) : (
-                    <AddToCartButton
-                    className="inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-full bg-ocean-500 px-6 py-3.5 text-base font-bold tracking-tight text-white shadow-[0_10px_28px_-10px_rgba(71,85,105,0.55)] transition-all duration-200 hover:bg-ocean-600 hover:shadow-[0_14px_32px_-8px_rgba(71,85,105,0.6)] hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-1 sm:text-[1.0625rem]"
-                    disabled={isSoldOut || missingRequiredOption}
-                    disabledLabel={
-                      isSoldOut ? "Sin stock" : missingRequiredOption ? "Elegir opciones" : undefined
-                    }
-                    labels={{
-                      added: "Ir a pagar",
-                      buyerOnlyNotice: "Ingresá como comprador para comprar",
-                      idle: "Comprar",
-                      login: "Ingresar para comprar",
-                      pending: "Comprando...",
-                    }}
-                    product={product}
-                    selection={
-                      hasSelectableOptions
-                        ? {
-                            configurationKey,
-                            leadTimeDays: product.lead_time_days ?? null,
-                            selectedOptions: selectedOptionChoices,
-                            selectedOptionsSummary,
-                            unitPrice: finalUnitPrice,
-                          }
-                        : undefined
-                    }
-                    />
+                    !isOnlinePurchaseEnabled ? (
+                      <WhatsAppProductButton
+                        product={{
+                          id: product.id,
+                          title: product.title,
+                          price: finalUnitPrice,
+                        }}
+                        selectedOptionsSummary={selectedOptionsSummary}
+                        variant="full"
+                        label={isSoldOut ? "Consultar disponibilidad" : "Pedir por WhatsApp"}
+                      />
+                    ) : (
+                      <AddToCartButton
+                        className="inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-full bg-ocean-500 px-6 py-3.5 text-base font-bold tracking-tight text-white shadow-[0_10px_28px_-10px_rgba(71,85,105,0.55)] transition-all duration-200 hover:bg-ocean-600 hover:shadow-[0_14px_32px_-8px_rgba(71,85,105,0.6)] hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-1 sm:text-[1.0625rem]"
+                        disabled={isSoldOut || missingRequiredOption}
+                        disabledLabel={
+                          isSoldOut ? "Sin stock" : missingRequiredOption ? "Elegir opciones" : undefined
+                        }
+                        labels={{
+                          added: "Ir a pagar",
+                          buyerOnlyNotice: "Ingresá como comprador para comprar",
+                          idle: "Comprar",
+                          login: "Ingresar para comprar",
+                          pending: "Comprando...",
+                        }}
+                        product={product}
+                        selection={
+                          hasSelectableOptions
+                            ? {
+                                configurationKey,
+                                leadTimeDays: product.lead_time_days ?? null,
+                                selectedOptions: selectedOptionChoices,
+                                selectedOptionsSummary,
+                                unitPrice: finalUnitPrice,
+                              }
+                            : undefined
+                        }
+                      />
+                    )
                   )}
                 </>
               )}
@@ -812,9 +827,11 @@ export function ProductDetailPage() {
                     ? "Edita tu pieza para actualizar contenido, precio o stock y vuelve a revisar como se ve publicada."
                     : isArtisan
                       ? "Usa esta vista como referencia comercial y vuelve a tu panel para seguir gestionando tu tienda."
-                      : isBuyer
-                        ? "Si agregas la pieza, el seguimiento del pedido continua desde tu carrito de comprador."
-                        : "Puedes configurar la pieza ahora y el acceso a compra se completa cuando ingreses con una cuenta de comprador."}
+                      : !isOnlinePurchaseEnabled
+                        ? "Escribinos por WhatsApp para coordinar tu pedido y la entrega."
+                        : isBuyer
+                          ? "Si agregas la pieza, el seguimiento del pedido continua desde tu carrito de comprador."
+                          : "Puedes configurar la pieza ahora y el acceso a compra se completa cuando ingreses con una cuenta de comprador."}
                   </p>
                 </div>
               ) : null}

@@ -192,8 +192,8 @@ cambios> : <WhatsAppProductButton>`. No tocar la rama actual.
 ## Estado de ejecución (actualizar al avanzar)
 
 - [x] Fase 1 — Flag `salesChannel`, número WP en config, `WhatsAppProductButton` creado
-- [ ] Fase 2.1 — `ProductDetailPage` con CTA de WhatsApp (incl. opciones en el mensaje)
-- [ ] Fase 2.2–2.4 — Cards del catálogo (feed, storefront, 3D) reemplazadas
+- [x] Fase 2.1 — `ProductDetailPage` con CTA de WhatsApp (incl. opciones en el mensaje)
+- [x] Fase 2.2–2.4 — Cards del catálogo (feed, storefront, 3D) reemplazadas
 - [ ] Fase 3.1–3.3 — Navegación limpia (header, menú usuario, tabs comprador)
 - [ ] Fase 3.4 — Rutas de carrito/pedidos/checkout redirigen al catálogo
 - [ ] Fase 3.5–3.6 — Cuenta comprador y copys de registro ajustados
@@ -202,3 +202,4 @@ cambios> : <WhatsAppProductButton>`. No tocar la rama actual.
 ### Notas de ejecución
 
 - **2026-07-13**: Fase 1 completada. Se usó el número 3518037869 a pedido del dueño en lugar del especificado originalmente en el documento.
+- **2026-07-13**: Fase 2 completada. Se aplicó el condicional `isOnlinePurchaseEnabled` en los 4 componentes (ProductDetailPage, CatalogProductFeedCard, CatalogStorefrontProductCard y CatalogProduct3DPreviewSlot). Todos los `AddToCartButton` están ahora protegidos.

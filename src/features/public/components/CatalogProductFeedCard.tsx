@@ -6,6 +6,8 @@ import { saveProductDetailOrigin } from "../../../lib/browser/productDetailOrigi
 import { getProductImageMediaItems } from "../../../types/productMedia";
 import type { PublicCatalogFeedItem } from "../../../types/public";
 import { AddToCartButton } from "../../buyer/components/AddToCartButton";
+import { isOnlinePurchaseEnabled } from "../../../config/marketplace";
+import { WhatsAppProductButton } from "../../../components/WhatsAppProductButton";
 
 const CARD_ZOOM_DURATION_MS = 180;
 
@@ -221,13 +223,26 @@ function CatalogProductFeedCardInner({
               <span className="truncate">{storefrontLabel}</span>
             </Link>
 
-            <AddToCartButton
-              className={featuredBuyActionClassName}
-              disabled={isSoldOut}
-              disabledLabel="Sin stock"
-              labels={compactBuyLabels}
-              product={product}
-            />
+            {!isOnlinePurchaseEnabled ? (
+              <WhatsAppProductButton
+                product={{
+                  id: product.id,
+                  title: product.title,
+                  price: Number(product.price),
+                }}
+                variant="compact"
+                className={featuredBuyActionClassName}
+                label={isSoldOut ? "Consultar" : "WhatsApp"}
+              />
+            ) : (
+              <AddToCartButton
+                className={featuredBuyActionClassName}
+                disabled={isSoldOut}
+                disabledLabel="Sin stock"
+                labels={compactBuyLabels}
+                product={product}
+              />
+            )}
 
             {featuredExtraAction?.to ? (
               <Link
@@ -320,13 +335,26 @@ function CatalogProductFeedCardInner({
           <span className="truncate">{storefrontLabel}</span>
         </Link>
 
-        <AddToCartButton
-          className={compactBuyActionClassName}
-          disabled={isSoldOut}
-          disabledLabel="Sin stock"
-          labels={compactBuyLabels}
-          product={product}
-        />
+        {!isOnlinePurchaseEnabled ? (
+          <WhatsAppProductButton
+            product={{
+              id: product.id,
+              title: product.title,
+              price: Number(product.price),
+            }}
+            variant="compact"
+            className={compactBuyActionClassName}
+            label={isSoldOut ? "Consultar" : "WhatsApp"}
+          />
+        ) : (
+          <AddToCartButton
+            className={compactBuyActionClassName}
+            disabled={isSoldOut}
+            disabledLabel="Sin stock"
+            labels={compactBuyLabels}
+            product={product}
+          />
+        )}
       </div>
     </article>
   );

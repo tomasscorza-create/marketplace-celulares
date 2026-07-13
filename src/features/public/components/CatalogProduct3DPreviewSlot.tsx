@@ -7,6 +7,8 @@ import {
 } from "../../../types/productMedia";
 import { AddToCartButton } from "../../buyer/components/AddToCartButton";
 import { ProductModel3DViewer } from "./ProductModel3DViewer";
+import { isOnlinePurchaseEnabled } from "../../../config/marketplace";
+import { WhatsAppProductButton } from "../../../components/WhatsAppProductButton";
 
 type CatalogProduct3DPreviewSlotProps = {
   isLiteMode?: boolean;
@@ -94,20 +96,33 @@ export function CatalogProduct3DPreviewSlot({
             >
               Ver
             </Link>
-            <AddToCartButton
-              className="inline-flex h-7 min-w-[4.8rem] items-center justify-center rounded-md bg-ocean-600 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-ocean-700 disabled:cursor-not-allowed disabled:opacity-50"
-              compact
-              disabled={isSoldOut}
-              disabledLabel="Sin stock"
-              labels={{
-                added: "Carrito",
-                buyerOnlyNotice: "Ingresa como comprador para comprar",
-                idle: "Comprar",
-                login: "Ingresar",
-                pending: "...",
-              }}
-              product={product}
-            />
+            {!isOnlinePurchaseEnabled ? (
+              <WhatsAppProductButton
+                product={{
+                  id: product.id,
+                  title: product.title,
+                  price: Number(product.price),
+                }}
+                variant="compact"
+                className="inline-flex h-7 min-w-[4.8rem] items-center justify-center rounded-md bg-ocean-600 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-ocean-700 disabled:cursor-not-allowed disabled:opacity-50"
+                label={isSoldOut ? "Consultar" : "WhatsApp"}
+              />
+            ) : (
+              <AddToCartButton
+                className="inline-flex h-7 min-w-[4.8rem] items-center justify-center rounded-md bg-ocean-600 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-ocean-700 disabled:cursor-not-allowed disabled:opacity-50"
+                compact
+                disabled={isSoldOut}
+                disabledLabel="Sin stock"
+                labels={{
+                  added: "Carrito",
+                  buyerOnlyNotice: "Ingresa como comprador para comprar",
+                  idle: "Comprar",
+                  login: "Ingresar",
+                  pending: "...",
+                }}
+                product={product}
+              />
+            )}
           </div>
         </div>
       </div>
