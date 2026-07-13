@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 type CatalogSectionHeaderProps = {
   action?: ReactNode;
@@ -29,19 +29,19 @@ export function CatalogSectionHeader({
 
   return (
     <div
-      className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"
+      className="flex flex-col gap-1 sm:gap-2 sm:flex-row sm:items-end sm:justify-between"
     >
-      <div className="space-y-1">
+      <div className="space-y-0.5 sm:space-y-1">
         {eyebrow ? (
           <p className={["text-[11px] font-semibold uppercase tracking-[0.18em]", eyebrowClassName].join(" ")}>
             {eyebrow}
           </p>
         ) : null}
-        <h2 className={["font-display text-xl font-semibold", titleClassName].join(" ")} id={id}>
+        <h2 className={["font-display text-base font-semibold sm:text-xl", titleClassName].join(" ")} id={id}>
           {title}
         </h2>
         {description ? (
-          <p className={["max-w-3xl text-sm leading-6", descriptionClassName].join(" ")}>{description}</p>
+          <p className={["max-w-3xl text-xs leading-[1.35] sm:text-sm sm:leading-6", descriptionClassName].join(" ")}>{description}</p>
         ) : null}
       </div>
 

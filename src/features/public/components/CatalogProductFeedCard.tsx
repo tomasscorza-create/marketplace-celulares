@@ -172,7 +172,7 @@ function CatalogProductFeedCardInner({
               autoAdvanceDelay={6500}
               autoAdvanceMinImages={3}
               className="w-full"
-              imageClassName="aspect-[4/3] w-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.025] sm:aspect-[1/1]"
+              imageClassName="aspect-[3/2] w-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.025] sm:aspect-[4/3]"
               imageSizes="(max-width: 640px) 92vw, (max-width: 1280px) 54vw, 640px"
               imageSrcSetWidths={[480, 640, 768, 960, 1200]}
               imageWidth={priority ? 960 : 720}
@@ -189,23 +189,23 @@ function CatalogProductFeedCardInner({
           )}
         </Link>
 
-        <div className="flex min-w-0 flex-col gap-2 p-3 sm:p-3.5">
-          <Link
-            aria-label={`Ver detalle de ${product.title}`}
-            className="group min-w-0"
-            onClick={(event) => {
-              handleOpenProductDetail();
-              handleZoomNavigate(event, `/producto/${product.id}`);
-            }}
-            to={`/producto/${product.id}`}
-          >
-            <h3 className="line-clamp-2 text-base font-medium leading-tight text-stone-900 transition-colors group-hover:text-ocean-700 sm:text-lg">
-              {product.title}
-            </h3>
-            <span className={`${priceTextClassName} mt-1`}>{priceLabel}</span>
-            <p className="mt-1 line-clamp-1 text-[11px] leading-[1.3] text-stone-500 sm:text-xs">
-              {product.description || "Entrá al detalle para ver más información sobre esta pieza."}
-            </p>
+        <div className="flex flex-1 min-w-0 flex-col gap-1.5 p-2.5 sm:p-3">
+        <Link
+          aria-label={`Ver detalle de ${product.title}`}
+          className="group min-w-0"
+          onClick={(event) => {
+            handleOpenProductDetail();
+            handleZoomNavigate(event, `/producto/${product.id}`);
+          }}
+          to={`/producto/${product.id}`}
+        >
+          <h3 className="line-clamp-2 text-sm font-medium leading-tight text-stone-900 transition-colors group-hover:text-ocean-700 sm:text-base">
+            {product.title}
+          </h3>
+          <span className={`${priceTextClassName} mt-0.5`}>{priceLabel}</span>
+          <p className="mt-1 line-clamp-1 text-[10px] leading-[1.3] text-stone-500 sm:text-xs">
+            {product.description || "Entrá al detalle para ver más información."}
+          </p>
           </Link>
 
           <div className="mt-auto grid min-w-0 gap-1">
@@ -282,7 +282,7 @@ function CatalogProductFeedCardInner({
               <ProductImageCarousel
               autoAdvance={false}
               className="w-full"
-              imageClassName="aspect-[1/1] w-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.025] sm:aspect-[8/7]"
+              imageClassName="aspect-[5/4] w-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.025] sm:aspect-[4/3]"
               imageSizes="(max-width: 640px) 92vw, (max-width: 1280px) 46vw, 320px"
               imageSrcSetWidths={[240, 320, 420, 560, 720]}
               imageWidth={priority ? 720 : 520}
@@ -293,7 +293,7 @@ function CatalogProductFeedCardInner({
               <span className={categoryOverlayClassName}>{categoryLabel}</span>
             </>
           ) : (
-            <div className="flex aspect-[1/1] items-center justify-center px-3 text-center text-xs font-semibold text-ocean-500 sm:aspect-[8/7]">
+            <div className="flex aspect-[5/4] items-center justify-center px-3 text-center text-xs font-semibold text-ocean-500 sm:aspect-[4/3]">
               {product.title}
             </div>
           )}

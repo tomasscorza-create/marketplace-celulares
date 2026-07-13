@@ -121,10 +121,11 @@ export function ProductModel3DViewer({
 
     async function loadViewer() {
       try {
-        const [Three, { GLTFLoader }, { OrbitControls }] = await Promise.all([
+        const [Three, { GLTFLoader }, { OrbitControls }, { MeshoptDecoder }] = await Promise.all([
           import("three"),
           import("three/examples/jsm/loaders/GLTFLoader.js"),
           import("three/examples/jsm/controls/OrbitControls.js"),
+          import("three/examples/jsm/libs/meshopt_decoder.module.js"),
         ]);
 
         if (isDisposed || !container) {
@@ -142,6 +143,7 @@ export function ProductModel3DViewer({
         const keyLight = new Three.DirectionalLight(0xffffff, 2.4);
         const fillLight = new Three.HemisphereLight(0xe0f2fe, 0x475569, 1.2);
         const loader = new GLTFLoader();
+        loader.setMeshoptDecoder(MeshoptDecoder);
 
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isLiteMode ? 1.2 : 1.8));
         renderer.outputColorSpace = Three.SRGBColorSpace;

@@ -527,7 +527,7 @@ export function CatalogPage() {
     <PagePlaceholder description="" hideHeader title="">
       <div
         className={[
-          "grid min-w-0 gap-5 overflow-x-clip",
+          "grid min-w-0 gap-3 overflow-x-clip",
           adaptiveMode.isLiteMode ? "catalog-lite" : "",
         ]
           .filter(Boolean)
@@ -569,7 +569,7 @@ export function CatalogPage() {
           />
         </div>
 
-        <div className="grid gap-7 rounded-3xl border border-white/40 bg-white/40 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl sm:p-7">
+        <div className="grid gap-4 rounded-3xl border border-white/40 bg-white/40 p-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl sm:gap-5 sm:p-5">
           {catalogLoadErrorMessage ? (
             <div className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
               {catalogLoadErrorMessage}
@@ -585,7 +585,7 @@ export function CatalogPage() {
               <div className="pointer-events-none absolute -inset-2 z-0 bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40 blur-[4px]" />
               <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
               <div className="relative z-10 grid gap-5">
-                <div className="group relative overflow-hidden rounded-2xl border border-white/20 px-4 py-4 shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-white/40 hover:shadow-2xl hover:shadow-ocean-900/30 sm:px-5 sm:py-5">
+                <div className="group relative overflow-hidden rounded-xl border border-white/20 px-3 py-2.5 shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-white/40 hover:shadow-2xl hover:shadow-ocean-900/30 sm:rounded-2xl sm:px-5 sm:py-5">
                   <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/badge_bg.webp')] bg-cover bg-center opacity-100 transition-transform duration-700 ease-out group-hover:scale-105" />
                   <div className="pointer-events-none absolute inset-0 z-0 bg-slate-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-slate-900/65" />
                   <div className="relative z-10">
@@ -621,7 +621,7 @@ export function CatalogPage() {
             <div className="pointer-events-none absolute -inset-2 z-0 bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40 blur-[4px]" />
             <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
             <div className="relative z-10 grid gap-5">
-              <div className="group relative overflow-hidden rounded-2xl border border-white/20 px-4 py-4 shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-white/40 hover:shadow-2xl hover:shadow-ocean-900/30 sm:px-5 sm:py-5">
+              <div className="group relative overflow-hidden rounded-xl border border-white/20 px-3 py-2.5 shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-white/40 hover:shadow-2xl hover:shadow-ocean-900/30 sm:rounded-2xl sm:px-5 sm:py-5">
                 <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/badge_bg.webp')] bg-cover bg-center opacity-100 transition-transform duration-700 ease-out group-hover:scale-105" />
                 <div className="pointer-events-none absolute inset-0 z-0 bg-slate-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-slate-900/65" />
                 <div className="relative z-10">
@@ -631,7 +631,7 @@ export function CatalogPage() {
                     title="Explorar"
                   />
                   {totalCount > 0 ? (
-                    <p className="mt-2.5 text-sm leading-6 text-stone-300">
+                    <p className="mt-1 text-xs leading-[1.3] text-stone-300 sm:mt-2.5 sm:text-sm sm:leading-6">
                       Encuentra lo que buscas entre más de{" "}
                       <span className="font-semibold text-white">
                         {totalCount.toLocaleString("es-AR")}
