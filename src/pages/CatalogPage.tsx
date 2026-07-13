@@ -647,7 +647,7 @@ export function CatalogPage() {
                 {Array.from({ length: CATALOG_FEED_PAGE_SIZE }).map((_, index) => (
                   <div
                     key={index}
-                    className="rounded-2xl border border-white/70 bg-white/85 p-4 shadow-sm backdrop-blur-xl"
+                    className="rounded-2xl border border-white/70 bg-ocean-50/80 p-4 shadow-sm backdrop-blur-xl"
                   >
                     <SkeletonBlock className="aspect-square w-full rounded-lg" />
                     <SkeletonBlock className="mt-4 h-4 w-20" />
