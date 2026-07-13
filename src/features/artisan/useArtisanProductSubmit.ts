@@ -67,91 +67,117 @@ async function uploadProductThumbnail(targetArtisanId: string, draft: ProductIma
   return uploadArtisanProductImage(targetArtisanId, thumbnailImage, "thumbs");
 }
 
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  limit: number,
+  mapper: (item: T, index: number) => Promise<R>,
+) {
+  const results = new Array<R>(items.length);
+  let nextIndex = 0;
+
+  const worker = async () => {
+    while (nextIndex < items.length) {
+      const currentIndex = nextIndex;
+      nextIndex += 1;
+      results[currentIndex] = await mapper(items[currentIndex], currentIndex);
+    }
+  };
+
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
+
 async function uploadProductMedia(params: {
   onUploadStatusChange: (message: string | null) => void;
   productImages: ProductImageDraft[];
   targetArtisanId: string;
 }) {
   const { onUploadStatusChange, productImages, targetArtisanId } = params;
-  const uploadedMedia: ProductMediaItem[] = [];
   const draftsToUpload = productImages.filter(
     (draft) => draft.previewUrl && (draft.file || draft.isEdited),
   );
   const totalUploads = draftsToUpload.length;
-  let uploadCount = 0;
+  let completedUploads = 0;
 
-  for (const draft of productImages) {
-      if (!draft.previewUrl) {
-        continue;
-      }
+  const mediaByIndex = await mapWithConcurrency<ProductImageDraft, ProductMediaItem | null>(
+    productImages,
+    3,
+    async (draft) => {
+    if (!draft.previewUrl) {
+      return null;
+    }
 
-      if (!draft.file && !draft.isEdited) {
-        uploadedMedia.push({
+    if (!draft.file && !draft.isEdited) {
+      return {
           crop: draft.originalUrl ? draft.crop : null,
           description: draft.description.trim(),
           original_url: draft.originalUrl,
           thumbnail_url: draft.thumbnailUrl,
           url: draft.mediaUrl ?? draft.previewUrl,
-        });
-        continue;
+      } satisfies ProductMediaItem;
+    }
+
+    let originalImageUrl = draft.originalUrl;
+
+    if (draft.file) {
+      const originalUploadResponse = await uploadArtisanProductImage(targetArtisanId, draft.file);
+
+      if (originalUploadResponse.error || !originalUploadResponse.data) {
+        throw new Error(
+          originalUploadResponse.error?.message ?? "No pudimos subir la foto original.",
+        );
       }
 
-      uploadCount += 1;
-      onUploadStatusChange(`Subiendo foto ${uploadCount} de ${totalUploads}...`);
+      originalImageUrl = originalUploadResponse.data.publicUrl;
+    }
 
-      let originalImageUrl = draft.originalUrl;
-
-      if (draft.file) {
-        const originalUploadResponse = await uploadArtisanProductImage(targetArtisanId, draft.file);
-
-        if (originalUploadResponse.error || !originalUploadResponse.data) {
-          throw new Error(
-            originalUploadResponse.error?.message ?? "No pudimos subir la foto original.",
-          );
-        }
-
-        originalImageUrl = originalUploadResponse.data.publicUrl;
-      }
-
-      const compressedImage = draft.file
-        ? await compressImage(draft.file, {
+    const compressedImage = draft.file
+      ? await compressImage(draft.file, {
+          crop: draft.crop,
+          maxBytes: 2 * 1024 * 1024,
+          maxDimension: 1280,
+          quality: 0.76,
+        })
+      : await createProcessedImageFile(
+          draft.sourceUrl,
+          {
             crop: draft.crop,
             maxBytes: 2 * 1024 * 1024,
             maxDimension: 1280,
             quality: 0.76,
-          })
-        : await createProcessedImageFile(
-            draft.sourceUrl,
-            {
-              crop: draft.crop,
-              maxBytes: 2 * 1024 * 1024,
-              maxDimension: 1280,
-              quality: 0.76,
-            },
-            `producto-${Date.now()}-${draft.id}`,
-          );
-      const uploadResponse = await uploadArtisanProductImage(targetArtisanId, compressedImage);
-
-      if (uploadResponse.error || !uploadResponse.data) {
-        throw new Error(uploadResponse.error?.message ?? "No pudimos subir una de las fotos.");
-      }
-
-      const thumbnailUploadResponse = await uploadProductThumbnail(targetArtisanId, draft);
-
-      if (thumbnailUploadResponse.error || !thumbnailUploadResponse.data) {
-        throw new Error(
-          thumbnailUploadResponse.error?.message ?? "No pudimos subir la miniatura de una foto.",
+          },
+          `producto-${Date.now()}-${draft.id}`,
         );
-      }
+    const uploadResponse = await uploadArtisanProductImage(targetArtisanId, compressedImage);
 
-      uploadedMedia.push({
-        crop: draft.crop,
-        description: draft.description.trim(),
-        original_url: originalImageUrl ?? null,
-        thumbnail_url: thumbnailUploadResponse.data.publicUrl,
-        url: uploadResponse.data.publicUrl,
-      });
-  }
+    if (uploadResponse.error || !uploadResponse.data) {
+      throw new Error(uploadResponse.error?.message ?? "No pudimos subir una de las fotos.");
+    }
+
+    const thumbnailUploadResponse = await uploadProductThumbnail(targetArtisanId, draft);
+
+    if (thumbnailUploadResponse.error || !thumbnailUploadResponse.data) {
+      throw new Error(
+        thumbnailUploadResponse.error?.message ?? "No pudimos subir la miniatura de una foto.",
+      );
+    }
+
+    completedUploads += 1;
+    onUploadStatusChange(`Subiendo foto ${completedUploads} de ${totalUploads}...`);
+
+    return {
+      crop: draft.crop,
+      description: draft.description.trim(),
+      original_url: originalImageUrl ?? null,
+      thumbnail_url: thumbnailUploadResponse.data.publicUrl,
+      url: uploadResponse.data.publicUrl,
+    } satisfies ProductMediaItem;
+    },
+  );
+
+  const uploadedMedia = mediaByIndex.filter(
+    (mediaItem): mediaItem is ProductMediaItem => mediaItem !== null,
+  );
 
   onUploadStatusChange(null);
 

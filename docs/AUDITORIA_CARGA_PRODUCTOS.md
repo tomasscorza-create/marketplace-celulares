@@ -412,7 +412,7 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - [x] Fase 4.4 â€” Autosave con debounce y carrera resuelta
 - [x] Fase 4.5 â€” `ArtisanProductsPage` dividido en hooks
 - [x] Fase 4.6 â€” `ArtisanProductFormSection` dividido
-- [ ] Fase 4.7 â€” Subidas paralelizadas con orden preservado
+- [x] Fase 4.7 â€” Subidas paralelizadas con orden preservado
 - [ ] Fase 4.8 â€” Textos unificados
 - [ ] Fase 5 â€” VerificaciÃ³n final completa y docs actualizadas
 
@@ -431,6 +431,9 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
   depende del total recibido por React Query.
 - 2026-07-13: Fase 4.6. El bloque de modelo 3D se separÃ³ en `ProductModel3DField`;
   conserva el contrato de carga, eliminaciÃ³n y previsualizaciÃ³n del formulario.
+- 2026-07-13: Fase 4.7. Las fotos se procesan con un pool de tres trabajos; cada una
+  conserva la secuencia original, comprimida y miniatura, y el resultado se ordena por
+  su Ã­ndice original antes de persistirlo.
 
 ## Criterios de aceptaciÃ³n
 
