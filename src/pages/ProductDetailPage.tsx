@@ -32,6 +32,7 @@ import {
   createSelectedOptionsSummary,
   type ProductSelectionChoice,
 } from "../types/productAvailability";
+import { getProductImageMediaItems } from "../types/productMedia";
 import { buildPublicProductDetailUrl, buildUrlFileSlug } from "../lib/publicUrls";
 
 type DetailSectionCardProps = {
@@ -224,7 +225,7 @@ export function ProductDetailPage() {
     }
 
     if ((product.product_media?.length ?? 0) > 0) {
-      return product.product_media.filter((item) => Boolean(item.url));
+      return getProductImageMediaItems(product.product_media).filter((item) => Boolean(item.url));
     }
 
     const urls = product.image_urls.filter(Boolean);

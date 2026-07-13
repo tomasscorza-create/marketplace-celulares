@@ -6,8 +6,9 @@ import {
   getCatalogImageSrcSet,
   getOptimizedCatalogImageUrl,
 } from "../../../lib/images/catalogImageUrl";
-import { getProductImageMediaItems } from "../../../types/productMedia";
+import { getPrimaryProductModel3D, getProductImageMediaItems } from "../../../types/productMedia";
 import type { PublicProduct } from "../../../types/public";
+import { Catalog3DBadge } from "./Catalog3DBadge";
 
 type CatalogStorefrontProductCardProps = {
   product: PublicProduct;
@@ -25,6 +26,7 @@ const railPriceClassName = "block text-sm font-semibold leading-none text-stone-
 function CatalogStorefrontProductCardInner({ product }: CatalogStorefrontProductCardProps) {
   const location = useLocation();
   const primaryMedia = getProductImageMediaItems(product.product_media)[0] ?? null;
+  const has3DModel = Boolean(getPrimaryProductModel3D(product.product_media));
   const primaryImage =
     primaryMedia?.thumbnail_url ??
     primaryMedia?.url ??
@@ -86,7 +88,7 @@ function CatalogStorefrontProductCardInner({ product }: CatalogStorefrontProduct
       <Link className="group flex flex-1 flex-col" onClick={handleOpenProductDetail} to={`/producto/${product.id}`}>
         <div className="relative overflow-hidden rounded-t-xl border-b border-stone-100">
           {primaryImage && !hasImageError ? (
-            <div className="relative aspect-[1/1] w-full overflow-hidden bg-ocean-50">
+            <div className="relative aspect-[4/5] w-full overflow-hidden bg-ocean-50">
               <img
                 alt={product.title}
                 className="h-full w-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.025]"
@@ -113,7 +115,7 @@ function CatalogStorefrontProductCardInner({ product }: CatalogStorefrontProduct
               />
             </div>
           ) : (
-            <div className="flex aspect-[1/1] items-center justify-center bg-ocean-50 px-3 text-center text-xs font-semibold text-ocean-500">
+            <div className="flex aspect-[4/5] items-center justify-center bg-ocean-50 px-3 text-center text-xs font-semibold text-ocean-500">
               {categoryLabel}
             </div>
           )}
@@ -123,10 +125,12 @@ function CatalogStorefrontProductCardInner({ product }: CatalogStorefrontProduct
               {categoryLabel}
             </span>
           ) : null}
+
+          {primaryImage && !hasImageError && has3DModel ? <Catalog3DBadge /> : null}
         </div>
 
         <div className="flex flex-1 flex-col gap-1 px-2 pb-1 pt-1.5">
-          <h3 className="line-clamp-2 min-h-[1.95rem] text-[12px] font-medium leading-[1.2] text-stone-900 transition-colors group-hover:text-ocean-500 sm:text-[13px]">
+          <h3 className="truncate text-[12px] font-medium leading-[1.2] text-stone-900 transition-colors group-hover:text-ocean-500 sm:text-[13px]">
             {product.title}
           </h3>
           <span className={railPriceClassName}>

@@ -3,8 +3,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { ProductImageCarousel } from "../../../components/ProductImageCarousel";
 import { saveProductDetailOrigin } from "../../../lib/browser/productDetailOrigin";
-import { getProductImageMediaItems } from "../../../types/productMedia";
+import { getPrimaryProductModel3D, getProductImageMediaItems } from "../../../types/productMedia";
 import type { PublicCatalogFeedItem } from "../../../types/public";
+import { Catalog3DBadge } from "./Catalog3DBadge";
 
 const CARD_ZOOM_DURATION_MS = 180;
 
@@ -89,6 +90,7 @@ function CatalogProductFeedCardInner({
 
     return urls.filter((itemValue) => Boolean(itemValue.url));
   }, [product]);
+  const has3DModel = Boolean(getPrimaryProductModel3D(product.product_media));
   const boostCardClassName = item.isBoosted
     ? "border-brand-300 bg-brand-50/45 hover:border-brand-400"
     : "";
@@ -161,7 +163,7 @@ function CatalogProductFeedCardInner({
               autoAdvanceDelay={6500}
               autoAdvanceMinImages={3}
               className="w-full"
-              imageClassName="aspect-[3/2] w-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.025] sm:aspect-[4/3]"
+              imageClassName="aspect-[5/4] w-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.025] sm:aspect-[1/1]"
               imageSizes="(max-width: 640px) 92vw, (max-width: 1280px) 54vw, 640px"
               imageSrcSetWidths={[480, 640, 768, 960, 1200]}
               imageWidth={priority ? 960 : 720}
@@ -170,6 +172,7 @@ function CatalogProductFeedCardInner({
               priority={priority}
               />
               <span className={categoryOverlayClassName}>{categoryLabel}</span>
+              {has3DModel ? <Catalog3DBadge /> : null}
             </>
           ) : (
             <div className="flex min-h-[8rem] items-center justify-center px-4 py-6 text-center text-base font-semibold text-ocean-500 sm:min-h-[10rem] lg:min-h-[11rem]">
@@ -178,7 +181,7 @@ function CatalogProductFeedCardInner({
           )}
         </Link>
 
-        <div className="flex flex-1 min-w-0 flex-col gap-1.5 p-2.5 sm:p-3">
+        <div className="flex flex-1 min-w-0 flex-col gap-1 p-2 sm:p-2.5">
         <Link
           aria-label={`Ver detalle de ${product.title}`}
           className="group min-w-0"
@@ -188,7 +191,7 @@ function CatalogProductFeedCardInner({
           }}
           to={`/producto/${product.id}`}
         >
-          <h3 className="line-clamp-2 text-sm font-medium leading-tight text-stone-900 transition-colors group-hover:text-ocean-700 sm:text-base">
+          <h3 className="truncate text-sm font-medium leading-tight text-stone-900 transition-colors group-hover:text-ocean-700 sm:text-base">
             {product.title}
           </h3>
           <span className={`${priceTextClassName} mt-0.5`}>{priceLabel}</span>
@@ -274,7 +277,7 @@ function CatalogProductFeedCardInner({
               <ProductImageCarousel
               autoAdvance={false}
               className="w-full"
-              imageClassName="aspect-[5/4] w-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.025] sm:aspect-[4/3]"
+              imageClassName="aspect-[1/1] w-full object-cover object-center transition-transform duration-300 ease-out group-hover:scale-[1.025]"
               imageSizes="(max-width: 640px) 92vw, (max-width: 1280px) 46vw, 320px"
               imageSrcSetWidths={[240, 320, 420, 560, 720]}
               imageWidth={priority ? 720 : 520}
@@ -283,23 +286,24 @@ function CatalogProductFeedCardInner({
               priority={priority}
               />
               <span className={categoryOverlayClassName}>{categoryLabel}</span>
+              {has3DModel ? <Catalog3DBadge /> : null}
             </>
           ) : (
-            <div className="flex aspect-[5/4] items-center justify-center px-3 text-center text-xs font-semibold text-ocean-500 sm:aspect-[4/3]">
+            <div className="flex aspect-[1/1] items-center justify-center px-3 text-center text-xs font-semibold text-ocean-500">
               {product.title}
             </div>
           )}
         </div>
 
-        <div className="flex flex-1 flex-col gap-1 px-2.5 pb-0 pt-2 sm:px-3">
-          <h3 className="line-clamp-2 min-h-[2rem] text-[13px] font-medium leading-[1.18] text-stone-900 transition-colors group-hover:text-ocean-700 sm:text-[14px]">
+        <div className="flex flex-1 flex-col gap-0.5 px-2 pb-0 pt-1.5 sm:px-2.5">
+          <h3 className="truncate text-[13px] font-medium leading-[1.18] text-stone-900 transition-colors group-hover:text-ocean-700 sm:text-[14px]">
             {product.title}
           </h3>
           <span className={priceTextClassName}>{priceLabel}</span>
         </div>
       </Link>
 
-      <div className="flex min-w-0 items-center gap-1.5 px-2.5 pb-2 pt-1 sm:px-3">
+      <div className="flex min-w-0 items-center gap-1.5 px-2 pb-1.5 pt-1 sm:px-2.5">
         <Link
           aria-label={`Ver la tienda de ${storefrontLabel}`}
           className={`${storeActionClassName} flex-1`}
