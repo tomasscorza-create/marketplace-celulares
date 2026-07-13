@@ -39,7 +39,7 @@ export const ArtisanStoreFormSection = memo(function ArtisanStoreFormSection({
         Nombre del responsable
         <input
           autoComplete="name"
-          className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+          className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
           onChange={(event) => {
             onFullNameChange(event.target.value);
           }}
@@ -53,7 +53,7 @@ export const ArtisanStoreFormSection = memo(function ArtisanStoreFormSection({
         Nombre de la tienda
         <input
           autoComplete="organization"
-          className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+          className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
           onChange={(event) => {
             onStoreNameChange(event.target.value);
           }}
@@ -66,7 +66,7 @@ export const ArtisanStoreFormSection = memo(function ArtisanStoreFormSection({
       <label className="grid gap-2 text-sm font-medium text-stone-700">
         Descripción de la tienda
         <textarea
-          className="min-h-36 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+          className="min-h-36 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
           onChange={(event) => {
             onStoreDescriptionChange(event.target.value);
           }}

@@ -328,13 +328,13 @@ export function RegistroCompradorPage() {
         </div>
 
         <div className="mt-5 flex flex-wrap items-center justify-center gap-3 text-sm text-stone-500">
-          <Link className="hover:text-brand-500 hover:underline" to="/registro">
+          <Link className="hover:text-brand-600 hover:underline" to="/registro">
             Volver
           </Link>
           <span className="text-stone-300">|</span>
           <span>Ya tenes cuenta?</span>
           <Link
-            className="rounded-full border border-ocean-500 bg-ocean-500 px-4 py-2 font-semibold text-white transition-colors hover:bg-ocean-600"
+            className="rounded-full border border-ocean-500 bg-brand-500 px-4 py-2 font-semibold text-white transition-colors hover:bg-brand-600"
             to="/login"
           >
             Iniciar sesion

@@ -142,13 +142,13 @@ export function PublicLayout() {
               </p>
             </div>
             <nav className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-stone-500">
-              <NavLink className="transition-colors hover:text-brand-500" to="/catalogo">
+              <NavLink className="transition-colors hover:text-brand-600" to="/catalogo">
                 Catalogo
               </NavLink>
-              <NavLink className="transition-colors hover:text-brand-500" to="/vendedores">
+              <NavLink className="transition-colors hover:text-brand-600" to="/vendedores">
                 Vendedores
               </NavLink>
-              <NavLink className="transition-colors hover:text-brand-500" to={accountFooterLink.to}>
+              <NavLink className="transition-colors hover:text-brand-600" to={accountFooterLink.to}>
                 {accountFooterLink.label}
               </NavLink>
             </nav>

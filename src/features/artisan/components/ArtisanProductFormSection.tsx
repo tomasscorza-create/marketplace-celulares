@@ -285,7 +285,7 @@ export function ArtisanProductFormSection({
         <label className="grid gap-2 text-sm font-medium text-stone-700">
           Titulo
           <input
-            className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+            className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
             onChange={(event) => {
               onTitleChange(event.target.value);
             }}
@@ -299,7 +299,7 @@ export function ArtisanProductFormSection({
         <label className="grid gap-2 text-sm font-medium text-stone-700">
           Descripcion
           <textarea
-            className="min-h-28 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+            className="min-h-28 rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
             onChange={(event) => {
               onDescriptionChange(event.target.value);
             }}
@@ -316,7 +316,7 @@ export function ArtisanProductFormSection({
                 $
               </span>
               <input
-                className="w-full rounded-xl border border-stone-300 bg-white py-3 pl-7 pr-4 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                className="w-full rounded-xl border border-stone-300 bg-white py-3 pl-7 pr-4 text-sm text-stone-900 outline-none transition focus:border-brand-300"
                 inputMode="decimal"
                 min="0"
                 onChange={(event) => {
@@ -333,7 +333,7 @@ export function ArtisanProductFormSection({
           <label className="grid gap-2 text-sm font-medium text-stone-700">
             Categoria
             <select
-              className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+              className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
               disabled={categories.length === 0}
               onChange={(event) => {
                 onCategoryChange(event.target.value);
@@ -426,7 +426,7 @@ export function ArtisanProductFormSection({
                   <label className="grid gap-2 text-sm font-medium text-stone-700">
                     Atributo
                     <input
-                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
                       onChange={(event) => {
                         onUpdateAttribute(index, "key", event.target.value);
                       }}
@@ -439,7 +439,7 @@ export function ArtisanProductFormSection({
                   <label className="grid gap-2 text-sm font-medium text-stone-700">
                     Valor
                     <input
-                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
                       onChange={(event) => {
                         onUpdateAttribute(index, "value", event.target.value);
                       }}
@@ -589,7 +589,7 @@ export function ArtisanProductFormSection({
                 <label className="grid gap-2 text-sm font-medium text-stone-700">
                   Nuevo stock
                   <input
-                    className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                    className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
                     inputMode="numeric"
                     min="1"
                     onChange={(event) => {
@@ -617,7 +617,7 @@ export function ArtisanProductFormSection({
             <label className="grid gap-2 text-sm font-medium text-stone-700 sm:max-w-xs">
               Tiempo de demora (dias)
               <input
-                className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
                 inputMode="numeric"
                 min="1"
                 onChange={(event) => {
@@ -713,7 +713,7 @@ export function ArtisanProductFormSection({
               <label className="grid gap-2 text-sm font-medium text-stone-700">
                 Nombre de la variable
                 <input
-                  className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                  className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
                   onChange={(event) => {
                     onUpdateMadeToOrderOptions(
                       updateOptionGroup(
@@ -763,7 +763,7 @@ export function ArtisanProductFormSection({
                   <label className="grid gap-2 text-sm font-medium text-stone-700">
                     Opcion {choiceIndex + 1}
                     <input
-                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
                       onChange={(event) => {
                         onUpdateMadeToOrderOptions(
                           updateOptionChoice(
@@ -786,7 +786,7 @@ export function ArtisanProductFormSection({
                   <label className="grid gap-2 text-sm font-medium text-stone-700">
                     Extra $
                     <input
-                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
                       inputMode="decimal"
                       onChange={(event) => {
                         onUpdateMadeToOrderOptions(

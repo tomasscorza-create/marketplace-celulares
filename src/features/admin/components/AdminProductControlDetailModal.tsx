@@ -171,7 +171,7 @@ export function AdminProductControlDetailModal({
                 className={[
                   "relative flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold transition-colors",
                   activeTab === tab.id
-                    ? "text-ocean-500 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:rounded-full after:bg-ocean-500"
+                    ? "text-ocean-500 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:rounded-full after:bg-brand-500"
                     : tab.highlight
                       ? "text-brand-500 hover:text-[#0e7490]"
                       : "text-stone-500 hover:text-stone-700",
@@ -188,7 +188,7 @@ export function AdminProductControlDetailModal({
                     className={[
                       "inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold",
                       activeTab === tab.id
-                        ? "bg-ocean-500 text-white"
+                        ? "bg-brand-500 text-white"
                         : "bg-stone-200 text-stone-600",
                     ].join(" ")}
                   >

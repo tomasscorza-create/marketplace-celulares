@@ -245,7 +245,7 @@ export function AdminInternalNotificationsPage() {
           <label className="grid gap-1.5 text-sm font-medium text-stone-700">
             Título
             <input
-              className="h-11 rounded-2xl border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-ocean-400 focus:ring-4 focus:ring-ocean-100"
+              className="h-11 rounded-2xl border border-stone-300 bg-white px-3 text-sm outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100"
               maxLength={140}
               onChange={(event) => setTitle(event.target.value)}
               value={title}
@@ -255,7 +255,7 @@ export function AdminInternalNotificationsPage() {
           <label className="grid gap-1.5 text-sm font-medium text-stone-700">
             Mensaje
             <textarea
-              className="min-h-40 resize-y rounded-2xl border border-stone-300 bg-white px-3 py-3 text-sm leading-6 outline-none transition focus:border-ocean-400 focus:ring-4 focus:ring-ocean-100"
+              className="min-h-40 resize-y rounded-2xl border border-stone-300 bg-white px-3 py-3 text-sm leading-6 outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100"
               maxLength={6000}
               onChange={(event) => setBody(event.target.value)}
               value={body}
@@ -269,7 +269,7 @@ export function AdminInternalNotificationsPage() {
           ) : null}
 
           <button
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-ocean-500 px-5 text-sm font-semibold text-white transition hover:bg-ocean-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex min-h-11 items-center justify-center rounded-full bg-brand-500 px-5 text-sm font-semibold text-white transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={!canSubmit}
             type="submit"
           >

@@ -94,7 +94,7 @@ function DashboardDetailDrawerInner({
           <div className="grid gap-3 border-b border-stone-200 px-4 py-4 sm:px-6">
             <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
               <input
-                className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-700 outline-none transition focus:border-ocean-300 focus:bg-white"
+                className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-700 outline-none transition focus:border-brand-300 focus:bg-white"
                 onChange={(event) => onSearchChange(event.target.value)}
                 placeholder="Buscar"
                 type="search"
@@ -102,7 +102,7 @@ function DashboardDetailDrawerInner({
               />
 
               <select
-                className="rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-700 outline-none transition focus:border-ocean-300"
+                className="rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-stone-700 outline-none transition focus:border-brand-300"
                 onChange={(event) => onSortChange(event.target.value)}
                 value={sortValue}
               >

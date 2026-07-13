@@ -260,7 +260,7 @@ export function AuthStatus() {
 
               <div className="mt-4 grid gap-2">
                 <Link
-                  className="rounded-2xl border border-ocean-500 bg-ocean-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-ocean-600"
+                  className="rounded-2xl border border-ocean-500 bg-brand-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
                   onClick={closeMenu}
                   to={primaryLink.to}
                 >
@@ -292,7 +292,7 @@ export function AuthStatus() {
 
                 {user ? (
                   <button
-                    className="rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-medium text-stone-700 transition-colors hover:border-brand-500 hover:bg-brand-100 hover:text-brand-500"
+                    className="rounded-2xl border border-stone-200 bg-white px-4 py-3 text-left text-sm font-medium text-stone-700 transition-colors hover:border-brand-500 hover:bg-brand-100 hover:text-brand-600"
                     onClick={() => {
                       void handleSignOut();
                     }}

@@ -418,7 +418,7 @@ export function ProductDetailPage() {
                     "group/fav relative inline-flex h-14 w-14 shrink-0 flex-col items-center justify-center gap-0.5 overflow-hidden rounded-2xl border transition-all duration-200 ease-out active:scale-95 disabled:cursor-not-allowed disabled:opacity-60",
                     isFavorite
                       ? "border-brand-500 bg-gradient-to-b from-[#D1FAE5] to-[#A5F3FC] text-brand-500 shadow-[0_10px_24px_-12px_rgba(15,118,110,0.7)]"
-                      : "border-stone-300 bg-white text-stone-400 hover:border-brand-500/45 hover:bg-stone-50 hover:text-brand-500/75",
+                      : "border-stone-300 bg-white text-stone-400 hover:border-brand-500/45 hover:bg-stone-50 hover:text-brand-600/75",
                   ].join(" ")}
                   disabled={toggleFavoriteMutation.isPending}
                   onClick={async () => {
@@ -674,7 +674,7 @@ export function ProductDetailPage() {
                 <>
                   <div className="grid w-full gap-2 sm:w-auto sm:min-w-56">
                     <Link
-                      className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-ocean-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-ocean-600"
+                      className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
                       to={`/panel/admin/productos/${product.artisan_id}?mode=edit&productId=${product.id}`}
                     >
                       Editar producto
@@ -703,7 +703,7 @@ export function ProductDetailPage() {
                 <>
                   <div className="grid w-full gap-2 sm:w-auto sm:min-w-56">
                     <Link
-                      className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-ocean-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-ocean-600"
+                      className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
                       to={`/panel/vendedor/productos?mode=edit&productId=${product.id}`}
                     >
                       Editar mi producto
@@ -725,7 +725,7 @@ export function ProductDetailPage() {
               ) : isArtisan ? (
                 <>
                   <Link
-                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-ocean-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-ocean-600 sm:w-auto"
+                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600 sm:w-auto"
                     to="/panel/vendedor"
                   >
                     Ir a mi panel
@@ -741,7 +741,7 @@ export function ProductDetailPage() {
                 <>
                   {isEditingCartItem ? (
                     <button
-                      className="inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-full bg-ocean-500 px-6 py-3.5 text-base font-bold tracking-tight text-white shadow-[0_10px_28px_-10px_rgba(71,85,105,0.55)] transition-all duration-200 hover:bg-ocean-600 hover:shadow-[0_14px_32px_-8px_rgba(71,85,105,0.6)] hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-1 sm:text-[1.0625rem]"
+                      className="inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-full bg-brand-500 px-6 py-3.5 text-base font-bold tracking-tight text-white shadow-[0_10px_28px_-10px_rgba(71,85,105,0.55)] transition-all duration-200 hover:bg-brand-600 hover:shadow-[0_14px_32px_-8px_rgba(71,85,105,0.6)] hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-1 sm:text-[1.0625rem]"
                       disabled={isSoldOut || missingRequiredOption || updateCartItemSelectionMutation.isPending}
                       onClick={async () => {
                         if (!cartEditState) {
@@ -786,7 +786,7 @@ export function ProductDetailPage() {
                       />
                     ) : (
                       <AddToCartButton
-                        className="inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-full bg-ocean-500 px-6 py-3.5 text-base font-bold tracking-tight text-white shadow-[0_10px_28px_-10px_rgba(71,85,105,0.55)] transition-all duration-200 hover:bg-ocean-600 hover:shadow-[0_14px_32px_-8px_rgba(71,85,105,0.6)] hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-1 sm:text-[1.0625rem]"
+                        className="inline-flex min-h-[3.25rem] w-full items-center justify-center rounded-full bg-brand-500 px-6 py-3.5 text-base font-bold tracking-tight text-white shadow-[0_10px_28px_-10px_rgba(71,85,105,0.55)] transition-all duration-200 hover:bg-brand-600 hover:shadow-[0_14px_32px_-8px_rgba(71,85,105,0.6)] hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-1 sm:text-[1.0625rem]"
                         disabled={isSoldOut || missingRequiredOption}
                         disabledLabel={
                           isSoldOut ? "Sin stock" : missingRequiredOption ? "Elegir opciones" : undefined
@@ -855,7 +855,7 @@ export function ProductDetailPage() {
                         </span>
                       </span>
                       <select
-                        className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+                        className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
                         onChange={(event) => {
                           setSelectedOptions((currentValue) => {
                             if (!event.target.value) {

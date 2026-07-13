@@ -14,7 +14,7 @@ export function AdminLayout() {
   return (
     <PanelLayoutShell
       accentClassName="text-ocean-500"
-      activeLinkClassName="bg-ocean-500 text-white"
+      activeLinkClassName="bg-brand-500 text-white"
       backgroundClassName="bg-[radial-gradient(circle_at_top,_#e0f2fe,_#f8fafc_55%)]"
       borderClassName="border-ocean-100"
       inactiveLinkClassName="text-stone-600 hover:bg-ocean-50 hover:text-ocean-500"

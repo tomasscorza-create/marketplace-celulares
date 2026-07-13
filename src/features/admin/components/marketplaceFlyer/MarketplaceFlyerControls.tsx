@@ -59,7 +59,7 @@ export function MarketplaceFlyerControls({
             <Counter current={flyerVariant.eyebrow.length} max={FLYER_TEXT_LIMITS.eyebrow} />
           </span>
           <input
-            className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-ocean-300"
+            className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-brand-300"
             maxLength={FLYER_TEXT_LIMITS.eyebrow}
             onChange={(event) =>
               onVariantChange(
@@ -77,7 +77,7 @@ export function MarketplaceFlyerControls({
             <Counter current={flyerVariant.highlight.length} max={FLYER_TEXT_LIMITS.highlight} />
           </span>
           <input
-            className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-ocean-300"
+            className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-brand-300"
             maxLength={FLYER_TEXT_LIMITS.highlight}
             onChange={(event) =>
               onVariantChange(
@@ -95,7 +95,7 @@ export function MarketplaceFlyerControls({
             <Counter current={flyerVariant.headline.length} max={FLYER_TEXT_LIMITS.headline} />
           </span>
           <textarea
-            className="min-h-20 rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-ocean-300"
+            className="min-h-20 rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-brand-300"
             maxLength={FLYER_TEXT_LIMITS.headline}
             onChange={(event) =>
               onVariantChange(
@@ -116,7 +116,7 @@ export function MarketplaceFlyerControls({
             />
           </span>
           <input
-            className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-ocean-300"
+            className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-brand-300"
             maxLength={FLYER_TEXT_LIMITS.footerText}
             onChange={(event) =>
               onManualSettingChange(
@@ -131,7 +131,7 @@ export function MarketplaceFlyerControls({
         <label className="grid gap-1 text-sm font-medium text-stone-700">
           Layout
           <select
-            className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-ocean-300"
+            className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-brand-300"
             onChange={(event) =>
               onVariantChange("layout", event.target.value as FlyerVariant["layout"])
             }

@@ -59,7 +59,7 @@ export function CatalogExplorePagination({
             className={[
               "inline-flex min-w-10 items-center justify-center rounded-full border px-3 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-55",
               pageNumber === currentPage
-                ? "border-ocean-500 bg-ocean-500 text-white"
+                ? "border-ocean-500 bg-brand-500 text-white"
                 : "border-stone-200 bg-white text-stone-600 hover:border-ocean-500 hover:bg-brand-50 hover:text-ocean-500",
             ].join(" ")}
             disabled={disabled}

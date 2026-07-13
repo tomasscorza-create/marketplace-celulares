@@ -76,7 +76,7 @@ export function LoginForm({
           </span>
           {onForgotPassword ? (
             <button
-              className="text-xs font-medium text-ocean-500 transition-colors hover:text-brand-500"
+              className="text-xs font-medium text-ocean-500 transition-colors hover:text-brand-600"
               onClick={() => {
                 onForgotPassword(email);
               }}

@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 
 import { LoadingPanel } from "../components/LoadingPanel";
@@ -75,7 +75,7 @@ export function AdminVisibleProductsPage() {
 
           <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_15rem]">
             <input
-              className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+              className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300 focus:ring-2 focus:ring-brand-100"
               onChange={(event) => {
                 const nextValue = event.target.value;
                 const nextSearchParams = new URLSearchParams(searchParams);
@@ -96,7 +96,7 @@ export function AdminVisibleProductsPage() {
             />
 
             <select
-              className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+              className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300 focus:ring-2 focus:ring-brand-100"
               onChange={(event) => {
                 const nextValue = event.target.value as (typeof SORT_OPTIONS)[number]["value"];
                 const nextSearchParams = new URLSearchParams(searchParams);

@@ -82,7 +82,7 @@ export function CartItemOptionsEditor({
           <label key={option.id} className="grid gap-1.5 text-sm font-medium text-stone-700">
             <span>{option.label}</span>
             <select
-              className="rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+              className="rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-sm text-stone-900 outline-none transition focus:border-brand-300"
               onChange={(event) => {
                 setSelectedOptions((currentValue) => {
                   if (!event.target.value) {
@@ -118,7 +118,7 @@ export function CartItemOptionsEditor({
           ${nextUnitPrice.toLocaleString("es-AR")} por unidad
         </span>
         <button
-          className="inline-flex min-h-10 items-center justify-center rounded-full bg-ocean-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-ocean-600 disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex min-h-10 items-center justify-center rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
           disabled={missingRequiredOption || updateSelectionMutation.isPending}
           onClick={async () => {
             const response = await updateSelectionMutation

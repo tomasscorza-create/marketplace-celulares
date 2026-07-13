@@ -53,7 +53,7 @@ export function InstallAppButton() {
 
   return (
     <button
-      className="inline-flex items-center gap-2 rounded-full border border-ocean-500/20 bg-ocean-500 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-ocean-600 disabled:cursor-not-allowed disabled:opacity-60"
+      className="inline-flex items-center gap-2 rounded-full border border-ocean-500/20 bg-brand-500 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-60"
       disabled={isInstalling}
       onClick={async () => {
         if (!installPrompt) {

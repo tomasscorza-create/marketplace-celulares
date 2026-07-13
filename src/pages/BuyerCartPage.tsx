@@ -1,4 +1,4 @@
-﻿import type { BuyerCartValidatedItem } from "../types/commerce";
+import type { BuyerCartValidatedItem } from "../types/commerce";
 
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";

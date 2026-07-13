@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 type ConfirmModalProps = {
   cancelLabel?: string;
@@ -109,7 +109,7 @@ export function ConfirmModal({
               "rounded-full px-5 py-2.5 text-sm font-medium text-white transition-colors",
               isDanger
                 ? "bg-brand-500 hover:bg-brand-700"
-                : "bg-ocean-500 hover:bg-ocean-600",
+                : "bg-brand-500 hover:bg-brand-600",
             ].join(" ")}
             onClick={onConfirm}
             type="button"

@@ -203,7 +203,7 @@ function AdminProductControlActionsTabInner({
         </div>
 
         <button
-          className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm font-medium text-stone-600 transition-colors hover:border-brand-500 hover:bg-brand-100 hover:text-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm font-medium text-stone-600 transition-colors hover:border-brand-500 hover:bg-brand-100 hover:text-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
           disabled={isSavingTag || currentTag === null}
           onClick={onClearTag}
           type="button"
@@ -217,7 +217,7 @@ function AdminProductControlActionsTabInner({
           Comentario interno
         </p>
         <textarea
-          className="min-h-24 w-full rounded-2xl border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+          className="min-h-24 w-full rounded-2xl border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300 focus:ring-2 focus:ring-brand-100"
           onChange={(event) => {
             setCommentDraft(event.target.value);
           }}
@@ -272,7 +272,7 @@ function AdminProductControlActionsTabInner({
 
         <div className="grid gap-2 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)]">
           <input
-            className="rounded-2xl border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300 focus:ring-2 focus:ring-brand-100"
             inputMode="numeric"
             min="1"
             onChange={(event) => {
@@ -283,7 +283,7 @@ function AdminProductControlActionsTabInner({
             value={boostAmountDraft}
           />
           <select
-            className="rounded-2xl border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 px-3 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300 focus:ring-2 focus:ring-brand-100"
             onChange={(event) => {
               setBoostUnitDraft(event.target.value === "days" ? "days" : "hours");
             }}
@@ -310,7 +310,7 @@ function AdminProductControlActionsTabInner({
             Aplicar boost
           </button>
           <button
-            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm font-medium text-stone-600 transition-colors hover:border-brand-500 hover:bg-brand-100 hover:text-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm font-medium text-stone-600 transition-colors hover:border-brand-500 hover:bg-brand-100 hover:text-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isSavingTag || (!currentBoostLevel && !currentBoostUntil)}
             onClick={onClearBoost}
             type="button"

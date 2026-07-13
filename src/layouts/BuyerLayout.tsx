@@ -16,7 +16,7 @@ export function BuyerLayout() {
       activeLinkClassName="bg-brand-500 text-stone-900"
       backgroundClassName="bg-[radial-gradient(circle_at_top,_#ecfeff,_#f8fafc_55%)]"
       borderClassName="border-brand-100"
-      inactiveLinkClassName="text-stone-600 hover:bg-brand-50 hover:text-brand-500"
+      inactiveLinkClassName="text-stone-600 hover:bg-brand-50 hover:text-brand-600"
       links={buyerLinks}
       title="Mi espacio"
     />

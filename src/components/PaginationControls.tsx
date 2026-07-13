@@ -35,7 +35,7 @@ export function PaginationControls({
           Anterior
         </button>
         <button
-          className="rounded-full bg-ocean-500 px-4 py-2 font-medium text-white transition-colors hover:bg-[#001f4d] disabled:cursor-not-allowed disabled:opacity-45"
+          className="rounded-full bg-brand-500 px-4 py-2 font-medium text-white transition-colors hover:bg-[#001f4d] disabled:cursor-not-allowed disabled:opacity-45"
           disabled={isLoading || normalizedPage >= totalPages}
           onClick={() => onPageChange(normalizedPage + 1)}
           type="button"

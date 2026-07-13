@@ -233,7 +233,7 @@ export function AdminSalesPage() {
             className={[
               "inline-flex min-h-10 items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition-colors",
               activeTab === "approved"
-                ? "bg-ocean-500 text-white"
+                ? "bg-brand-500 text-white"
                 : "border border-stone-200 bg-white text-stone-600 hover:bg-ocean-50 hover:text-ocean-500",
             ].join(" ")}
             onClick={() => handleTabChange("approved")}
@@ -282,7 +282,7 @@ export function AdminSalesPage() {
         ) : null}
 
         <input
-          className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+          className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Buscar por pedido, comprador, vendedor o producto"
           type="search"
@@ -393,7 +393,7 @@ export function AdminSalesPage() {
 
                         {canControl && nextStatus ? (
                           <button
-                            className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-ocean-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-ocean-600 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
                             disabled={isUpdating}
                             onClick={() => {
                               void handleAdvanceStatus(item);

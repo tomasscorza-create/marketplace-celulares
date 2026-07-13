@@ -77,7 +77,7 @@ export function AdminBillingPage() {
                 className={[
                   "inline-flex min-h-10 items-center justify-center rounded-full border px-4 py-2 text-sm font-semibold transition-colors",
                   period === option.key
-                    ? "border-ocean-500 bg-ocean-500 text-white"
+                    ? "border-ocean-500 bg-brand-500 text-white"
                     : "border-stone-200 bg-white text-stone-600 hover:bg-ocean-50 hover:text-ocean-500",
                 ].join(" ")}
                 onClick={() => setPeriod(option.key)}
@@ -89,7 +89,7 @@ export function AdminBillingPage() {
           </div>
 
           <input
-            className="min-h-10 w-full rounded-full border border-stone-300 bg-white px-4 py-2 text-sm text-stone-900 outline-none transition focus:border-ocean-300 sm:w-72"
+            className="min-h-10 w-full rounded-full border border-stone-300 bg-white px-4 py-2 text-sm text-stone-900 outline-none transition focus:border-brand-300 sm:w-72"
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Buscar vendedor"
             type="search"

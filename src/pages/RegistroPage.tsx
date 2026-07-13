@@ -27,7 +27,7 @@ export function RegistroPage() {
             </div>
 
             <div>
-              <h2 className="text-lg font-bold text-stone-900 transition-colors group-hover:text-brand-500">
+              <h2 className="text-lg font-bold text-stone-900 transition-colors group-hover:text-brand-600">
                 Crear cuenta
               </h2>
               <p className="mt-1.5 text-sm leading-6 text-stone-600">
@@ -52,7 +52,7 @@ export function RegistroPage() {
         <div className="mt-6 flex items-center justify-center gap-3 text-sm text-stone-500">
           <span>¿Ya tenés cuenta?</span>
           <Link
-            className="rounded-full border border-ocean-500 bg-ocean-500 px-5 py-2 font-semibold text-white transition-colors hover:bg-ocean-600"
+            className="rounded-full border border-ocean-500 bg-brand-500 px-5 py-2 font-semibold text-white transition-colors hover:bg-brand-600"
             to="/login"
           >
             Iniciar sesión

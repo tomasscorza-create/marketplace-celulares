@@ -16,7 +16,7 @@ function getModeButtonClass(isActive: boolean) {
   return [
     "rounded-2xl border px-4 py-3 text-left transition-colors",
     isActive
-      ? "border-ocean-500 bg-ocean-500 text-white"
+      ? "border-ocean-500 bg-brand-500 text-white"
       : "border-stone-200 bg-white text-stone-700 hover:border-brand-500 hover:bg-brand-50",
   ].join(" ");
 }

@@ -85,7 +85,7 @@ export function AdminActiveArtisansPage() {
           </div>
 
           <input
-            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300 focus:ring-2 focus:ring-brand-100"
             onChange={(event) => {
               const nextValue = event.target.value;
               const nextSearchParams = new URLSearchParams(searchParams);
@@ -111,7 +111,7 @@ export function AdminActiveArtisansPage() {
                 className={[
                   "inline-flex min-h-9 items-center justify-center rounded-full border px-3.5 py-2 text-xs font-semibold transition-colors",
                   visibilityFilter === option.value
-                    ? "border-ocean-500 bg-ocean-500 text-white"
+                    ? "border-ocean-500 bg-brand-500 text-white"
                     : "border-stone-200 bg-white text-stone-600 hover:bg-ocean-50 hover:text-ocean-500",
                 ].join(" ")}
                 key={option.value}
@@ -135,7 +135,7 @@ export function AdminActiveArtisansPage() {
           </div>
 
           <select
-            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300 focus:ring-2 focus:ring-brand-100"
             onChange={(event) => {
               const nextValue = event.target.value as (typeof SORT_OPTIONS)[number]["value"];
               const nextSearchParams = new URLSearchParams(searchParams);

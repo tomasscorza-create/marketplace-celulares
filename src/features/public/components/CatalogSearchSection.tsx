@@ -1,4 +1,4 @@
-﻿import { memo, useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import { memo, useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 
@@ -209,7 +209,7 @@ function CatalogSearchSectionInner({
               value={draftSearch}
             />
             <button
-              className="absolute right-1 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-ocean-500 text-white transition-colors hover:bg-ocean-600"
+              className="absolute right-1 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-brand-500 text-white transition-colors hover:bg-brand-600"
               type="submit"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -463,7 +463,7 @@ function CatalogSearchSectionInner({
                 "shrink-0 rounded-full border px-3.5 py-1.5 text-[11px] font-medium tracking-[0.04em] transition-all duration-150",
                 !selectedCategory
                   ? "border-brand-500 bg-brand-500 text-white shadow-[0_2px_8px_rgba(15,118,110,0.30)] scale-[1.04]"
-                  : "border-stone-200 bg-white text-stone-500 hover:scale-[1.02] hover:border-brand-500/40 hover:text-brand-500 active:scale-[0.97]",
+                  : "border-stone-200 bg-white text-stone-500 hover:scale-[1.02] hover:border-brand-500/40 hover:text-brand-600 active:scale-[0.97]",
               ].join(" ")}
               onClick={() => {
                 onCategoryChange(null);
@@ -480,7 +480,7 @@ function CatalogSearchSectionInner({
                   "shrink-0 rounded-full border px-3.5 py-1.5 text-[11px] font-medium tracking-[0.04em] transition-all duration-150",
                   selectedCategory?.id === category.id
                     ? "border-brand-500 bg-brand-500 text-white shadow-[0_2px_8px_rgba(15,118,110,0.30)] scale-[1.04]"
-                    : "border-stone-200 bg-white text-stone-500 hover:scale-[1.02] hover:border-brand-500/40 hover:text-brand-500 active:scale-[0.97]",
+                    : "border-stone-200 bg-white text-stone-500 hover:scale-[1.02] hover:border-brand-500/40 hover:text-brand-600 active:scale-[0.97]",
                 ].join(" ")}
                 onClick={() => {
                   onCategoryChange(selectedCategory?.id === category.id ? null : category.slug);

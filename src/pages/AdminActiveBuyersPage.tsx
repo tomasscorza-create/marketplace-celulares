@@ -97,7 +97,7 @@ export function AdminActiveBuyersPage() {
           </div>
 
           <input
-            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300 focus:ring-2 focus:ring-brand-100"
             onChange={(event) => {
               const nextValue = event.target.value;
               const nextSearchParams = new URLSearchParams(searchParams);
@@ -119,7 +119,7 @@ export function AdminActiveBuyersPage() {
           />
 
           <select
-            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300 focus:ring-2 focus:ring-brand-100"
             onChange={(event) => {
               const nextValue = event.target.value as (typeof SORT_OPTIONS)[number]["value"];
               const nextSearchParams = new URLSearchParams(searchParams);

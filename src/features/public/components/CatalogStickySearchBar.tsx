@@ -1,4 +1,4 @@
-﻿import { memo, useEffect, useRef, useState, type FormEvent } from "react";
+import { memo, useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 
 import type { PublicCatalogSortOrder, PublicCategory } from "../../../types/public";
@@ -139,7 +139,7 @@ function CatalogStickySearchBarInner({
                     value={draftSearch}
                   />
                   <button
-                    className="inline-flex h-10 shrink-0 items-center justify-center rounded-full bg-ocean-500 px-4 text-sm font-semibold text-white transition-colors hover:bg-ocean-600"
+                    className="inline-flex h-10 shrink-0 items-center justify-center rounded-full bg-brand-500 px-4 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
                     onClick={() => {
                       setIsExpanded(false);
                       setIsFiltersMenuOpen(false);

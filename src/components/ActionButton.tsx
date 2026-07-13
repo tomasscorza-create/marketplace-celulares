@@ -1,4 +1,4 @@
-﻿import type { ButtonHTMLAttributes, PropsWithChildren } from "react";
+import type { ButtonHTMLAttributes, PropsWithChildren } from "react";
 
 type ActionButtonVariant =
   | "brand"
@@ -28,7 +28,7 @@ const variantClassNames: Record<ActionButtonVariant, string> = {
     "border border-brand-500 bg-brand-500 text-white shadow-[0_12px_24px_-16px_rgba(15,118,110,0.75)] hover:bg-brand-700",
   brandGhost: "border border-brand-500 bg-white text-brand-500 hover:bg-brand-100",
   primary:
-    "border border-ocean-500 bg-ocean-500 text-white shadow-[0_12px_24px_-16px_rgba(71,85,105,0.85)] hover:bg-ocean-600",
+    "border border-ocean-500 bg-brand-500 text-white shadow-[0_12px_24px_-16px_rgba(71,85,105,0.85)] hover:bg-brand-600",
   secondary: "border border-stone-200 bg-stone-50 text-stone-700 hover:bg-stone-100",
   danger: "border border-red-200 bg-white text-red-700 hover:bg-red-50",
   ghost: "border border-ocean-200 bg-white text-ocean-500 hover:bg-brand-50",

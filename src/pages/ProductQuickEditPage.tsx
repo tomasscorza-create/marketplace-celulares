@@ -183,7 +183,7 @@ export function ProductQuickEditPage() {
         <label className="grid gap-2 text-sm font-semibold text-stone-700">
           Titulo
           <input
-            className="min-h-12 rounded-2xl border border-stone-300 bg-white px-4 text-base font-semibold text-white outline-none transition focus:border-ocean-300"
+            className="min-h-12 rounded-2xl border border-stone-300 bg-white px-4 text-base font-semibold text-white outline-none transition focus:border-brand-300"
             maxLength={120}
             onChange={(event) => {
               setForm((currentValue) => ({ ...currentValue, title: event.target.value }));
@@ -195,7 +195,7 @@ export function ProductQuickEditPage() {
         <label className="grid gap-2 text-sm font-semibold text-stone-700">
           Descripcion
           <textarea
-            className="min-h-32 resize-y rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm leading-6 text-stone-900 outline-none transition focus:border-ocean-300"
+            className="min-h-32 resize-y rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm leading-6 text-stone-900 outline-none transition focus:border-brand-300"
             maxLength={1200}
             onChange={(event) => {
               setForm((currentValue) => ({ ...currentValue, description: event.target.value }));
@@ -208,7 +208,7 @@ export function ProductQuickEditPage() {
           <label className="grid gap-2 text-sm font-semibold text-stone-700">
             Precio
             <input
-              className="min-h-12 rounded-2xl border border-stone-300 bg-white px-4 text-base font-semibold text-white outline-none transition focus:border-ocean-300"
+              className="min-h-12 rounded-2xl border border-stone-300 bg-white px-4 text-base font-semibold text-white outline-none transition focus:border-brand-300"
               inputMode="decimal"
               onChange={(event) => {
                 setForm((currentValue) => ({ ...currentValue, price: event.target.value }));
@@ -220,7 +220,7 @@ export function ProductQuickEditPage() {
           <label className="grid gap-2 text-sm font-semibold text-stone-700">
             Stock
             <input
-              className="min-h-12 rounded-2xl border border-stone-300 bg-white px-4 text-base font-semibold text-white outline-none transition disabled:bg-stone-100 disabled:text-stone-400 focus:border-ocean-300"
+              className="min-h-12 rounded-2xl border border-stone-300 bg-white px-4 text-base font-semibold text-white outline-none transition disabled:bg-stone-100 disabled:text-stone-400 focus:border-brand-300"
               disabled={!isStockProduct}
               inputMode="numeric"
               min={0}
@@ -238,7 +238,7 @@ export function ProductQuickEditPage() {
             {previewPrice || "Sin precio"}
           </span>
           <button
-            className="inline-flex min-h-11 min-w-36 items-center justify-center rounded-full bg-ocean-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-ocean-600 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex min-h-11 min-w-36 items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
             disabled={mutation.isPending}
             type="submit"
           >

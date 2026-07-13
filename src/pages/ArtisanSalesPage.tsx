@@ -1,4 +1,4 @@
-﻿import type { FulfillmentStatus } from "../types/commerce";
+import type { FulfillmentStatus } from "../types/commerce";
 import type { ArtisanSaleItem } from "../types/artisan";
 
 import { useEffect, useMemo, useState } from "react";
@@ -257,7 +257,7 @@ export function ArtisanSalesPage() {
         </div>
 
         <input
-          className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300"
+          className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
           onChange={(event) => {
             setSearch(event.target.value);
           }}

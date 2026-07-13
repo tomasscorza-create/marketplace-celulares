@@ -60,7 +60,7 @@ export function ArtisanProductListSection({
         <label className="grid gap-2 text-sm font-medium text-stone-700">
           Buscar productos
           <input
-            className="rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-normal text-stone-900 outline-none transition-colors placeholder:text-stone-400 focus:border-ocean-300"
+            className="rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm font-normal text-stone-900 outline-none transition-colors placeholder:text-stone-400 focus:border-brand-300"
             onChange={(event) => onSearchChange(event.target.value)}
             placeholder="Nombre o descripción"
             type="search"

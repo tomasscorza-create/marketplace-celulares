@@ -43,7 +43,7 @@ export function UserAvatar({
   return (
     <span
       aria-hidden="true"
-      className={`inline-flex items-center justify-center rounded-full bg-ocean-500 font-semibold text-white ${sizeClassName} ${textClassName}`}
+      className={`inline-flex items-center justify-center rounded-full bg-brand-500 font-semibold text-white ${sizeClassName} ${textClassName}`}
     >
       {initial}
     </span>

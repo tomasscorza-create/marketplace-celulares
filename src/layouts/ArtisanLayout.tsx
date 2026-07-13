@@ -1,4 +1,4 @@
-﻿import { PanelLayoutShell } from "./PanelLayoutShell";
+import { PanelLayoutShell } from "./PanelLayoutShell";
 import { Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 

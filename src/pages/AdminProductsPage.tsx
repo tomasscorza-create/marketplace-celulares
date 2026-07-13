@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { LoadingPanel } from "../components/LoadingPanel";
 import { PagePlaceholder } from "../components/PagePlaceholder";
@@ -40,7 +40,7 @@ export function AdminProductsPage() {
       <div className="grid gap-4">
         <section className="grid gap-3 rounded-3xl border border-stone-200 bg-white p-4 shadow-sm">
           <input
-            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-ocean-300 focus:ring-2 focus:ring-ocean-100"
+            className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300 focus:ring-2 focus:ring-brand-100"
             onChange={(event) => {
               setSearch(event.target.value);
             }}
@@ -108,7 +108,7 @@ export function AdminProductsPage() {
 
                     <div className="grid gap-2 lg:w-52">
                       <Link
-                        className="inline-flex w-full items-center justify-center rounded-full bg-ocean-500 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[#001f4d]"
+                        className="inline-flex w-full items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[#001f4d]"
                         to={`/panel/admin/productos/${artisan.id}?focus=create`}
                       >
                         Cargar

@@ -203,7 +203,7 @@ export function AdminMarketplaceFlyerGenerator({
             </button>
 
             <button
-              className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-ocean-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-ocean-600 disabled:cursor-not-allowed disabled:bg-stone-300 sm:w-auto"
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-brand-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:bg-stone-300 sm:w-auto"
               disabled={isLoading || isDownloading || !qrDataUrl}
               onClick={() => void handleDownloadFlyer()}
               type="button"

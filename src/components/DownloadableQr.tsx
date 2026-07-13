@@ -129,7 +129,7 @@ export function DownloadableQr({
 
           <div className="mt-4 flex flex-wrap gap-2">
             <button
-              className="inline-flex min-h-10 items-center justify-center rounded-full bg-ocean-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-ocean-600 disabled:cursor-not-allowed disabled:bg-stone-300"
+              className="inline-flex min-h-10 items-center justify-center rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:bg-stone-300"
               disabled={!qrAsset || isGenerating}
               onClick={() => {
                 if (qrAsset) {

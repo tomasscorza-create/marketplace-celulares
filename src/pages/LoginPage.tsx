@@ -1,4 +1,4 @@
-﻿import type { FormEvent } from "react";
+import type { FormEvent } from "react";
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -260,7 +260,7 @@ export function LoginPage() {
           <div className="mt-5 flex flex-col items-center justify-center gap-3 text-sm text-stone-500 sm:flex-row">
             <span>No tenes cuenta aun?</span>
             <Link
-              className="rounded-full border border-ocean-500 bg-ocean-500 px-5 py-2 font-semibold text-white transition-colors hover:bg-ocean-600"
+              className="rounded-full border border-ocean-500 bg-brand-500 px-5 py-2 font-semibold text-white transition-colors hover:bg-brand-600"
               to="/registro"
             >
               Registrate

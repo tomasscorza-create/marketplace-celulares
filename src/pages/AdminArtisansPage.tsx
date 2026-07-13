@@ -1,4 +1,4 @@
-﻿import type { FormEvent } from "react";
+import type { FormEvent } from "react";
 import type {
   AdminArtisanProfile,
   AdminArtisanProfileInput,
@@ -551,7 +551,7 @@ export function AdminArtisansPage() {
               value={mode}
             />
             <Link
-              className="inline-flex items-center justify-center rounded-full border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 transition-all hover:border-stone-300 hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-[#BFDBFE]"
+              className="inline-flex items-center justify-center rounded-full border border-stone-200 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 transition-all hover:border-stone-300 hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-brand-300"
               to="/panel/admin/vendedores/activos"
             >
               Ver cuentas

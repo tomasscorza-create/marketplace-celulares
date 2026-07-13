@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
 import { PagePlaceholder } from "../components/PagePlaceholder";
@@ -416,7 +416,7 @@ export function ArtisanProfilePage() {
               </p>
               {isOwnerViewing ? (
                 <Link
-                  className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-ocean-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-ocean-600"
+                  className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
                   to="/panel/vendedor/productos"
                 >
                   Subir producto

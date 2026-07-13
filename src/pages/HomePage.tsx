@@ -166,7 +166,7 @@ export function HomePage() {
                   <label className="grid gap-1 text-sm font-semibold text-stone-700">
                     Texto principal
                     <textarea
-                      className="min-h-32 rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-normal leading-6 text-ocean-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="min-h-32 rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-normal leading-6 text-ocean-800 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
                       value={draft[HOME_CONTENT.heroDescription] ?? ""}
                       onChange={(event) =>
                         handleDraftChange(HOME_CONTENT.heroDescription, event.target.value)
@@ -176,7 +176,7 @@ export function HomePage() {
                   <label className="grid gap-1 text-sm font-semibold text-stone-700">
                     Botón catálogo
                     <input
-                      className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-normal text-ocean-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-normal text-ocean-800 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
                       value={draft[HOME_CONTENT.primaryButtonLabel] ?? ""}
                       onChange={(event) =>
                         handleDraftChange(HOME_CONTENT.primaryButtonLabel, event.target.value)
@@ -186,7 +186,7 @@ export function HomePage() {
                   <label className="grid gap-1 text-sm font-semibold text-stone-700">
                     Botón ingreso
                     <input
-                      className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-normal text-ocean-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm font-normal text-ocean-800 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
                       value={draft[HOME_CONTENT.secondaryButtonLabel] ?? ""}
                       onChange={(event) =>
                         handleDraftChange(HOME_CONTENT.secondaryButtonLabel, event.target.value)

@@ -188,7 +188,7 @@ export function BuyerCartItemCard({
             +
           </button>
           <button
-            className="ml-auto inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-brand-300 hover:bg-brand-100 hover:text-brand-500 disabled:opacity-50"
+            className="ml-auto inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:border-brand-300 hover:bg-brand-100 hover:text-brand-600 disabled:opacity-50"
             disabled={removeCartItemMutation.isPending}
             onClick={async () => {
               onStartAction();
