@@ -1,4 +1,4 @@
-﻿import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 
 import { SiteBrand } from "../components/SiteBrand";
@@ -61,7 +61,7 @@ export function PublicLayout() {
   }, []);
 
   return (
-    <div className="min-h-dvh bg-[radial-gradient(circle_at_top,_#ecfeff,_#f8fafc_40%,_#f1f5f9_100%)] text-stone-900">
+    <div className="min-h-dvh bg-slate-50 text-slate-900 selection:bg-blue-500/30">
       <a
         className="sr-only absolute left-4 top-4 z-[60] rounded-full bg-ocean-600 px-4 py-2 text-sm font-medium text-white focus:not-sr-only"
         href="#main-content"
@@ -71,10 +71,10 @@ export function PublicLayout() {
 
       <header
         className={[
-          "sticky top-0 z-50 border-b border-sun-100 transition-all duration-200",
+          "sticky top-0 z-50 transition-all duration-300",
           isScrolled
-            ? "bg-white/96 shadow-[0_12px_36px_-26px_rgba(15,23,42,0.45)] backdrop-blur-md"
-            : "bg-white/92 backdrop-blur-sm",
+            ? "bg-white/80 border-b border-slate-200/80 shadow-sm backdrop-blur-md"
+            : "bg-white/50 border-b border-transparent backdrop-blur-sm",
         ].join(" ")}
       >
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -124,7 +124,7 @@ export function PublicLayout() {
         </Suspense>
       </div>
 
-      <footer className="mt-10 border-t border-sun-100 bg-white/80">
+      <footer className="mt-10 border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div>

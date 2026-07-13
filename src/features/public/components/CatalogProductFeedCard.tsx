@@ -1,4 +1,4 @@
-﻿import { memo, useCallback, useMemo, useRef, type MouseEvent as ReactMouseEvent } from "react";
+import { memo, useCallback, useMemo, useRef, type MouseEvent as ReactMouseEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { ProductImageCarousel } from "../../../components/ProductImageCarousel";
@@ -30,22 +30,22 @@ const priceFormatter = new Intl.NumberFormat("es-AR", {
 });
 
 const storeActionClassName =
-  "inline-flex h-7 min-w-0 items-center justify-start rounded-md px-1.5 text-[10px] font-medium text-stone-500 transition-colors hover:bg-ocean-50 hover:text-ocean-600 sm:text-[11px]";
+  "inline-flex h-7 min-w-0 items-center justify-start rounded-md px-1.5 text-[10px] font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-blue-600 sm:text-[11px]";
 
 const featuredBuyActionClassName =
-  "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg bg-ocean-600 px-3 text-xs font-semibold text-white transition-colors hover:bg-ocean-700 disabled:cursor-not-allowed disabled:opacity-50 sm:h-9 sm:px-3.5 sm:text-[13px]";
+  "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg bg-blue-600 px-3 text-xs font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:h-9 sm:px-3.5 sm:text-[13px]";
 
 const compactBuyActionClassName =
-  "inline-flex h-7 min-w-[4.9rem] items-center justify-center whitespace-nowrap rounded-md bg-ocean-600 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-ocean-700 disabled:cursor-not-allowed disabled:opacity-50 sm:min-w-[5.25rem] sm:text-xs";
+  "inline-flex h-7 min-w-[4.9rem] items-center justify-center whitespace-nowrap rounded-md bg-blue-600 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:min-w-[5.25rem] sm:text-xs";
 
 const extraActionClassName =
-  "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg border border-ocean-200 bg-white px-3 text-xs font-semibold text-ocean-600 transition-colors hover:border-ocean-300 hover:bg-ocean-50 sm:h-9 sm:px-3.5 sm:text-[13px]";
+  "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 sm:h-9 sm:px-3.5 sm:text-[13px]";
 
 const priceTextClassName =
   "block text-sm font-semibold leading-none text-stone-950 sm:text-[15px]";
 
 const categoryOverlayClassName =
-  "pointer-events-none absolute left-2 top-2 z-[5] max-w-[70%] truncate rounded bg-white/90 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-ocean-600 shadow-sm backdrop-blur-sm sm:text-[10px]";
+  "pointer-events-none absolute left-2 top-2 z-[5] max-w-[70%] truncate rounded bg-white/95 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm sm:text-[10px]";
 
 const compactBuyLabels = {
   added: "Carrito",
@@ -104,8 +104,8 @@ function CatalogProductFeedCardInner({
     ? "border-brand-300 bg-brand-50/45 hover:border-brand-400"
     : "";
   const boostImageShellClassName = item.isBoosted
-    ? "bg-brand-50"
-    : "bg-ocean-50";
+    ? "bg-blue-50"
+    : "bg-slate-50";
   const navigate = useNavigate();
   const cardRef = useRef<HTMLElement | null>(null);
   const handleOpenProductDetail = () => {
@@ -147,7 +147,7 @@ function CatalogProductFeedCardInner({
     return (
       <article
         className={[
-          "catalog-card group/focus flex min-w-0 flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-ocean-300 hover:shadow-[0_20px_44px_-34px_rgba(15,23,42,0.34)] active:scale-[0.995] sm:grid sm:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]",
+          "catalog-card group/focus flex min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg active:scale-[0.995] sm:grid sm:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]",
           boostCardClassName,
         ].join(" ")}
         ref={cardRef}
@@ -257,7 +257,7 @@ function CatalogProductFeedCardInner({
   return (
     <article
       className={[
-        "catalog-card group/focus flex h-full min-w-0 flex-col rounded-xl border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-ocean-300 hover:shadow-[0_18px_38px_-32px_rgba(15,23,42,0.32)] active:scale-[0.995] [content-visibility:auto] [contain-intrinsic-size:260px]",
+        "catalog-card group/focus flex h-full min-w-0 flex-col rounded-lg border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md active:scale-[0.995] [content-visibility:auto] [contain-intrinsic-size:260px]",
         boostCardClassName,
       ].join(" ")}
       ref={cardRef}

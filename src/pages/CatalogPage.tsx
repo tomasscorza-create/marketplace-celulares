@@ -1,4 +1,4 @@
-﻿import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import { PagePlaceholder } from "../components/PagePlaceholder";
@@ -77,31 +77,12 @@ function scrollToExploreSection(section: HTMLElement | null) {
 
 function CatalogPageTransitionLoader() {
   return (
-    <div className="catalog-page-loader pointer-events-none absolute inset-0 z-20 grid place-items-center rounded-[1.7rem] bg-white/30 px-6 py-10 backdrop-blur-[2px]">
-      <div className="grid max-w-sm justify-items-center gap-3 rounded-[1.35rem] border border-white/75 bg-white/88 px-5 py-4 text-center shadow-[0_22px_52px_-30px_rgba(71,85,105,0.45)]">
-        <div className="relative h-14 w-14">
-          <span className="absolute inset-0 rounded-full border-[3px] border-ocean-100/90" />
-          <span className="absolute inset-0 rounded-full border-[3px] border-transparent border-r-sun-500 border-t-ocean-500 animate-spin" />
-          <span className="absolute inset-[10px] rounded-full bg-[radial-gradient(circle,_rgba(236,254,255,0.96),_rgba(224,242,254,0.82))] shadow-[inset_0_0_0_1px_rgba(8,145,178,0.12)]" />
-        </div>
-
-        <div className="flex items-center gap-2">
-          {[
-            { className: "bg-ocean-500", delay: "0ms" },
-            { className: "bg-sun-500", delay: "140ms" },
-            { className: "bg-brand-500", delay: "280ms" },
-          ].map((dot) => (
-            <span
-              className={`h-2.5 w-2.5 rounded-full animate-bounce ${dot.className}`}
-              key={`${dot.className}-${dot.delay}`}
-              style={{ animationDelay: dot.delay, animationDuration: "900ms" }}
-            />
-          ))}
-        </div>
-
+    <div className="catalog-page-loader pointer-events-none absolute inset-0 z-20 grid place-items-center rounded-xl bg-white/50 backdrop-blur-[2px]">
+      <div className="grid max-w-sm justify-items-center gap-4 rounded-xl border border-slate-200 bg-white/95 px-6 py-5 text-center shadow-xl">
+        <div className="h-6 w-6 animate-spin rounded-full border-[3px] border-slate-200 border-t-blue-600" />
         <div className="grid gap-1">
-          <p className="text-sm font-semibold text-ocean-600">Preparando la siguiente pagina</p>
-          <p className="text-xs text-stone-500">Las piezas nuevas entran enseguida.</p>
+          <p className="text-sm font-semibold text-slate-800">Cargando productos</p>
+          <p className="text-xs text-slate-500">Actualizando catálogo...</p>
         </div>
       </div>
     </div>
@@ -588,13 +569,7 @@ export function CatalogPage() {
           />
         </div>
 
-        <div
-          className="neutral-breathe grid gap-7 overflow-hidden rounded-[1.9rem] border border-[#cbd5e1]/30 p-5 shadow-[0_20px_50px_-38px_rgba(15,23,42,0.18)] sm:p-7"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(240,253,250,0.58) 0%, rgba(236,254,255,0.56) 34%, rgba(241,245,249,0.62) 100%)",
-          }}
-        >
+        <div className="grid gap-7 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
           {catalogLoadErrorMessage ? (
             <div className="rounded-2xl border border-brand-500 bg-[#D1FAE5] px-4 py-3 text-sm text-brand-500">
               {catalogLoadErrorMessage}
@@ -627,17 +602,7 @@ export function CatalogPage() {
             className="grid gap-5 border-t border-stone-200/80 pt-6"
             ref={exploreSectionRef}
           >
-            <div
-              className="rounded-2xl border border-stone-200/40 px-4 py-4 shadow-[0_1px_6px_rgba(0,0,0,0.05)] sm:px-5 sm:py-5"
-              style={{
-                background: [
-                  "radial-gradient(ellipse at 0% 0%,   rgba(15,118,110,0.13)  0%, transparent 65%)",
-                  "radial-gradient(ellipse at 100% 100%, rgba(71,85,105,0.11)  0%, transparent 65%)",
-                  "radial-gradient(ellipse at 58% 50%,  rgba(8,145,178,0.10) 0%, transparent 58%)",
-                  "rgba(255,255,255,0.68)",
-                ].join(", "),
-              }}
-            >
+            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 sm:px-5 sm:py-5">
               <CatalogSectionHeader
                 id="catalog-explore-title"
                 title="Explorar"
@@ -658,13 +623,13 @@ export function CatalogPage() {
                 {Array.from({ length: CATALOG_FEED_PAGE_SIZE }).map((_, index) => (
                   <div
                     key={index}
-                    className="rounded-[1.7rem] border border-stone-200 bg-white p-4 shadow-sm"
+                    className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
                   >
-                    <SkeletonBlock className="aspect-[4/3] w-full rounded-2xl" />
+                    <SkeletonBlock className="aspect-square w-full rounded-lg" />
                     <SkeletonBlock className="mt-4 h-4 w-20" />
                     <SkeletonBlock className="mt-3 h-5 w-4/5" />
                     <SkeletonBlock className="mt-2 h-4 w-full" />
-                    <SkeletonBlock className="mt-5 h-9 w-full rounded-full" />
+                    <SkeletonBlock className="mt-4 h-10 w-full rounded-lg" />
                   </div>
                 ))}
               </div>
@@ -674,7 +639,7 @@ export function CatalogPage() {
               <div
                 aria-busy={isPendingExplorePage}
                 aria-live="polite"
-                className="relative min-h-[28rem] overflow-hidden rounded-[1.75rem]"
+                className="relative min-h-[28rem] overflow-hidden rounded-xl"
               >
                 <div
                   className={[
