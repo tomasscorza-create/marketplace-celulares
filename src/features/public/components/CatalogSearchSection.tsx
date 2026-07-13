@@ -154,17 +154,12 @@ function CatalogSearchSectionInner({
   }
 
   return (
-    <section className="search-section grid gap-3 rounded-2xl border border-stone-200/70 p-4 sm:p-5">
+    <section className="search-section grid gap-2.5 rounded-2xl border border-stone-200/70 p-3 sm:p-3.5">
       {/* Capa de efectos animados — overflow:hidden solo aquí, no afecta al dropdown */}
       <div aria-hidden="true" className="search-section-fx" />
 
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="space-y-1">
-          <h1 className="font-display text-2xl font-semibold text-stone-900 sm:text-3xl">
-            Productos independientes
-          </h1>
-        </div>
-        {showTermsButton && (
+      {showTermsButton && (
+        <div className="flex justify-end">
           <button
             aria-label={termsButtonLabel}
             className={[
@@ -180,8 +175,8 @@ function CatalogSearchSectionInner({
           >
             <span className="relative">{termsButtonLabel}</span>
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       <form aria-label="Buscar en el catálogo" className="grid gap-2" onSubmit={onSearchSubmit}>
         <div className="flex items-center gap-2">

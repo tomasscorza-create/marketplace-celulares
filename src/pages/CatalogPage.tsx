@@ -568,7 +568,7 @@ export function CatalogPage() {
           />
         </div>
 
-        <div className="grid gap-4 rounded-3xl border border-white/40 bg-white/40 p-3 shadow-elev-2 backdrop-blur-2xl sm:gap-5 sm:p-5">
+        <div className="grid gap-4 rounded-3xl border border-white/40 bg-gradient-to-br from-blue-950 via-blue-800 to-sky-400 p-3 shadow-elev-2 backdrop-blur-2xl sm:gap-5 sm:p-5">
           {catalogLoadErrorMessage ? (
             <div className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
               {catalogLoadErrorMessage}
@@ -581,7 +581,7 @@ export function CatalogPage() {
               className="relative grid gap-5 overflow-hidden rounded-3xl border border-white/30 p-2 sm:p-4 shadow-sm"
             >
               <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
-              <div className="pointer-events-none absolute -inset-2 z-0 rounded-3xl bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-20 blur-sm" />
+              <div className="pointer-events-none absolute -inset-2 z-0 rounded-3xl bg-[url('/catalog_personalized_bg.webp')] bg-cover bg-center opacity-20 blur-sm" />
               <div className="pointer-events-none absolute inset-0 z-0 bg-stone-950/25" />
               <div className="relative z-10 grid gap-4">
                 <div className="relative flex h-14 items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-r from-brand-700 via-brand-600 to-blue-600 px-4 shadow-elev-2 sm:px-5">
