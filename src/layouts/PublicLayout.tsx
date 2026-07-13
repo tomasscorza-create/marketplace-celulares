@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 
 import { SiteBrand } from "../components/SiteBrand";
-import { marketplaceConfig } from "../config/marketplace";
+import { isOnlinePurchaseEnabled, marketplaceConfig } from "../config/marketplace";
 import { AuthStatus } from "../features/auth/AuthStatus";
 import { useAuth } from "../features/auth/useAuth";
 import { useCatalogWarmup } from "../features/public/useCatalogWarmup";
@@ -43,7 +43,7 @@ export function PublicLayout() {
 
     return {
       label: "Mi cuenta",
-      to: "/panel/comprador",
+      to: isOnlinePurchaseEnabled ? "/panel/comprador" : "/perfil/cliente",
     };
   })();
 
@@ -93,7 +93,7 @@ export function PublicLayout() {
             <SiteBrand isScrolled={isScrolled} />
 
             <div className="flex items-center gap-2">
-              {role === "buyer" ? (
+              {role === "buyer" && isOnlinePurchaseEnabled ? (
                 <Suspense
                   fallback={
                     <div className="h-10 w-24 shrink-0 rounded-full border-2 border-stone-200 bg-white/70 sm:h-11 sm:w-28" />

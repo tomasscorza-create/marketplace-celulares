@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { PagePlaceholder } from "../components/PagePlaceholder";
 
@@ -6,7 +6,7 @@ export function RegistroPage() {
   return (
     <PagePlaceholder
       badge="Registro"
-      description="Creá tu acceso para comprar en la plataforma."
+      description="Creá tu acceso para explorar el catálogo y guardar tus datos."
       title="Crear cuenta"
     >
       <div className="mx-auto max-w-md">
@@ -31,7 +31,7 @@ export function RegistroPage() {
                 Crear cuenta
               </h2>
               <p className="mt-1.5 text-sm leading-6 text-stone-600">
-                Explorá el catálogo, guardá tus datos y realizá pedidos a vendedores locales.
+                Explorá el catálogo, guardá favoritos y contactá a los vendedores locales.
               </p>
             </div>
 

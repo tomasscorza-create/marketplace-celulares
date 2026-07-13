@@ -1,7 +1,8 @@
-﻿import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { UserAvatar } from "../../components/UserAvatar";
+import { isOnlinePurchaseEnabled } from "../../config/marketplace";
 import { signOut } from "./authClient";
 import { useAuth } from "./useAuth";
 
@@ -161,14 +162,16 @@ export function AuthStatus() {
       {
         title: "Mi perfil",
         links: [
-          {
-            label: "Mis pedidos",
-            to: "/panel/comprador",
-          },
-          {
-            label: "Mi carrito",
-            to: "/panel/comprador/carrito",
-          },
+          ...(isOnlinePurchaseEnabled ? [
+            {
+              label: "Mis pedidos",
+              to: "/panel/comprador",
+            },
+            {
+              label: "Mi carrito",
+              to: "/panel/comprador/carrito",
+            },
+          ] : []),
           {
             label: "Ir al catálogo",
             to: "/catalogo",

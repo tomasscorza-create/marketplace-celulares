@@ -1,4 +1,4 @@
-﻿import type { FormEvent, PointerEvent as ReactPointerEvent } from "react";
+import type { FormEvent, PointerEvent as ReactPointerEvent } from "react";
 import type { DeliveryType } from "../types/commerce";
 import type { ImageCropSettings } from "../lib/compressImage";
 
@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { PagePlaceholder } from "../components/PagePlaceholder";
+import { isOnlinePurchaseEnabled } from "../config/marketplace";
 import { useAuth } from "../features/auth/useAuth";
 import { useBuyerPreferences, useUpdateBuyerAccount } from "../features/buyer/buyerQueries";
 import { ArtisanProfileImageCropModal } from "../features/artisan/components/ArtisanProfileImageCropModal";
@@ -358,12 +359,14 @@ export function BuyerAccountPage() {
           >
             Ver perfil
           </Link>
-          <Link
-            className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-[#E0F2FE] sm:w-auto"
-            to="/panel/comprador"
-          >
-            Mis pedidos
-          </Link>
+          {isOnlinePurchaseEnabled ? (
+            <Link
+              className="inline-flex w-full items-center justify-center rounded-full border border-ocean-500 px-5 py-3 text-sm font-medium text-ocean-500 transition-colors hover:bg-[#E0F2FE] sm:w-auto"
+              to="/panel/comprador"
+            >
+              Mis pedidos
+            </Link>
+          ) : null}
         </div>
       }
       badge="Configuracion"
@@ -456,40 +459,42 @@ export function BuyerAccountPage() {
             </label>
           </div>
 
-          <section className="grid gap-3 rounded-3xl border border-stone-200 bg-stone-50/70 p-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <h2 className="text-sm font-semibold text-stone-900">Datos de contacto</h2>
-                <p className="mt-1 text-sm text-stone-500">
-                  {formState.phone.trim() ||
-                  formState.deliveryNotes.trim() ||
-                  formState.shippingAddress.trim()
-                    ? "Gestiona telefono, direccion y notas desde una pantalla separada."
-                    : "Carga tu telefono, direccion de entrega y notas de compra."}
-                </p>
+          {isOnlinePurchaseEnabled ? (
+            <section className="grid gap-3 rounded-3xl border border-stone-200 bg-stone-50/70 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-sm font-semibold text-stone-900">Datos de contacto</h2>
+                  <p className="mt-1 text-sm text-stone-500">
+                    {formState.phone.trim() ||
+                    formState.deliveryNotes.trim() ||
+                    formState.shippingAddress.trim()
+                      ? "Gestiona telefono, direccion y notas desde una pantalla separada."
+                      : "Carga tu telefono, direccion de entrega y notas de compra."}
+                  </p>
+                </div>
+                <Link
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-ocean-200 bg-white px-4 py-2 text-sm font-semibold text-ocean-600 transition-colors hover:border-ocean-400 hover:bg-[#E0F2FE]"
+                  to="/panel/comprador/cuenta/contacto"
+                >
+                  Editar datos de contacto
+                </Link>
               </div>
-              <Link
-                className="inline-flex min-h-10 items-center justify-center rounded-full border border-ocean-200 bg-white px-4 py-2 text-sm font-semibold text-ocean-600 transition-colors hover:border-ocean-400 hover:bg-[#E0F2FE]"
-                to="/panel/comprador/cuenta/contacto"
-              >
-                Editar datos de contacto
-              </Link>
-            </div>
-            <div className="grid gap-3 rounded-2xl border border-white/90 bg-white px-4 py-4 text-sm text-stone-600">
-              <div className="flex items-center justify-between gap-3">
-                <span>Telefono</span>
-                <span className="font-medium text-stone-900">
-                  {formState.phone.trim() || "Sin cargar"}
-                </span>
+              <div className="grid gap-3 rounded-2xl border border-white/90 bg-white px-4 py-4 text-sm text-stone-600">
+                <div className="flex items-center justify-between gap-3">
+                  <span>Telefono</span>
+                  <span className="font-medium text-stone-900">
+                    {formState.phone.trim() || "Sin cargar"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Direccion</span>
+                  <span className="font-medium text-stone-900">
+                    {formState.shippingAddress.trim() || "Sin cargar"}
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center justify-between gap-3">
-                <span>Direccion</span>
-                <span className="font-medium text-stone-900">
-                  {formState.shippingAddress.trim() || "Sin cargar"}
-                </span>
-              </div>
-            </div>
-          </section>
+            </section>
+          ) : null}
 
           {!isNameValid && normalizedState.fullName.length > 0 ? (
             <p className="rounded-2xl border border-brand-100 bg-[#FDF1EC] px-4 py-3 text-sm text-brand-500">

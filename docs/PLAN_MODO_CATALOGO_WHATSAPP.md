@@ -194,9 +194,9 @@ cambios> : <WhatsAppProductButton>`. No tocar la rama actual.
 - [x] Fase 1 — Flag `salesChannel`, número WP en config, `WhatsAppProductButton` creado
 - [x] Fase 2.1 — `ProductDetailPage` con CTA de WhatsApp (incl. opciones en el mensaje)
 - [x] Fase 2.2–2.4 — Cards del catálogo (feed, storefront, 3D) reemplazadas
-- [ ] Fase 3.1–3.3 — Navegación limpia (header, menú usuario, tabs comprador)
-- [ ] Fase 3.4 — Rutas de carrito/pedidos/checkout redirigen al catálogo
-- [ ] Fase 3.5–3.6 — Cuenta comprador y copys de registro ajustados
+- [x] Fase 3.1–3.3 — Navegación limpia (header, menú usuario, tabs comprador)
+- [x] Fase 3.4 — Rutas de carrito/pedidos/checkout redirigen al catálogo
+- [x] Fase 3.5–3.6 — Cuenta comprador y copys de registro ajustados
 - [ ] Fase 5 — Verificación completa en ambos valores del flag
 
 ### Notas de ejecución

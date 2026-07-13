@@ -1,11 +1,12 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { lazy, Suspense } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import { RouteErrorPage } from "../components/RouteErrorPage";
 import { RouteLoader } from "../components/RouteLoader";
 import { ProtectedRoute } from "../features/auth/ProtectedRoute";
+import { isOnlinePurchaseEnabled } from "../config/marketplace";
 
 const PublicLayout = lazy(async () => ({
   default: (await import("../layouts/PublicLayout")).PublicLayout,
@@ -138,6 +139,13 @@ function withRouteLoader(node: ReactNode) {
   return <Suspense fallback={<RouteLoader />}>{node}</Suspense>;
 }
 
+function withCommerceGate(node: ReactNode) {
+  if (!isOnlinePurchaseEnabled) {
+    return <Navigate to="/catalogo" replace />;
+  }
+  return withRouteLoader(node);
+}
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -174,15 +182,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "checkout/exito",
-        element: withRouteLoader(<CheckoutSuccessPage />),
+        element: withCommerceGate(<CheckoutSuccessPage />),
       },
       {
         path: "checkout/pendiente",
-        element: withRouteLoader(<CheckoutPendingPage />),
+        element: withCommerceGate(<CheckoutPendingPage />),
       },
       {
         path: "checkout/fallo",
-        element: withRouteLoader(<CheckoutFailurePage />),
+        element: withCommerceGate(<CheckoutFailurePage />),
       },
       {
         path: "cliente/:id",
@@ -256,15 +264,15 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: withRouteLoader(<BuyerDashboardPage />),
+        element: withCommerceGate(<BuyerDashboardPage />),
       },
       {
         path: "pedidos/:orderId",
-        element: withRouteLoader(<BuyerOrderDetailPage />),
+        element: withCommerceGate(<BuyerOrderDetailPage />),
       },
       {
         path: "carrito",
-        element: withRouteLoader(<BuyerCartPage />),
+        element: withCommerceGate(<BuyerCartPage />),
       },
       {
         path: "cuenta",
