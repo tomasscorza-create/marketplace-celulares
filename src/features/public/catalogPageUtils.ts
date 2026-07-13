@@ -4,6 +4,7 @@ import { getCatalogFeedItemRelevanceScore } from "../../lib/discovery/semanticRe
 
 export const CATALOG_FEED_PAGE_SIZE = 29;
 const CATALOG_SHOWCASE_ITEM_COUNT = 5;
+const CATALOG_PERSONALIZED_ITEM_COUNT = 6;
 export const CATALOG_FEATURED_STOREFRONTS_LIMIT = 3;
 export const CATALOG_DISCOVERY_STOREFRONTS_LIMIT = 4;
 export const CATALOG_SECONDARY_GROUPS_LIMIT = 2;
@@ -111,8 +112,21 @@ export function splitCatalogShowcaseItems<T>(items: T[]) {
   };
 }
 
-function getCatalogShowcaseItems(items: PublicCatalogFeedItem[]) {
-  const showcaseItems = items.slice(0, CATALOG_SHOWCASE_ITEM_COUNT);
+function getCatalogShowcaseItems(
+  items: PublicCatalogFeedItem[],
+  {
+    itemCount = CATALOG_SHOWCASE_ITEM_COUNT,
+    prioritizeModel = true,
+  }: {
+    itemCount?: number;
+    prioritizeModel?: boolean;
+  } = {},
+) {
+  const showcaseItems = items.slice(0, itemCount);
+  if (!prioritizeModel) {
+    return showcaseItems;
+  }
+
   const modelItem = items.find((item) =>
     Boolean(getPrimaryProductModel3D(item.product.product_media)),
   );
@@ -125,7 +139,7 @@ function getCatalogShowcaseItems(items: PublicCatalogFeedItem[]) {
     ...showcaseItems.slice(0, 1),
     modelItem,
     ...showcaseItems.slice(1).filter((item) => item.product.id !== modelItem.product.id),
-  ].slice(0, CATALOG_SHOWCASE_ITEM_COUNT);
+  ].slice(0, itemCount);
 }
 
 function getRotationHash(seed: string) {
@@ -265,6 +279,10 @@ export function getCatalogFeedCollections(params: CatalogFeedCollectionsParams) 
       personalizedItems,
       `${rotationSeed}:personalized`,
     ),
+    {
+      itemCount: CATALOG_PERSONALIZED_ITEM_COUNT,
+      prioritizeModel: false,
+    },
   );
   const personalizedProductIds = new Set(
     personalizedShowcaseItems.map((item) => item.product.id),

@@ -19,6 +19,7 @@ type CatalogProductShowcaseProps = {
   isMobileViewport?: boolean;
   isSingleColumnViewport?: boolean;
   items: PublicCatalogFeedItem[];
+  presentation?: "showcase" | "product-grid";
 };
 
 export function CatalogProductShowcase({
@@ -27,6 +28,7 @@ export function CatalogProductShowcase({
   isMobileViewport = false,
   isSingleColumnViewport = false,
   items,
+  presentation = "showcase",
 }: CatalogProductShowcaseProps) {
   const { featuredItem, supportingItems } = splitCatalogShowcaseItems(items);
   const eagerRevealRootMargin = "0px 0px 4% 0px";
@@ -36,6 +38,27 @@ export function CatalogProductShowcase({
 
   if (!featuredItem) {
     return null;
+  }
+
+  if (presentation === "product-grid") {
+    return (
+      <RevealSequenceGroup
+        className="grid grid-cols-1 content-start gap-3.5 min-[520px]:grid-cols-2 sm:gap-4 xl:grid-cols-3"
+        rootMargin={eagerRevealRootMargin}
+        threshold={0.1}
+      >
+        {items.map((item, index) => (
+          <RevealSequenceItem className="min-w-0" index={index} key={item.product.id} stepMs={64}>
+            <CatalogProductFeedCard
+              isLiteMode={isLiteMode}
+              item={item}
+              layout="default"
+              priority={!isLiteMode && index < 3}
+            />
+          </RevealSequenceItem>
+        ))}
+      </RevealSequenceGroup>
+    );
   }
 
   const preview3DItem =

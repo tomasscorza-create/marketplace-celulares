@@ -1,5 +1,5 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import { PagePlaceholder } from "../components/PagePlaceholder";
 import {
@@ -590,6 +590,14 @@ export function CatalogPage() {
                   <div className="pointer-events-none absolute inset-0 z-0 bg-slate-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-slate-900/65" />
                   <div className="relative z-10">
                     <CatalogSectionHeader
+                      action={
+                        <Link
+                          className="inline-flex min-h-8 items-center rounded-lg border border-white/25 bg-white/10 px-3 text-xs font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/20"
+                          to="/catalogo/para-vos"
+                        >
+                          Ver todo
+                        </Link>
+                      }
                       id="catalog-personalized-title"
                       tone="ocean"
                       onDark
@@ -599,14 +607,9 @@ export function CatalogPage() {
                 </div>
 
                 <CatalogProductShowcase
-                  featuredExtraAction={{
-                    label: "Ver todo para ti",
-                    to: "/catalogo/para-vos",
-                  }}
                   isLiteMode={adaptiveMode.isLiteMode}
-                  isMobileViewport={adaptiveMode.isMobileViewport}
-                  isSingleColumnViewport={adaptiveMode.isSingleColumnViewport}
                   items={feedCollections.personalizedShowcaseItems}
+                  presentation="product-grid"
                 />
               </div>
             </section>
