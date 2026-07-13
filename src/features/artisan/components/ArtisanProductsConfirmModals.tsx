@@ -17,7 +17,7 @@ function ArtisanProductsConfirmModalsInner(props: ArtisanProductsConfirmModalsPr
       isOpen={props.pendingDeleteProductId !== null}
       message={`Vas a eliminar "${
         props.pendingDeleteProductTitle ?? "este producto"
-      }". Esta acción también quitará sus fotos cargadas.`}
+      }" del catálogo. Las fotos ya cargadas se conservan según la política de almacenamiento.`}
       onCancel={props.onCancelDeleteProduct}
       onConfirm={props.onConfirmDeleteProduct}
       title="Eliminar producto"

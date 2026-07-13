@@ -268,7 +268,7 @@ export function ArtisanProductsPage() {
         if (!isCancelled) {
           setDraftPersistenceState("error");
           setSaveErrorMessage(
-            "No pudimos restaurar el borrador del producto. Revisa IndexedDB del navegador.",
+            "No pudimos restaurar el borrador del producto. Revisá IndexedDB del navegador.",
           );
         }
       } finally {
@@ -599,7 +599,7 @@ export function ArtisanProductsPage() {
       if (!file || targetImageIndex === null) return;
 
       if (!file.type.startsWith("image/")) {
-        setSaveErrorMessage("Selecciona un archivo de imagen válido.");
+        setSaveErrorMessage("Seleccioná un archivo de imagen válido.");
         return;
       }
 

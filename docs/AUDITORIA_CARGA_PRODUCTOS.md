@@ -413,7 +413,7 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - [x] Fase 4.5 â€” `ArtisanProductsPage` dividido en hooks
 - [x] Fase 4.6 â€” `ArtisanProductFormSection` dividido
 - [x] Fase 4.7 â€” Subidas paralelizadas con orden preservado
-- [ ] Fase 4.8 â€” Textos unificados
+- [x] Fase 4.8 â€” Textos unificados
 - [ ] Fase 5 â€” VerificaciÃ³n final completa y docs actualizadas
 
 ### Notas de ejecuciÃ³n
@@ -434,6 +434,9 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - 2026-07-13: Fase 4.7. Las fotos se procesan con un pool de tres trabajos; cada una
   conserva la secuencia original, comprimida y miniatura, y el resultado se ordena por
   su Ã­ndice original antes de persistirlo.
+- 2026-07-13: Fase 4.8. Se normalizaron los mensajes principales del flujo a espaÃ±ol
+  rioplatense y la confirmaciÃ³n de borrado ahora refleja la retenciÃ³n append-only de
+  las fotos.
 
 ## Criterios de aceptaciÃ³n
 

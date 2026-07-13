@@ -163,7 +163,7 @@ async function uploadProductMedia(params: {
     }
 
     completedUploads += 1;
-    onUploadStatusChange(`Subiendo foto ${completedUploads} de ${totalUploads}...`);
+    onUploadStatusChange(`Subiendo fotos: ${completedUploads} de ${totalUploads}...`);
 
     return {
       crop: draft.crop,

@@ -178,7 +178,7 @@ export function ArtisanProductFormSection({
             </h2>
             <p className="text-sm leading-6 text-stone-500">
               {editingProductId
-                ? "Ya estÃƒÂ¡s editando este producto. Cambia ficha, stock o fotos sin salir de esta pantalla."
+                ? "Ya estás editando este producto. Cambiá ficha, stock o fotos sin salir de esta pantalla."
                 : isCreateFocused
                   ? "Completa los datos base, define el modo de venta, sube fotos y guarda."
                   : "Carga rapido, revisa todo en una sola vista y publica sin pasos innecesarios."}
@@ -280,8 +280,8 @@ export function ArtisanProductFormSection({
                 </span>
                 <span className="rounded-full bg-white px-2.5 py-1">
                   {productForm.category_id
-                    ? "CategorÃƒÂ­a lista"
-                    : "Sin categorÃƒÂ­a"}
+                    ? "Categoría lista"
+                    : "Sin categoría"}
                 </span>
               </div>
               <p className="text-xs leading-5 text-stone-500">
@@ -301,8 +301,8 @@ export function ArtisanProductFormSection({
 
       {!isLoading && categories.length === 0 ? (
         <p className="rounded-2xl border border-sun-500 bg-[#ECFEFF] px-4 py-3 text-sm text-brand-500">
-          No hay categorias disponibles en este momento. Cuando el equipo las
-          active vas a poder publicar.
+          No hay categorías disponibles en este momento. Cuando el equipo las
+          active, vas a poder publicar.
         </p>
       ) : null}
 
@@ -310,8 +310,7 @@ export function ArtisanProductFormSection({
         <div className="space-y-1">
           <p className="text-sm font-semibold text-stone-900">Datos base</p>
           <p className="text-sm text-stone-500">
-            Completa una sola vez la informaciÃƒÂ³n principal. Si estÃƒÂ¡s en
-            modo lote, estos datos se reutilizan en cada foto.
+            Completá una sola vez la información principal de esta ficha.
           </p>
         </div>
 
@@ -374,7 +373,7 @@ export function ArtisanProductFormSection({
               value={productForm.category_id}
             >
               {categories.length === 0 ? (
-                <option value="">Sin categorias activas</option>
+                <option value="">Sin categorías activas</option>
               ) : null}
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -535,7 +534,7 @@ export function ArtisanProductFormSection({
           </div>
         ) : (
           <div className="rounded-2xl border border-dashed border-stone-300 bg-white px-4 py-5 text-sm text-stone-500">
-            TodavÃƒÂ­a no agregaste atributos a esta ficha.
+            Todavía no agregaste atributos a esta ficha.
           </div>
         )}
       </section>
@@ -544,7 +543,7 @@ export function ArtisanProductFormSection({
         <div className="space-y-1">
           <p className="text-sm font-semibold text-stone-900">Modo de venta</p>
           <p className="text-sm text-stone-500">
-            Define cÃƒÂ³mo se vende la pieza antes de cargar las fotos.
+            Definí cómo se vende la pieza antes de cargar las fotos.
           </p>
         </div>
 

@@ -17,7 +17,7 @@ export function ProductModel3DField({ onFileChange, onRemove, productMedia, sele
         <div className="space-y-1">
           <p className="text-sm font-semibold text-stone-900">Modelo 3D</p>
           <p className="text-sm leading-6 text-stone-500">
-            Acepta archivos .glb o .gltf livianos para la vista interactiva del catalogo.
+            Acepta archivos .glb o .gltf livianos para la vista interactiva del catálogo.
           </p>
         </div>
 
