@@ -21,6 +21,7 @@ Codex y otros agentes de IA.
 | Revisar el flujo de catálogo/3D | [docs/PRODUCT_3D_PREVIEW.md](docs/PRODUCT_3D_PREVIEW.md) |
 | Ejecutar o ampliar pruebas automatizadas | [contexto/pruebas-automatizadas.md](contexto/pruebas-automatizadas.md) |
 | Entender el límite de tamaño y cómo dividir módulos | [contexto/modularidad.md](contexto/modularidad.md) |
+| Entender el service worker y la política de precache | [contexto/pwa-y-cache.md](contexto/pwa-y-cache.md) |
 | Consultar planes históricos, no operativos | [docs/REFACTOR_PLAN.md](docs/REFACTOR_PLAN.md), [docs/NEW_BACKEND_PLAN.md](docs/NEW_BACKEND_PLAN.md) |
 | Encontrar contexto futuro por dominio | [contexto/](contexto/) |
 

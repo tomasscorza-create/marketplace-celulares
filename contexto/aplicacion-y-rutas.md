@@ -23,6 +23,9 @@ El punto de entrada carga `App`, que monta el enrutador de `router.tsx`. Las rut
 ## Reglas y decisiones vigentes
 
 - **Carga perezosa (Lazy Loading)**: Todas las páginas y layouts se cargan mediante `lazy` para optimizar el tamaño del bundle.
+- **PWA y rutas lazy**: El service worker no precachea páginas de catálogo,
+  producto ni paneles. Sus chunks se descargan al navegar y después quedan en
+  la caché runtime acotada; el contrato completo vive en `pwa-y-cache.md`.
 - **Rutas protegidas**: Los paneles privados (vendedor, comprador, admin) y ciertas subrutas (ej. `/perfil/cliente`) están resguardados por el componente `<ProtectedRoute>` que exige un rol específico (`allowedRoles`).
 - **Estado de carga**: Se usa `<Suspense>` con `<RouteLoader />` para mostrar retroalimentación mientras se descargan los fragmentos de las páginas.
 - **Manejo de errores**: Cada ruta o grupo principal define un `errorElement: <RouteErrorPage />` para capturar fallos.
@@ -41,6 +44,7 @@ El punto de entrada carga `App`, que monta el enrutador de `router.tsx`. Las rut
 
 - Olvidar envolver una ruta privada con `<ProtectedRoute>`, exponiendo vistas sensibles.
 - Cargar páginas pesadas de manera síncrona en `router.tsx` aumentando el tamaño del bundle inicial.
+- Agregar todas las rutas lazy al precache y anular el beneficio de dividir el bundle.
 
 ## Mantenimiento
 

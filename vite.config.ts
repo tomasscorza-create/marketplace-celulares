@@ -39,7 +39,44 @@ export default defineConfig(({ mode }) => {
       },
       workbox: {
         cleanupOutdatedCaches: true,
+        globPatterns: [
+          "**/*.{html,css,svg,png,webmanifest}",
+          "assets/index-*.js",
+          "assets/react-vendor-*.js",
+          "assets/router-vendor-*.js",
+          "assets/query-vendor-*.js",
+          "assets/supabase-vendor-*.js",
+          "assets/vendor-*.js",
+          "assets/PublicLayout-*.js",
+          "assets/HomePage-*.js",
+          "assets/AuthStatus-*.js",
+          "assets/UserAvatar-*.js",
+          "assets/publicClient-*.js",
+          "assets/buyerClient-*.js",
+          "assets/productMedia-*.js",
+          "assets/fulfillment-*.js",
+          "assets/queryKeys-*.js",
+        ],
         navigateFallback: "/index.html",
+        runtimeCaching: [
+          {
+            urlPattern: ({ request, url }) =>
+              request.destination === "script" ||
+              request.destination === "style" ||
+              url.pathname.startsWith("/assets/"),
+            handler: "CacheFirst",
+            options: {
+              cacheName: "nyzca-runtime-assets-v1",
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+              expiration: {
+                maxAgeSeconds: 30 * 24 * 60 * 60,
+                maxEntries: 80,
+              },
+            },
+          },
+        ],
       },
     }),
     {

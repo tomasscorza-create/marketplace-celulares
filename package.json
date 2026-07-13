@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --config vite.config.ts",
     "typecheck": "tsc -b",
-    "build": "tsc -b && vite build --config vite.config.ts",
+    "build": "tsc -b && vite build --config vite.config.ts && npm run audit:pwa",
     "preview": "vite preview --config vite.config.ts",
     "lint": "eslint .",
     "test": "vitest run",
@@ -24,6 +24,7 @@
     "docs:backend-map": "node scripts/audit-backend-symbols.mjs --write-map",
     "audit:encoding": "node scripts/audit-encoding.mjs",
     "audit:large-files": "node scripts/audit-large-files.mjs 1000 --check",
+    "audit:pwa": "node scripts/audit-pwa-precache.mjs",
     "audit:safety": "node scripts/audit-safety.mjs all",
     "safety:quarantine": "node scripts/quarantine-local-secrets.mjs",
     "preflight": "npm run lint && npm run typecheck && npm run test && npm run audit:backend && npm run audit:secrets && npm run audit:connections && npm run audit:encoding && npm run audit:large-files"

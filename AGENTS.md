@@ -57,6 +57,9 @@ migraciones, configuración, Git o servicios remotos.
 - `npm run preflight` bloquea módulos de código, scripts o SQL con 1000 líneas
   o más. Antes de ampliar un archivo cercano al límite, extraer por dominio sin
   romper sus exports públicos.
+- La PWA precachea sólo el shell y las dependencias mínimas del inicio. Las
+  rutas lazy, el visor 3D, fuentes y datasets se guardan en runtime al usarse.
+  `npm run build` termina con `audit:pwa` y debe conservar ese control verde.
 - Las pruebas automatizadas usan Vitest y React Testing Library. `npm test`
   ejecuta la suite una vez, `npm run test:watch` sirve para desarrollo y
   `npm run preflight` incluye obligatoriamente la suite completa.

@@ -7,6 +7,8 @@ Explicar cómo se construye el empaquetado de producción del frontend, qué her
 ## Fuentes de verdad
 
 - `netlify.toml`: Configuración de *build* para el proveedor de despliegue (Netlify).
+- `vite.config.ts`: Generación del manifest, service worker y política de caché PWA.
+- `scripts/audit-pwa-precache.mjs`: Límites aplicados al precache generado.
 - `package.json`: Scripts de npm, específicamente `build`, `preflight` y los comandos `audit:*`.
 - `AGENTS.md`: Define explícitamente que el despliegue del frontend no despliega backend ni migraciones de forma automática.
 
@@ -15,12 +17,14 @@ Explicar cómo se construye el empaquetado de producción del frontend, qué her
 1. **Frontend Build**: Localmente o en la nube, se ejecuta `npm run build` (que invoca `tsc -b` y `vite build`). Esto genera recursos estáticos minificados en la carpeta `dist/`.
 2. **Netlify**: El archivo `netlify.toml` le indica a la plataforma que el comando base es `npm run build`, que la versión de Node es la 20 y que debe publicar el contenido del directorio `dist`.
 3. **Backend Independiente**: Las migraciones de Supabase (`supabase/migrations/`) y las Edge Functions (`supabase/functions/`) no tienen relación automática con el pipeline de Netlify. Deben aplicarse a través del CLI de Supabase independientemente, contra el proyecto en producción.
+4. **PWA**: El build genera el service worker y ejecuta `audit:pwa`. La compilación falla si el precache incorpora rutas lazy/3D o supera los límites documentados en `contexto/pwa-y-cache.md`.
 
 ## Reglas y decisiones vigentes
 
 - **Variables de Producción**: En producción, las variables seguras (como `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`) se configuran directamente en el panel web de Netlify. Nunca se versionan en el repositorio ni se empujan `.env` globales de producción.
 - **Preflight local**: Antes de cualquier publicación o commit grande estructural, se exige correr `npm run preflight` (que agrupa lint, tipos, pruebas automatizadas, auditorías de seguridad y el límite bloqueante de tamaño de módulos).
 - **Desacople estricto**: Si se publica un cambio en Netlify que requiere una nueva vista o función SQL, la migración de Supabase debe haberse corrido y validado *antes* en el proyecto remoto.
+- **Caché PWA acotada**: Un deploy no debe incorporar al precache todos los chunks lazy. El detalle y los números de referencia viven en `contexto/pwa-y-cache.md`.
 
 ## Dependencias y límites externos
 
@@ -30,14 +34,15 @@ Explicar cómo se construye el empaquetado de producción del frontend, qué her
 
 ## Validación
 
-- Comandos: `npm test`, `npm run audit:large-files`, `npm run preflight` y `npm run build` aseguran que la app pase las pruebas y estándares de calidad locales antes de considerar subirla.
+- Comandos: `npm test`, `npm run audit:large-files`, `npm run preflight` y `npm run build` aseguran que la app pase las pruebas y estándares de calidad locales antes de considerar subirla. `audit:pwa` se ejecuta al final del build porque inspecciona el service worker generado en `dist/`.
 - Manual: Revisar la consola del navegador y la pestaña Network tras un deploy en staging para confirmar que las variables de entorno se inyectaron correctamente en el bundle de Vite.
 
 ## Riesgos y errores frecuentes
 
 - Creer que al pushear código a la rama principal, el *trigger* de Netlify también actualizó las funciones Edge o aplicó las nuevas tablas. Esto causa fallos de red en el cliente que intenta leer cosas que no existen.
 - Agregar dependencias problemáticas que fallen en la compilación estricta de TypeScript (`tsc -b`). Vite build falla si el typcheck es forzado antes.
+- Ejecutar sólo `audit:pwa` sobre un `dist/` viejo y confundir ese resultado con la certificación del código actual; la puerta válida es `npm run build`.
 
 ## Mantenimiento
 
-Se debe modificar si el proyecto migra a otro proveedor (ej. Vercel), cambia a un framework SSR (Server-Side Rendering) que exija variables privadas en despliegue, o si se integra automatización CI/CD con GitHub Actions para el backend.
+Se debe modificar si el proyecto migra a otro proveedor (ej. Vercel), cambia a un framework SSR (Server-Side Rendering), cambia la estrategia de PWA/caché o se integra automatización CI/CD con GitHub Actions para el backend.

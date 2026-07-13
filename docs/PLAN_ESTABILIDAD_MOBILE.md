@@ -81,6 +81,12 @@ en `adminClient.ts`, `buyerClient.ts` y `authClient.ts`.
 
 ## Fase 3 — Service worker confiable
 
+> Estado actualizado 2026-07-13: Workbox sigue siendo la implementación
+> vigente, pero el precache ya no incorpora todo `dist/`. El contrato operativo,
+> límites y medición actual están en `contexto/pwa-y-cache.md`. Los pasos que
+> siguen describen el diagnóstico histórico anterior a esa implementación y no
+> deben usarse como instrucciones operativas actuales.
+
 `public/sw.js` es artesanal con versión manual (`CACHE_VERSION = "v5"`). Riesgo
 clásico: usuarios con versión vieja cacheada o comportamientos raros por celular.
 

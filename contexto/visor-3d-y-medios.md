@@ -17,6 +17,9 @@ La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
 
 ## Reglas y decisiones vigentes
 - **Carga Diferida Estricta**: Está prohibido empaquetar librerías de 3D en el *bundle* inicial principal de React, para no ralentizar el inicio del sitio en móviles.
+- **Sin precache 3D**: `three-vendor` tampoco forma parte del precache PWA. Se
+  descarga al abrir una experiencia 3D y recién entonces puede quedar en la
+  caché runtime de assets. `npm run build` audita esta exclusión.
 - **Fallback obligatorio**: Todo modelo 3D debe venir siempre acompañado de una imagen de pre-visualización estática (`poster_url`).
 - **Formato recomendado**: El formato estándar en los buckets de almacenamiento será `.glb` de poco peso (ideal < 3MB).
 
@@ -24,6 +27,7 @@ La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
 - **Three.js** y **React Three Fiber**: Motores WebGL subyacentes encargados de las luces, texturas y rotaciones de cámara.
 
 ## Validación
+- Automática: `npm run build` debe terminar con `PWA precache audit passed` y no listar `three-vendor` en el manifiesto de precache.
 - Manual: Subir un `.glb` pequeño desde el editor de productos y comprobar en el catálogo público que se inicializa un visualizador arrastrable.
 
 ## Riesgos y errores frecuentes
