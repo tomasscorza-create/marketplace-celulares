@@ -12,6 +12,7 @@ Codex y otros agentes de IA.
 
 | Si necesitas… | Consulta primero |
 | --- | --- |
+| Saber cuál es el repo Git y el proyecto Supabase vigentes | [docs/IDENTIDAD_PROYECTO.md](docs/IDENTIDAD_PROYECTO.md) |
 | Entender decisiones, arquitectura, seguridad o estado actual | [AGENTS.md](AGENTS.md) |
 | Trabajar con Supabase y migraciones | [docs/DB_SAFETY.md](docs/DB_SAFETY.md), [docs/BACKEND_MAP.md](docs/BACKEND_MAP.md) |
 | Configurar variables de entorno | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) |

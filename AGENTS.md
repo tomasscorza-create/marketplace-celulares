@@ -6,6 +6,11 @@ migraciones, configuración, Git o servicios remotos.
 
 ## 1. Identidad, límites y seguridad
 
+- **Ante cualquier duda sobre cuál es el repo Git o el proyecto Supabase
+  vigente, leer [docs/IDENTIDAD_PROYECTO.md](docs/IDENTIDAD_PROYECTO.md).**
+  Es la fuente de verdad de identidad (repo actual, project ref de Supabase
+  de producción, recursos viejos prohibidos) e incluye un chequeo de 30
+  segundos. No preguntar al dueño lo que ese archivo ya responde.
 - Este es un marketplace independiente de celulares y accesorios.
 - No mezclar código, remotos Git, dominios, datos ni credenciales con el
   marketplace del que se originó este checkout ni con otros repositorios del
