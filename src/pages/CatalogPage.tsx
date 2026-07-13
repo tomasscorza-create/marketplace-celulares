@@ -585,17 +585,22 @@ export function CatalogPage() {
               <div className="pointer-events-none absolute -inset-2 z-0 bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40 blur-[4px]" />
               <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
               <div className="relative z-10 grid gap-5">
-                <div className="rounded-2xl border border-white/70 bg-white/90 px-4 py-4 shadow-sm backdrop-blur-xl sm:px-5 sm:py-5">
-                  <CatalogSectionHeader
-                    id="catalog-personalized-title"
-                    tone="ocean"
-                    title="Piezas relacionadas contigo"
-                  />
+                <div className="group relative overflow-hidden rounded-2xl border border-white/20 px-4 py-4 shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-white/40 hover:shadow-2xl hover:shadow-ocean-900/30 sm:px-5 sm:py-5">
+                  <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/badge_bg.webp')] bg-cover bg-center opacity-100 transition-transform duration-700 ease-out group-hover:scale-105" />
+                  <div className="pointer-events-none absolute inset-0 z-0 bg-slate-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-slate-900/65" />
+                  <div className="relative z-10">
+                    <CatalogSectionHeader
+                      id="catalog-personalized-title"
+                      tone="ocean"
+                      onDark
+                      title="Para ti"
+                    />
+                  </div>
                 </div>
 
                 <CatalogProductShowcase
                   featuredExtraAction={{
-                    label: "Ver piezas para vos",
+                    label: "Ver todo para ti",
                     to: "/catalogo/para-vos",
                   }}
                   isLiteMode={adaptiveMode.isLiteMode}
@@ -616,21 +621,26 @@ export function CatalogPage() {
             <div className="pointer-events-none absolute -inset-2 z-0 bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40 blur-[4px]" />
             <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
             <div className="relative z-10 grid gap-5">
-              <div className="rounded-2xl border border-white/70 bg-white/90 px-4 py-4 shadow-sm backdrop-blur-xl sm:px-5 sm:py-5">
-              <CatalogSectionHeader
-                id="catalog-explore-title"
-                title="Explorar"
-              />
-              {totalCount > 0 ? (
-                <p className="mt-2.5 text-sm leading-6 text-stone-500">
-                  Descubrí y encontrá lo que buscás entre más de{" "}
-                  <span className="font-semibold text-stone-700">
-                    {totalCount.toLocaleString("es-AR")}
-                  </span>{" "}
-                  productos independientes.
-                </p>
-              ) : null}
-            </div>
+              <div className="group relative overflow-hidden rounded-2xl border border-white/20 px-4 py-4 shadow-lg transition-all duration-500 hover:-translate-y-1 hover:border-white/40 hover:shadow-2xl hover:shadow-ocean-900/30 sm:px-5 sm:py-5">
+                <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/badge_bg.webp')] bg-cover bg-center opacity-100 transition-transform duration-700 ease-out group-hover:scale-105" />
+                <div className="pointer-events-none absolute inset-0 z-0 bg-slate-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-slate-900/65" />
+                <div className="relative z-10">
+                  <CatalogSectionHeader
+                    id="catalog-explore-title"
+                    onDark
+                    title="Explorar"
+                  />
+                  {totalCount > 0 ? (
+                    <p className="mt-2.5 text-sm leading-6 text-stone-300">
+                      Encuentra lo que buscas entre más de{" "}
+                      <span className="font-semibold text-white">
+                        {totalCount.toLocaleString("es-AR")}
+                      </span>{" "}
+                      productos tecnológicos y accesorios.
+                    </p>
+                  ) : null}
+                </div>
+              </div>
 
             {isLoading ? (
               <div aria-busy="true" aria-live="polite" className={exploreGridClassName}>
@@ -666,7 +676,7 @@ export function CatalogPage() {
                 >
                 <CatalogProductShowcase
                   featuredExtraAction={{
-                    label: "Explorar más de lo que te gusta",
+                    label: "Descubrir más sugerencias",
                     onClick: handleOpenTasteChoices,
                   }}
                   isLiteMode={adaptiveMode.isLiteMode}
