@@ -67,6 +67,7 @@ export function ArtisanProductsPage() {
     drafts: null,
     persisted: [],
   });
+  const draftSaveRequestIdRef = useRef(0);
   const isBulkUploadRef = useRef(false);
   // Categorías, productos y lotes ahora se cargan vía React Query.
   // Cache automática + revalidación + estado loading/error sin useState manual.
@@ -318,6 +319,8 @@ export function ArtisanProductsPage() {
       return;
     }
 
+    const saveRequestId = ++draftSaveRequestIdRef.current;
+
     const hasContent =
       productForm.title.trim().length > 0 ||
       productForm.description.trim().length > 0 ||
@@ -352,6 +355,10 @@ export function ArtisanProductsPage() {
           };
         }
 
+        if (isCancelled || saveRequestId !== draftSaveRequestIdRef.current) {
+          return;
+        }
+
         await saveProductDraft(draftKey, {
           availability_mode: productForm.availability_mode,
           category_id: productForm.category_id,
@@ -367,12 +374,12 @@ export function ArtisanProductsPage() {
           title: productForm.title,
         } satisfies PersistedProductDraftState);
 
-        if (!isCancelled) {
+        if (!isCancelled && saveRequestId === draftSaveRequestIdRef.current) {
           setHasDraft(true);
           setDraftPersistenceState("saved");
         }
       } catch {
-        if (!isCancelled) {
+        if (!isCancelled && saveRequestId === draftSaveRequestIdRef.current) {
           setDraftPersistenceState("error");
           setSaveErrorMessage((currentValue) =>
             currentValue ?? "No pudimos guardar el borrador del producto en este navegador.",
@@ -381,10 +388,13 @@ export function ArtisanProductsPage() {
       }
     };
 
-    void persistDraft();
+    const saveTimer = window.setTimeout(() => {
+      void persistDraft();
+    }, 800);
 
     return () => {
       isCancelled = true;
+      window.clearTimeout(saveTimer);
     };
   }, [
     draftKey,

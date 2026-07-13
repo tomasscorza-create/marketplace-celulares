@@ -409,7 +409,7 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - [x] Fase 4.1 â€” CÃ³digo muerto de borrado de imÃ¡genes eliminado
 - [x] Fase 4.2 â€” Vestigios de refresh manual eliminados
 - [x] Fase 4.3 â€” `isMissingColumnError` acotado o eliminado
-- [ ] Fase 4.4 â€” Autosave con debounce y carrera resuelta
+- [x] Fase 4.4 â€” Autosave con debounce y carrera resuelta
 - [ ] Fase 4.5 â€” `ArtisanProductsPage` dividido en hooks
 - [ ] Fase 4.6 â€” `ArtisanProductFormSection` dividido
 - [ ] Fase 4.7 â€” Subidas paralelizadas con orden preservado
@@ -424,6 +424,8 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - 2026-07-13: Fase 4.3. Se eliminÃ³ el fallback de columna ausente: las migraciones
   del proyecto remoto confirmado estÃ¡n alineadas y deben fallar de forma visible ante
   una regresiÃ³n de esquema.
+- 2026-07-13: Fase 4.4. El autosave espera 800 ms y un identificador monotÃ³nico evita
+  que una serializaciÃ³n anterior escriba o actualice el estado tras un cambio nuevo.
 
 ## Criterios de aceptaciÃ³n
 
