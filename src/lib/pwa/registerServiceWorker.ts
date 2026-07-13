@@ -1,14 +1,20 @@
+import { registerSW } from "virtual:pwa-register";
+
+export const PWA_UPDATE_AVAILABLE_EVENT = "pwa-update-available";
+
 export function registerServiceWorker() {
-  if (!import.meta.env.PROD || !("serviceWorker" in navigator)) {
+  if (!import.meta.env.PROD) {
     return;
   }
 
-  window.addEventListener("load", () => {
-    void navigator.serviceWorker
-      .register("/sw.js")
-      .then((registration) => {
-        void registration.update();
-      })
-      .catch(() => undefined);
+  const updateServiceWorker = registerSW({
+    immediate: true,
+    onNeedRefresh() {
+      window.dispatchEvent(
+        new CustomEvent(PWA_UPDATE_AVAILABLE_EVENT, {
+          detail: { updateServiceWorker },
+        }),
+      );
+    },
   });
 }

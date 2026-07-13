@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { getErrorMessage } from "@/lib/errors";
 import { queryKeys } from "@/lib/query/queryKeys";
+import { clearHydratedCatalogCaches } from "../public/publicClient";
 import type {
   ArtisanProduct,
   ArtisanProductInput,
@@ -56,6 +57,7 @@ function invalidatePublicProductCaches(
   artisanId: string,
   productIds: string[] = [],
 ) {
+  clearHydratedCatalogCaches();
   void queryClient.invalidateQueries({
     queryKey: queryKeys.artisan.products(artisanId),
   });

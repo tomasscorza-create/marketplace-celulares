@@ -31,6 +31,8 @@ const productSelection =
 const hydratedCatalogProductsCache = new Map<string, PublicProduct>();
 const hydratedCatalogStorefrontsCache = new Map<string, PublicArtisanStorefront>();
 const hydratedCatalogStorefrontsRequestsCache = new Map<string, Promise<void>>();
+const HYDRATED_CATALOG_PRODUCTS_CACHE_LIMIT = 200;
+const HYDRATED_CATALOG_STOREFRONTS_CACHE_LIMIT = 100;
 let preferredCatalogFeedStrategy: "v5" | "fallback" | null = null;
 let preferredStorefrontGroupsStrategy: "v6" | "fallback" | null = null;
 let preferredStorefrontSuggestionsStrategy: "v2" | "fallback" | null = null;
@@ -130,16 +132,45 @@ function shouldFallbackToCompleteStorefrontGroupsRpc(error: { code?: string; mes
   );
 }
 
+function rememberCacheEntry<T>(cache: Map<string, T>, key: string, value: T, limit: number) {
+  cache.delete(key);
+  cache.set(key, value);
+
+  while (cache.size > limit) {
+    const oldestKey = cache.keys().next().value;
+    if (!oldestKey) {
+      return;
+    }
+    cache.delete(oldestKey);
+  }
+}
+
 function rememberPublicProducts(products: PublicProduct[]) {
   products.forEach((product) => {
-    hydratedCatalogProductsCache.set(product.id, product);
+    rememberCacheEntry(
+      hydratedCatalogProductsCache,
+      product.id,
+      product,
+      HYDRATED_CATALOG_PRODUCTS_CACHE_LIMIT,
+    );
   });
 }
 
 function rememberPublicStorefronts(storefronts: PublicArtisanStorefront[]) {
   storefronts.forEach((storefront) => {
-    hydratedCatalogStorefrontsCache.set(storefront.id, storefront);
+    rememberCacheEntry(
+      hydratedCatalogStorefrontsCache,
+      storefront.id,
+      storefront,
+      HYDRATED_CATALOG_STOREFRONTS_CACHE_LIMIT,
+    );
   });
+}
+
+export function clearHydratedCatalogCaches() {
+  hydratedCatalogProductsCache.clear();
+  hydratedCatalogStorefrontsCache.clear();
+  hydratedCatalogStorefrontsRequestsCache.clear();
 }
 
 export function getCachedPublicProduct(productId: string) {
