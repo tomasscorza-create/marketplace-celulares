@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 
 import { marketplaceConfig } from "@/config/marketplace";
@@ -19,7 +19,7 @@ const HOME_CONTENT_KEYS = Object.values(HOME_CONTENT);
 
 const DEFAULT_HOME_CONTENT: SiteContentValues = {
   [HOME_CONTENT.heroDescription]:
-    "Todo lo que ves acá fue creado por alguien, con nombre y propósito. Descubrí piezas únicas creadas por vendedores apasionados, cada una distinta a la anterior. Algo especial te está esperando.",
+    "Encuentra los mejores accesorios y celulares en un solo lugar. Descubre fundas, cargadores y tecnología de vendedores verificados, con envío directo y al mejor precio.",
   [HOME_CONTENT.primaryButtonLabel]: "Ver catálogo",
   [HOME_CONTENT.secondaryButtonLabel]: "Iniciar sesión",
 };

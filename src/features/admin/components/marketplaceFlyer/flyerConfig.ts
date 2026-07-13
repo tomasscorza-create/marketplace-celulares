@@ -1,4 +1,4 @@
-﻿import type { FlyerVariant, ManualFlyerSettings } from "./flyerTypes";
+import type { FlyerVariant, ManualFlyerSettings } from "./flyerTypes";
 
 export const FLYER_EXPORT_HEIGHT = 1350;
 export const FLYER_EXPORT_WIDTH = 1080;
@@ -21,7 +21,7 @@ export const flyerVariants: FlyerVariant[] = [
     accent: "#0f766e",
     background: "linear-gradient(145deg,#f0fdfa 0%,#ffffff 48%,#e0f2fe 100%)",
     eyebrow: "Catalogo local",
-    headline: "Piezas unicas de creadores locales",
+    headline: "Tecnología y accesorios al mejor precio",
     highlight: "Hecho localmente",
     layout: "mosaic",
   },

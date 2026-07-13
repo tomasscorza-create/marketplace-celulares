@@ -285,10 +285,10 @@ on conflict (id) do update set
 
 insert into public.categories (id, name, slug, is_active)
 values
-  ('20000000-0000-4000-8000-000000000001', 'Hogar', 'hogar', true),
-  ('20000000-0000-4000-8000-000000000002', 'Indumentaria', 'indumentaria', true),
-  ('20000000-0000-4000-8000-000000000003', 'Regalos', 'regalos', true),
-  ('20000000-0000-4000-8000-000000000004', 'Bienestar', 'bienestar', true)
+  ('20000000-0000-4000-8000-000000000001', 'Celulares', 'celulares', true),
+  ('20000000-0000-4000-8000-000000000002', 'Fundas', 'fundas', true),
+  ('20000000-0000-4000-8000-000000000003', 'Cargadores', 'cargadores', true),
+  ('20000000-0000-4000-8000-000000000004', 'Audio', 'audio', true)
 on conflict (slug) do update set
   name = excluded.name,
   is_active = excluded.is_active;
@@ -322,7 +322,7 @@ values
     '/pwa-512.png',
     array['/pwa-512.png', '/pwa-192.png'],
     '[{"type":"image","url":"/pwa-512.png","thumbnail_url":"/pwa-192.png","description":"Set de mesa cotidiano"},{"type":"model_3d","url":"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb","poster_url":"/pwa-512.png","thumbnail_url":"/pwa-192.png","format":"glb","size_bytes":4385048,"description":"Modelo 3D demo"}]'::jsonb,
-    '[{"name":"Material","value":"Ceramica"},{"name":"Color","value":"Natural"}]'::jsonb,
+    '[{"name":"Material","value":"TPU"},{"name":"Estilo","value":"Transparente"}]'::jsonb,
     true,
     'stock',
     8,
@@ -433,7 +433,7 @@ values
       'https://picsum.photos/seed/marketplace-lamp-detail/900/1100'
     ],
     '[{"type":"image","url":"https://picsum.photos/seed/marketplace-lamp-table/900/1100","thumbnail_url":"https://picsum.photos/seed/marketplace-lamp-table/360/440","description":"Lampara de mesa curva"},{"type":"image","url":"https://picsum.photos/seed/marketplace-lamp-detail/900/1100","thumbnail_url":"https://picsum.photos/seed/marketplace-lamp-detail/360/440","description":"Detalle de terminacion"},{"type":"model_3d","url":"https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb","poster_url":"https://picsum.photos/seed/marketplace-lamp-table/900/1100","thumbnail_url":"https://picsum.photos/seed/marketplace-lamp-table/360/440","format":"glb","size_bytes":4385048,"description":"Modelo 3D demo"}]'::jsonb,
-    '[{"name":"Material","value":"Metal pintado"},{"name":"Uso","value":"Interior"}]'::jsonb,
+    '[{"name":"Material","value":"Silicona"},{"name":"Compatibilidad","value":"iPhone"}]'::jsonb,
     true,
     'stock',
     6,

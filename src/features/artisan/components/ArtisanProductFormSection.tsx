@@ -729,7 +729,7 @@ export function ArtisanProductFormSection({
 
         {!hasOptionGroups ? (
           <div className="rounded-2xl border border-dashed border-stone-300 bg-white px-4 py-4 text-sm text-stone-500">
-            Todavia no definiste variables. Si esta pieza tiene color, tamano u otras elecciones, puedes cargarlas aqui.
+            Todavia no definiste variables. Si este producto tiene color, capacidad u otras opciones, puedes cargarlas aqui.
           </div>
         ) : null}
 
