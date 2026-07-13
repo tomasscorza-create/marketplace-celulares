@@ -55,6 +55,14 @@ La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
   `Catalog3DBadge` superpuesto para distinguirla. No se modificó
   `ProductImageCarousel.tsx` (es genérico y lo usan otras vistas
   solo-imagen); la mezcla foto/3D vive únicamente en `ProductDetailPage.tsx`.
+- **Fondo de cuadrícula del visor**: `ProductModel3DViewer.tsx` dibuja una
+  cuadrícula lila/azul muy fina (`VIEWER_GRID_BACKGROUND_STYLE`) como capa
+  `z-0`, siempre detrás del `<canvas>` de Three.js (`z-10`) y del poster
+  (`z-[1]`). Usa una máscara radial para que el centro quede más claro/limpio
+  y el degradado se intensifique hacia los bordes. Como el renderer tiene
+  `alpha: true`, la cuadrícula solo se ve alrededor del modelo, nunca encima:
+  si se cambia el fondo del visor a futuro, mantener el z-index del canvas
+  por encima de esta capa para no tapar el objeto 3D.
 
 ## Dependencias y límites externos
 - **Three.js** y **React Three Fiber**: Motores WebGL subyacentes encargados de las luces, texturas y rotaciones de cámara.

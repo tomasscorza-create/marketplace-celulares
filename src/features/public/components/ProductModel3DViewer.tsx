@@ -1,6 +1,20 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 
 import type { Material, Object3D } from "three";
+
+const VIEWER_GRID_BACKGROUND_STYLE: CSSProperties = {
+  backgroundImage: [
+    "radial-gradient(circle at 50% 42%, rgba(240,242,255,0.98) 0%, rgba(216,225,254,0.78) 38%, rgba(199,210,254,0.58) 62%, rgba(196,181,253,0.42) 85%, rgba(165,180,252,0.34) 100%)",
+    "repeating-linear-gradient(0deg, rgba(99,102,241,0.55) 0px, rgba(99,102,241,0.55) 1px, transparent 1px, transparent 64px)",
+    "repeating-linear-gradient(90deg, rgba(99,102,241,0.55) 0px, rgba(99,102,241,0.55) 1px, transparent 1px, transparent 64px)",
+    "repeating-linear-gradient(0deg, rgba(165,180,252,0.3) 0px, rgba(165,180,252,0.3) 1px, transparent 1px, transparent 16px)",
+    "repeating-linear-gradient(90deg, rgba(165,180,252,0.3) 0px, rgba(165,180,252,0.3) 1px, transparent 1px, transparent 16px)",
+  ].join(", "),
+  WebkitMaskImage:
+    "radial-gradient(circle at 50% 42%, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.78) 75%, rgba(0,0,0,1) 100%)",
+  maskImage:
+    "radial-gradient(circle at 50% 42%, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.78) 75%, rgba(0,0,0,1) 100%)",
+};
 
 type ProductModel3DViewerProps = {
   controlsLevel?: "compact" | "full";
@@ -281,12 +295,17 @@ export function ProductModel3DViewer({
       data-testid="product-model-3d-viewer"
       ref={containerRef}
     >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0"
+        style={VIEWER_GRID_BACKGROUND_STYLE}
+      />
       {posterUrl ? (
         <img
           alt=""
           aria-hidden="true"
           className={[
-            "pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center transition-opacity duration-300",
+            "pointer-events-none absolute inset-0 z-[1] h-full w-full object-cover object-center transition-opacity duration-300",
             status === "ready" ? "opacity-0" : "opacity-75",
           ].join(" ")}
           decoding="async"
