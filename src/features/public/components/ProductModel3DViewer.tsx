@@ -10,6 +10,16 @@ function clampParallax(value: number) {
   return Math.min(GRID_PARALLAX_MAX_PX, Math.max(-GRID_PARALLAX_MAX_PX, value));
 }
 
+const GRID_GRAB_VIBRATION_MS = 12;
+
+function triggerGrabHapticFeedback() {
+  if (typeof navigator === "undefined" || typeof navigator.vibrate !== "function") {
+    return;
+  }
+
+  navigator.vibrate(GRID_GRAB_VIBRATION_MS);
+}
+
 const VIEWER_GRID_BACKGROUND_STYLE: CSSProperties = {
   inset: "-10%",
   willChange: "transform",
@@ -190,6 +200,9 @@ export function ProductModel3DViewer({
           dragStartY = event.clientY;
           if (gridElement) {
             gridElement.style.transition = "none";
+          }
+          if (event.pointerType === "touch") {
+            triggerGrabHapticFeedback();
           }
         };
         const handleGridPointerMove = (event: PointerEvent) => {

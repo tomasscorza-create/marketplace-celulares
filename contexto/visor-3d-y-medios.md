@@ -74,6 +74,12 @@ La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
   bordes. Es intencionalmente independiente del `OrbitControls`: no lee
   ángulos de cámara, solo la posición del puntero, para mantener el efecto
   simple.
+- **Vibración táctil al agarrar el modelo**: en `handleGridPointerDown`, si
+  `event.pointerType === "touch"` se llama `navigator.vibrate(12)`
+  (`triggerGrabHapticFeedback`). Es un no-op silencioso si el navegador no
+  soporta la Vibration API (desktop, iOS Safari) o si el toque no es táctil
+  (mouse/trackpad), así que no hace falta feature-detection adicional en el
+  resto del componente.
 
 ## Dependencias y límites externos
 - **Three.js** y **React Three Fiber**: Motores WebGL subyacentes encargados de las luces, texturas y rotaciones de cámara.
