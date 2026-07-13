@@ -8,9 +8,6 @@ import {
 } from "../../../lib/images/catalogImageUrl";
 import { getProductImageMediaItems } from "../../../types/productMedia";
 import type { PublicProduct } from "../../../types/public";
-import { AddToCartButton } from "../../buyer/components/AddToCartButton";
-import { isOnlinePurchaseEnabled } from "../../../config/marketplace";
-import { WhatsAppProductButton } from "../../../components/WhatsAppProductButton";
 
 type CatalogStorefrontProductCardProps = {
   product: PublicProduct;
@@ -21,7 +18,7 @@ const priceFormatter = new Intl.NumberFormat("es-AR", {
 });
 
 const railBuyActionClassName =
-  "inline-flex h-7 min-w-[5.25rem] max-w-[6.75rem] items-center justify-center whitespace-nowrap rounded-md px-2.5 text-[11px]";
+  "inline-flex h-7 min-w-[5.25rem] max-w-[6.75rem] items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-r from-brand-500 to-brand-700 px-2.5 text-[11px] font-semibold text-white shadow-elev-1 transition-all hover:-translate-y-0.5 hover:shadow-elev-2";
 
 const railPriceClassName = "block text-sm font-semibold leading-none text-stone-950";
 
@@ -51,8 +48,6 @@ function CatalogStorefrontProductCardInner({ product }: CatalogStorefrontProduct
     ? undefined
     : getCatalogImageSrcSet(activeImage, [220, 320, 420], 70);
   const categoryLabel = product.categories?.name ?? "General";
-  const isMadeToOrder = product.availability_mode === "made_to_order";
-  const isSoldOut = !isMadeToOrder && Number(product.stock_quantity ?? 0) <= 0;
   const handleOpenProductDetail = () => {
     saveProductDetailOrigin(location);
   };
@@ -141,32 +136,13 @@ function CatalogStorefrontProductCardInner({ product }: CatalogStorefrontProduct
       </Link>
 
       <div className="flex justify-end px-2 pb-1.5">
-        {!isOnlinePurchaseEnabled ? (
-          <WhatsAppProductButton
-            product={{
-              id: product.id,
-              title: product.title,
-              price: Number(product.price),
-            }}
-            variant="compact"
-            className={railBuyActionClassName}
-            label={isSoldOut ? "Consultar" : "WhatsApp"}
-          />
-        ) : (
-          <AddToCartButton
-            className={railBuyActionClassName}
-            disabled={isSoldOut}
-            disabledLabel="Sin stock"
-            labels={{
-              added: "Carrito",
-              buyerOnlyNotice: "Ingresa como comprador para comprar",
-              idle: "Comprar",
-              login: "Ingresar",
-              pending: "Agregando",
-            }}
-            product={product}
-          />
-        )}
+        <Link
+          className={railBuyActionClassName}
+          onClick={handleOpenProductDetail}
+          to={`/producto/${product.id}`}
+        >
+          Ver detalle
+        </Link>
       </div>
     </article>
   );

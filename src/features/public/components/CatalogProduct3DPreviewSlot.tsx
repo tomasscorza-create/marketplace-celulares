@@ -5,10 +5,7 @@ import {
   getPrimaryProductModel3D,
   getProductImageMediaItems,
 } from "../../../types/productMedia";
-import { AddToCartButton } from "../../buyer/components/AddToCartButton";
 import { ProductModel3DViewer } from "./ProductModel3DViewer";
-import { isOnlinePurchaseEnabled } from "../../../config/marketplace";
-import { WhatsAppProductButton } from "../../../components/WhatsAppProductButton";
 
 type CatalogProduct3DPreviewSlotProps = {
   isLiteMode?: boolean;
@@ -38,8 +35,6 @@ export function CatalogProduct3DPreviewSlot({
     product.image_url ??
     null;
   const priceLabel = `$${priceFormatter.format(Number(product.price))}`;
-  const isMadeToOrder = product.availability_mode === "made_to_order";
-  const isSoldOut = !isMadeToOrder && Number(product.stock_quantity ?? 0) <= 0;
 
   return (
     <aside
@@ -86,43 +81,16 @@ export function CatalogProduct3DPreviewSlot({
           <p className="line-clamp-1 text-sm font-medium leading-5 text-stone-900">
             {product.title}
           </p>
-          <div className="mt-1.5 grid min-w-0 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-1.5">
+          <div className="mt-1.5 grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-1.5">
             <p className="text-sm font-semibold leading-none text-stone-950">
               {priceLabel}
             </p>
             <Link
-              className="inline-flex h-7 items-center justify-center rounded-md border border-ocean-200 bg-white px-2.5 text-[11px] font-semibold text-ocean-700 transition-colors hover:bg-ocean-50"
+              className="inline-flex h-7 min-w-[5.6rem] items-center justify-center rounded-md bg-gradient-to-r from-brand-500 to-brand-700 px-2.5 text-[11px] font-semibold text-white shadow-elev-1 transition-all hover:-translate-y-0.5 hover:shadow-elev-2"
               to={`/producto/${product.id}`}
             >
-              Ver
+              Ver detalle
             </Link>
-            {!isOnlinePurchaseEnabled ? (
-              <WhatsAppProductButton
-                product={{
-                  id: product.id,
-                  title: product.title,
-                  price: Number(product.price),
-                }}
-                variant="compact"
-              className="inline-flex h-7 min-w-[4.8rem] items-center justify-center rounded-md px-2.5 text-[11px]"
-                label={isSoldOut ? "Consultar" : "WhatsApp"}
-              />
-            ) : (
-              <AddToCartButton
-                className="inline-flex h-7 min-w-[4.8rem] items-center justify-center rounded-md bg-brand-500 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
-                compact
-                disabled={isSoldOut}
-                disabledLabel="Sin stock"
-                labels={{
-                  added: "Carrito",
-                  buyerOnlyNotice: "Ingresa como comprador para comprar",
-                  idle: "Comprar",
-                  login: "Ingresar",
-                  pending: "...",
-                }}
-                product={product}
-              />
-            )}
           </div>
         </div>
       </div>

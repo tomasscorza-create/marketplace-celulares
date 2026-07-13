@@ -5,9 +5,6 @@ import { ProductImageCarousel } from "../../../components/ProductImageCarousel";
 import { saveProductDetailOrigin } from "../../../lib/browser/productDetailOrigin";
 import { getProductImageMediaItems } from "../../../types/productMedia";
 import type { PublicCatalogFeedItem } from "../../../types/public";
-import { AddToCartButton } from "../../buyer/components/AddToCartButton";
-import { isOnlinePurchaseEnabled } from "../../../config/marketplace";
-import { WhatsAppProductButton } from "../../../components/WhatsAppProductButton";
 
 const CARD_ZOOM_DURATION_MS = 180;
 
@@ -35,10 +32,10 @@ const storeActionClassName =
   "inline-flex h-7 min-w-0 items-center justify-start rounded-md px-1.5 text-[10px] font-medium text-ocean-500 transition-colors hover:bg-brand-50 hover:text-brand-600 sm:text-[11px]";
 
 const featuredBuyActionClassName =
-  "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg px-3 text-xs sm:h-9 sm:px-3.5 sm:text-[13px]";
+  "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg bg-gradient-to-r from-brand-500 to-brand-700 px-3 text-xs font-semibold text-white shadow-elev-1 transition-all hover:-translate-y-0.5 hover:shadow-elev-2 sm:h-9 sm:px-3.5 sm:text-[13px]";
 
 const compactBuyActionClassName =
-  "inline-flex h-7 min-w-[4.9rem] items-center justify-center whitespace-nowrap rounded-md px-2.5 text-[11px] sm:min-w-[5.25rem] sm:text-xs";
+  "inline-flex h-7 min-w-[4.9rem] items-center justify-center whitespace-nowrap rounded-md bg-gradient-to-r from-brand-500 to-brand-700 px-2.5 text-[11px] font-semibold text-white shadow-elev-1 transition-all hover:-translate-y-0.5 hover:shadow-elev-2 sm:min-w-[5.25rem] sm:text-xs";
 
 const extraActionClassName =
   "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg border border-stone-200 bg-white px-3 text-xs font-semibold text-ocean-700 transition-colors hover:border-stone-300 hover:bg-stone-50 sm:h-9 sm:px-3.5 sm:text-[13px]";
@@ -48,14 +45,6 @@ const priceTextClassName =
 
 const categoryOverlayClassName =
   "pointer-events-none absolute left-2 top-2 z-[5] max-w-[70%] truncate rounded bg-white/95 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-ocean-700 shadow-sm backdrop-blur-sm sm:text-[10px]";
-
-const compactBuyLabels = {
-  added: "Carrito",
-  buyerOnlyNotice: "Ingresá como comprador para comprar",
-  idle: "Comprar",
-  login: "Ingresar",
-  pending: "Agregando",
-};
 
 function CatalogProductFeedCardInner({
   featuredExtraAction,
@@ -68,8 +57,6 @@ function CatalogProductFeedCardInner({
   const { product, storefront } = item;
   const storefrontLabel = storefront?.store_name || storefront?.full_name || "Vendedor local";
   const categoryLabel = product.categories?.name ?? "General";
-  const isMadeToOrder = product.availability_mode === "made_to_order";
-  const isSoldOut = !isMadeToOrder && Number(product.stock_quantity ?? 0) <= 0;
   const isFeatured = layout === "featured";
   const productImages = useMemo(() => {
     const imageMediaItems = getProductImageMediaItems(product.product_media);
@@ -223,26 +210,16 @@ function CatalogProductFeedCardInner({
               <span className="truncate">{storefrontLabel}</span>
             </Link>
 
-            {!isOnlinePurchaseEnabled ? (
-              <WhatsAppProductButton
-                product={{
-                  id: product.id,
-                  title: product.title,
-                  price: Number(product.price),
-                }}
-                variant="compact"
-                className={featuredBuyActionClassName}
-                label={isSoldOut ? "Consultar" : "WhatsApp"}
-              />
-            ) : (
-              <AddToCartButton
-                className={featuredBuyActionClassName}
-                disabled={isSoldOut}
-                disabledLabel="Sin stock"
-                labels={compactBuyLabels}
-                product={product}
-              />
-            )}
+            <Link
+              className={featuredBuyActionClassName}
+              onClick={(event) => {
+                handleOpenProductDetail();
+                handleZoomNavigate(event, `/producto/${product.id}`);
+              }}
+              to={`/producto/${product.id}`}
+            >
+              Ver detalle
+            </Link>
 
             {featuredExtraAction?.to ? (
               <Link
@@ -335,26 +312,16 @@ function CatalogProductFeedCardInner({
           <span className="truncate">{storefrontLabel}</span>
         </Link>
 
-        {!isOnlinePurchaseEnabled ? (
-          <WhatsAppProductButton
-            product={{
-              id: product.id,
-              title: product.title,
-              price: Number(product.price),
-            }}
-            variant="compact"
-            className={compactBuyActionClassName}
-            label={isSoldOut ? "Consultar" : "WhatsApp"}
-          />
-        ) : (
-          <AddToCartButton
-            className={compactBuyActionClassName}
-            disabled={isSoldOut}
-            disabledLabel="Sin stock"
-            labels={compactBuyLabels}
-            product={product}
-          />
-        )}
+        <Link
+          className={compactBuyActionClassName}
+          onClick={(event) => {
+            handleOpenProductDetail();
+            handleZoomNavigate(event, `/producto/${product.id}`);
+          }}
+          to={`/producto/${product.id}`}
+        >
+          Ver detalle
+        </Link>
       </div>
     </article>
   );
