@@ -7,7 +7,6 @@ import type {
 } from "../../../types/productAvailability";
 import type { ProductImageDraft } from "../imageEditorTypes";
 import type { ArtisanProductLearningProfile } from "../artisanProductLearning";
-import { getPrimaryProductModel3D } from "../../../types/productMedia";
 
 import { useEffect, useRef, useState } from "react";
 import {
@@ -20,6 +19,7 @@ import {
 } from "../../../types/productAttributes";
 import { ProductLearningPanel } from "./ProductLearningPanel";
 import { ProductImagesField } from "./ProductImagesField";
+import { ProductModel3DField } from "./ProductModel3DField";
 
 type ArtisanProductFormSectionProps = {
   draftPersistenceState: "idle" | "saving" | "saved" | "error";
@@ -142,8 +142,6 @@ export function ArtisanProductFormSection({
   const submitLabel = editingProductId ? "Guardar cambios" : "Crear producto";
   const showTopSummary = !isCreateFocused || Boolean(editingProductId);
   const canAddMoreAttributes = productForm.product_attributes.length < 12;
-  const currentModel3D = getPrimaryProductModel3D(productForm.product_media);
-  const hasModel3D = Boolean(productModel3DFile || currentModel3D);
   const showDiscardDraftButton = hasDraft && !editingProductId;
   const showDraftStatusBadge =
     draftPersistenceState !== "idle" &&
@@ -908,59 +906,12 @@ export function ArtisanProductFormSection({
         productImages={productImages}
       />
 
-      <section className="grid gap-3 rounded-[1.75rem] border border-stone-200 bg-white p-4 sm:p-5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="space-y-1">
-            <p className="text-sm font-semibold text-stone-900">Modelo 3D</p>
-            <p className="text-sm leading-6 text-stone-500">
-              "Acepta archivos .glb o .gltf livianos para la vista interactiva
-              del catalogo."
-            </p>
-          </div>
-
-          {hasModel3D ? (
-            <button
-              className="rounded-full border border-stone-200 px-3 py-1.5 text-xs font-semibold text-stone-600 transition-colors hover:border-brand-200 hover:bg-brand-50"
-              onClick={onRemoveModel3D}
-              type="button"
-            >
-              Quitar
-            </button>
-          ) : null}
-        </div>
-
-        <div className="grid gap-3 rounded-2xl border border-dashed border-stone-300 bg-stone-50/70 p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-stone-800">
-              {productModel3DFile?.name ??
-                currentModel3D?.description ??
-                currentModel3D?.url ??
-                "Sin modelo 3D cargado"}
-            </p>
-            <p className="mt-1 text-xs leading-5 text-stone-500">
-              {productModel3DFile
-                ? `${(productModel3DFile.size / 1024 / 1024).toFixed(2)} MB - se sube al guardar`
-                : currentModel3D
-                  ? "Modelo activo guardado en el producto."
-                  : "Formato recomendado: .glb, hasta 8 MB en esta fase."}
-            </p>
-          </div>
-
-          <label className="inline-flex h-9 cursor-pointer items-center justify-center rounded-lg bg-ocean-600 px-3 text-xs font-semibold text-white transition-colors hover:bg-ocean-700">
-            Cargar 3D
-            <input
-              accept=".glb,.gltf,model/gltf-binary,model/gltf+json"
-              className="sr-only"
-
-              onChange={(event) => {
-                onProductModel3DFileChange(event.target.files?.[0] ?? null);
-                event.currentTarget.value = "";
-              }}
-              type="file"
-            />
-          </label>
-        </div>
-      </section>
+      <ProductModel3DField
+        onFileChange={onProductModel3DFileChange}
+        onRemove={onRemoveModel3D}
+        productMedia={productForm.product_media}
+        selectedFile={productModel3DFile}
+      />
 
       <div className="grid gap-3 rounded-[1.75rem] border border-stone-200 bg-white p-4 sm:p-5">
         <label className="flex items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-700">

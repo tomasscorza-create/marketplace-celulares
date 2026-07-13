@@ -411,7 +411,7 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - [x] Fase 4.3 â€” `isMissingColumnError` acotado o eliminado
 - [x] Fase 4.4 â€” Autosave con debounce y carrera resuelta
 - [x] Fase 4.5 â€” `ArtisanProductsPage` dividido en hooks
-- [ ] Fase 4.6 â€” `ArtisanProductFormSection` dividido
+- [x] Fase 4.6 â€” `ArtisanProductFormSection` dividido
 - [ ] Fase 4.7 â€” Subidas paralelizadas con orden preservado
 - [ ] Fase 4.8 â€” Textos unificados
 - [ ] Fase 5 â€” VerificaciÃ³n final completa y docs actualizadas
@@ -429,6 +429,8 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - 2026-07-13: Fase 4.5. La gestiÃ³n del modelo 3D y el estado de bÃºsqueda/paginaciÃ³n
   viven en hooks dedicados; la pÃ¡gina conserva solo la composiciÃ³n y el lÃ­mite que
   depende del total recibido por React Query.
+- 2026-07-13: Fase 4.6. El bloque de modelo 3D se separÃ³ en `ProductModel3DField`;
+  conserva el contrato de carga, eliminaciÃ³n y previsualizaciÃ³n del formulario.
 
 ## Criterios de aceptaciÃ³n
 
