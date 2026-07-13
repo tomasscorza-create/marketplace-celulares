@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   RevealOnView,
   RevealSequenceGroup,
@@ -61,9 +62,26 @@ export function CatalogProductShowcase({
     );
   }
 
-  const preview3DItem =
-    items.find((item) => Boolean(getPrimaryProductModel3D(item.product.product_media))) ??
-    featuredItem;
+  const itemsWith3D = items.filter((item) => Boolean(getPrimaryProductModel3D(item.product.product_media)));
+  const [active3DIndex, setActive3DIndex] = useState(0);
+
+  useEffect(() => {
+    if (itemsWith3D.length === 0) return;
+    
+    // Rota globalmente cada 30 minutos (30 * 60 * 1000 = 1800000 ms)
+    const ROTATION_INTERVAL_MS = 1800000;
+    
+    const updateIndex = () => {
+      const globalTimeSlice = Math.floor(Date.now() / ROTATION_INTERVAL_MS);
+      setActive3DIndex(globalTimeSlice % itemsWith3D.length);
+    };
+
+    updateIndex();
+    const interval = setInterval(updateIndex, 60000);
+    return () => clearInterval(interval);
+  }, [itemsWith3D.length]);
+
+  const preview3DItem = itemsWith3D.length > 0 ? itemsWith3D[active3DIndex] : featuredItem;
 
   return (
     <div className="grid gap-3.5 sm:gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] xl:items-start">
