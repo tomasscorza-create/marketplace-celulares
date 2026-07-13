@@ -1,17 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-
-// Numero de WhatsApp.
-// Reemplaza el string vacio con el numero cuando lo tengas.
-// Formato: 10 digitos con codigo de area, ej: "3516123456".
-const WHATSAPP_PHONE = "5493518598675";
-
+import { marketplaceConfig } from "../config/marketplace";
 type WhatsAppButtonProps = {
   message: string;
   className?: string;
 };
 
 export function buildWhatsAppUrl(message: string): string {
-  return buildWhatsAppUrlForPhone(WHATSAPP_PHONE, message);
+  return buildWhatsAppUrlForPhone(marketplaceConfig.whatsappPhone, message);
 }
 
 export function buildWhatsAppUrlForPhone(phone: string, message: string): string {
@@ -43,7 +38,7 @@ export function WhatsAppButton({ message, className }: WhatsAppButtonProps) {
     };
   }, []);
 
-  const href = WHATSAPP_PHONE.trim() ? buildWhatsAppUrl(message) : undefined;
+  const href = marketplaceConfig.whatsappPhone.trim() ? buildWhatsAppUrl(message) : undefined;
 
   const scheduleCollapse = () => {
     if (collapseTimerRef.current) {
