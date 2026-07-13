@@ -577,23 +577,33 @@ export function CatalogPage() {
           ) : null}
 
           {feedCollections.personalizedShowcaseItems.length > 0 ? (
-            <section className="grid gap-4">
-              <CatalogSectionHeader
-                id="catalog-personalized-title"
-                tone="ocean"
-                title="Piezas relacionadas contigo"
-              />
+            <section
+              aria-labelledby="catalog-personalized-title"
+              className="relative grid gap-5 overflow-hidden rounded-[2rem] border border-white/30 p-2 sm:p-4 shadow-sm"
+            >
+              <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
+              <div className="pointer-events-none absolute -inset-2 z-0 bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40 blur-[4px]" />
+              <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
+              <div className="relative z-10 grid gap-5">
+                <div className="rounded-2xl border border-white/70 bg-white/90 px-4 py-4 shadow-sm backdrop-blur-xl sm:px-5 sm:py-5">
+                  <CatalogSectionHeader
+                    id="catalog-personalized-title"
+                    tone="ocean"
+                    title="Piezas relacionadas contigo"
+                  />
+                </div>
 
-              <CatalogProductShowcase
-                featuredExtraAction={{
-                  label: "Ver piezas para vos",
-                  to: "/catalogo/para-vos",
-                }}
-                isLiteMode={adaptiveMode.isLiteMode}
-                isMobileViewport={adaptiveMode.isMobileViewport}
-                isSingleColumnViewport={adaptiveMode.isSingleColumnViewport}
-                items={feedCollections.personalizedShowcaseItems}
-              />
+                <CatalogProductShowcase
+                  featuredExtraAction={{
+                    label: "Ver piezas para vos",
+                    to: "/catalogo/para-vos",
+                  }}
+                  isLiteMode={adaptiveMode.isLiteMode}
+                  isMobileViewport={adaptiveMode.isMobileViewport}
+                  isSingleColumnViewport={adaptiveMode.isSingleColumnViewport}
+                  items={feedCollections.personalizedShowcaseItems}
+                />
+              </div>
             </section>
           ) : null}
 
