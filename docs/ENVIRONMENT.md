@@ -11,6 +11,7 @@ VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
 VITE_SUPABASE_PROJECT_REF=
 VITE_PUBLIC_SITE_URL=http://localhost:5173
+VITE_SENTRY_DSN=
 ```
 
 ## Connecting Supabase local
@@ -38,3 +39,12 @@ VITE_SUPABASE_PROJECT_REF=yourprojectref
 
 The project ref must match the one in the URL. If it does not match, the
 frontend client stays disabled.
+
+## Sentry error reporting
+
+`VITE_SENTRY_DSN` is optional. When it is set, production builds report render,
+window, unhandled promise, and React Query errors to Sentry. Development builds
+and production builds without a DSN do not initialize Sentry.
+
+Do not attach customer data, emails, phone numbers, order details, or query
+payloads to error-reporting contexts.

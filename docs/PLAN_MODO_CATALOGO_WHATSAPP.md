@@ -197,9 +197,10 @@ cambios> : <WhatsAppProductButton>`. No tocar la rama actual.
 - [x] Fase 3.1–3.3 — Navegación limpia (header, menú usuario, tabs comprador)
 - [x] Fase 3.4 — Rutas de carrito/pedidos/checkout redirigen al catálogo
 - [x] Fase 3.5–3.6 — Cuenta comprador y copys de registro ajustados
-- [ ] Fase 5 — Verificación completa en ambos valores del flag
+- [x] Fase 5 — Verificación completa en ambos valores del flag
 
 ### Notas de ejecución
 
 - **2026-07-13**: Fase 1 completada. Se usó el número 3518037869 a pedido del dueño en lugar del especificado originalmente en el documento.
 - **2026-07-13**: Fase 2 completada. Se aplicó el condicional `isOnlinePurchaseEnabled` en los 4 componentes (ProductDetailPage, CatalogProductFeedCard, CatalogStorefrontProductCard y CatalogProduct3DPreviewSlot). Todos los `AddToCartButton` están ahora protegidos.
+- **2026-07-13**: Fase 3 y 5 completadas. Verificado build con ambos valores de flag (whatsapp y checkout) y redirecciones implementadas correctamente. El flag se deja en "whatsapp" como estado final de despliegue.

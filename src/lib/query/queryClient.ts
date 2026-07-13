@@ -1,10 +1,19 @@
-import { QueryClient } from "@tanstack/react-query";
+import { QueryCache, QueryClient } from "@tanstack/react-query";
+
+import { captureException } from "../monitoring/errorTracking";
 
 const ONE_MINUTE = 60 * 1000;
 const TEN_MINUTES = 10 * ONE_MINUTE;
 
 export function createAppQueryClient() {
   return new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error, query) => {
+        captureException(error, {
+          queryKey: JSON.stringify(query.queryKey),
+        });
+      },
+    }),
     defaultOptions: {
       queries: {
         staleTime: ONE_MINUTE,
