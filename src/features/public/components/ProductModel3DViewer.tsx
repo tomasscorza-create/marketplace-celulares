@@ -2,7 +2,17 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties } from "re
 
 import type { Material, Object3D } from "three";
 
+const GRID_PARALLAX_FACTOR = 0.18;
+const GRID_PARALLAX_MAX_PX = 26;
+const GRID_PARALLAX_RESET_TRANSITION = "transform 420ms cubic-bezier(0.22, 0.61, 0.36, 1)";
+
+function clampParallax(value: number) {
+  return Math.min(GRID_PARALLAX_MAX_PX, Math.max(-GRID_PARALLAX_MAX_PX, value));
+}
+
 const VIEWER_GRID_BACKGROUND_STYLE: CSSProperties = {
+  inset: "-10%",
+  willChange: "transform",
   backgroundImage: [
     "radial-gradient(circle at 50% 42%, rgba(240,242,255,0.98) 0%, rgba(216,225,254,0.78) 38%, rgba(199,210,254,0.58) 62%, rgba(196,181,253,0.42) 85%, rgba(165,180,252,0.34) 100%)",
     "repeating-linear-gradient(0deg, rgba(99,102,241,0.55) 0px, rgba(99,102,241,0.55) 1px, transparent 1px, transparent 64px)",
@@ -60,6 +70,7 @@ export function ProductModel3DViewer({
   title,
 }: ProductModel3DViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const controlsApiRef = useRef<ViewerControlsApi | null>(null);
   const [shouldLoad, setShouldLoad] = useState(false);
   const [status, setStatus] = useState<ViewerStatus>("idle");
@@ -168,6 +179,45 @@ export function ProductModel3DViewer({
         renderer.domElement.style.touchAction = "none";
         container.appendChild(renderer.domElement);
 
+        const gridElement = gridRef.current;
+        let isDraggingGrid = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+
+        const handleGridPointerDown = (event: PointerEvent) => {
+          isDraggingGrid = true;
+          dragStartX = event.clientX;
+          dragStartY = event.clientY;
+          if (gridElement) {
+            gridElement.style.transition = "none";
+          }
+        };
+        const handleGridPointerMove = (event: PointerEvent) => {
+          if (!isDraggingGrid || !gridElement) {
+            return;
+          }
+
+          const offsetX = clampParallax((event.clientX - dragStartX) * GRID_PARALLAX_FACTOR);
+          const offsetY = clampParallax((event.clientY - dragStartY) * GRID_PARALLAX_FACTOR);
+          gridElement.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
+        };
+        const handleGridPointerUp = () => {
+          if (!isDraggingGrid) {
+            return;
+          }
+
+          isDraggingGrid = false;
+          if (gridElement) {
+            gridElement.style.transition = GRID_PARALLAX_RESET_TRANSITION;
+            gridElement.style.transform = "translate3d(0px, 0px, 0)";
+          }
+        };
+
+        renderer.domElement.addEventListener("pointerdown", handleGridPointerDown);
+        window.addEventListener("pointermove", handleGridPointerMove);
+        window.addEventListener("pointerup", handleGridPointerUp);
+        window.addEventListener("pointercancel", handleGridPointerUp);
+
         keyLight.position.set(2.6, 4, 3.4);
         scene.add(keyLight, fillLight);
 
@@ -267,6 +317,14 @@ export function ProductModel3DViewer({
         cleanupRenderer = () => {
           window.cancelAnimationFrame(animationFrameId);
           resizeObserver.disconnect();
+          renderer.domElement.removeEventListener("pointerdown", handleGridPointerDown);
+          window.removeEventListener("pointermove", handleGridPointerMove);
+          window.removeEventListener("pointerup", handleGridPointerUp);
+          window.removeEventListener("pointercancel", handleGridPointerUp);
+          if (gridElement) {
+            gridElement.style.transition = "";
+            gridElement.style.transform = "";
+          }
           controls.dispose();
           controlsApiRef.current = null;
           disposeObject3D(model);
@@ -297,7 +355,8 @@ export function ProductModel3DViewer({
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0"
+        className="pointer-events-none absolute z-0"
+        ref={gridRef}
         style={VIEWER_GRID_BACKGROUND_STYLE}
       />
       {posterUrl ? (

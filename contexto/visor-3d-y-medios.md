@@ -63,6 +63,17 @@ La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
   `alpha: true`, la cuadrícula solo se ve alrededor del modelo, nunca encima:
   si se cambia el fondo del visor a futuro, mantener el z-index del canvas
   por encima de esta capa para no tapar el objeto 3D.
+- **Parallax simple al arrastrar**: mientras el usuario arrastra el modelo
+  (`pointerdown`/`pointermove` sobre `renderer.domElement`), la cuadrícula se
+  traslada en la misma dirección a un 18% de la distancia del arrastre
+  (`GRID_PARALLAX_FACTOR`, tope `GRID_PARALLAX_MAX_PX` = 26px) mediante
+  `gridRef.current.style.transform`, sin pasar por estado de React (evita
+  re-renders en cada `pointermove`). Al soltar, vuelve al centro con una
+  transición corta. El div de la cuadrícula tiene `inset: -10%` (más grande
+  que el contenedor) precisamente para que ese desplazamiento no revele sus
+  bordes. Es intencionalmente independiente del `OrbitControls`: no lee
+  ángulos de cámara, solo la posición del puntero, para mantener el efecto
+  simple.
 
 ## Dependencias y límites externos
 - **Three.js** y **React Three Fiber**: Motores WebGL subyacentes encargados de las luces, texturas y rotaciones de cámara.
