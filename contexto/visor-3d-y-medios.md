@@ -7,7 +7,7 @@ Definir cómo se guardan y renderizan en frontend los elementos multimedia pesad
 - `docs/PRODUCT_3D_PREVIEW.md`: Reglas originales, límites de la tecnología y formato esperado de guardado JSON.
 - `src/features/public/components/ProductModel3DViewer.tsx`: Componente de React que implementa la cámara de WebGL (Three.js).
 - `src/features/public/components/CatalogProduct3DPreviewSlot.tsx`: Contenedor "fallback" que decide si inyectar 3D dinámicamente o quedarse con la foto plana.
-- `src/pages/ProductDetailPage.tsx`: Consume el mismo `ProductModel3DViewer` en el detalle de producto, debajo de la galería de fotos.
+- `src/pages/ProductDetailPage.tsx`: Consume el mismo `ProductModel3DViewer` en el detalle de producto, integrado como un slide más dentro de la misma galería/carrusel de fotos.
 
 ## Flujo o arquitectura
 La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
@@ -44,6 +44,17 @@ La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
   `ProductModel3DViewer.tsx` y se propaga a ambos lugares. Al agregar un nuevo
   sitio que deba mostrar el modelo 3D, importar este mismo componente en vez
   de reimplementar la carga de Three.js.
+- **El modelo 3D es un slide más de la galería, no una sección aparte**: en
+  `ProductDetailPage.tsx` el modelo 3D ocupa el último índice de la misma
+  galería que las fotos (`model3DSlideIndex = productImages.length`). Las
+  mismas flechas prev/next y la misma tira de miniaturas navegan entre fotos
+  y el modelo 3D; al llegar a ese índice, el contenedor de la imagen
+  intercambia `ProductImageCarousel` por `ProductModel3DViewer` en el mismo
+  lugar visual. La miniatura del modelo usa el `poster_url`/`thumbnail_url`
+  del propio modelo (o la primera foto como respaldo) con el
+  `Catalog3DBadge` superpuesto para distinguirla. No se modificó
+  `ProductImageCarousel.tsx` (es genérico y lo usan otras vistas
+  solo-imagen); la mezcla foto/3D vive únicamente en `ProductDetailPage.tsx`.
 
 ## Dependencias y límites externos
 - **Three.js** y **React Three Fiber**: Motores WebGL subyacentes encargados de las luces, texturas y rotaciones de cámara.

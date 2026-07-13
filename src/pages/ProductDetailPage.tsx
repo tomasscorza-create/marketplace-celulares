@@ -33,6 +33,7 @@ import {
   type ProductSelectionChoice,
 } from "../types/productAvailability";
 import { getPrimaryProductModel3D, getProductImageMediaItems } from "../types/productMedia";
+import { Catalog3DBadge } from "../features/public/components/Catalog3DBadge";
 import { ProductModel3DViewer } from "../features/public/components/ProductModel3DViewer";
 import { buildPublicProductDetailUrl, buildUrlFileSlug } from "../lib/publicUrls";
 
@@ -241,8 +242,13 @@ export function ProductDetailPage() {
     () => (product ? getPrimaryProductModel3D(product.product_media) : null),
     [product],
   );
+  const model3DSlideIndex = model3D ? productImages.length : -1;
+  const totalSlideCount = productImages.length + (model3D ? 1 : 0);
+  const isViewing3DSlide = model3D !== null && selectedImageIndex === model3DSlideIndex;
 
-  const selectedProductImage = productImages[selectedImageIndex] ?? productImages[0] ?? null;
+  const selectedProductImage = isViewing3DSlide
+    ? null
+    : productImages[selectedImageIndex] ?? productImages[0] ?? null;
   const selectedOptionChoices = useMemo<ProductSelectionChoice[]>(() => {
     if (!product || product.made_to_order_options.length === 0) {
       return [];
@@ -324,7 +330,7 @@ export function ProductDetailPage() {
   );
 
   const moveSelectedImage = (direction: "previous" | "next") => {
-    if (productImages.length <= 1 || isGalleryNavigating) {
+    if (totalSlideCount <= 1 || isGalleryNavigating) {
       return;
     }
 
@@ -336,10 +342,10 @@ export function ProductDetailPage() {
     setIsDetailAutoplayEnabled(false);
     setSelectedImageIndex((currentIndex) => {
       if (direction === "previous") {
-        return currentIndex === 0 ? productImages.length - 1 : currentIndex - 1;
+        return currentIndex === 0 ? totalSlideCount - 1 : currentIndex - 1;
       }
 
-      return currentIndex === productImages.length - 1 ? 0 : currentIndex + 1;
+      return currentIndex === totalSlideCount - 1 ? 0 : currentIndex + 1;
     });
     galleryNavigationTimeoutRef.current = window.setTimeout(() => {
       setIsGalleryNavigating(false);
@@ -483,47 +489,61 @@ export function ProductDetailPage() {
                   {storefrontLabel}
                 </span>
               </div>
-              {productImages.length > 1 ? (
+              {totalSlideCount > 1 ? (
                 <span className="rounded-full border border-ocean-500/15 bg-white/88 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-ocean-500 shadow-[0_12px_24px_-20px_rgba(71,85,105,0.45)]">
-                  {productImages.length} fotos
+                  {productImages.length} fotos{model3D ? " + 3D" : ""}
                 </span>
               ) : null}
             </div>
 
-            {selectedProductImage ? (
+            {totalSlideCount > 0 ? (
               <div className="grid gap-3">
                 <div className="overflow-hidden rounded-3xl border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,244,238,0.92))] p-3 shadow-[0_28px_62px_-42px_rgba(15,23,42,0.42)] ring-1 ring-white/85 sm:p-4">
                   <div className="relative flex min-h-[21rem] items-center justify-center overflow-hidden rounded-2xl bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.98),_rgba(244,248,255,0.96)_56%,_rgba(233,241,255,0.9))] sm:min-h-[26rem]">
                     <div className="pointer-events-none absolute inset-x-8 top-2 h-16 rounded-full bg-white/60 blur-3xl" />
-                    <ProductImageCarousel
-                      autoAdvance={productImages.length > 1 && isDetailAutoplayEnabled}
-                      autoAdvanceDelay={5000}
-                      buttonClassName="!h-10 !w-10 !rounded-full !border !border-white/75 !bg-white/94 !text-ocean-500 !shadow-[0_16px_30px_-18px_rgba(15,23,42,0.55)] backdrop-blur-sm hover:!bg-white"
-                      className="flex w-full items-center justify-center"
-                      currentIndex={selectedImageIndex}
-                      imageClassName="max-h-[68dvh] w-auto max-w-full rounded-2xl object-contain"
-                      imageSizes="(max-width: 640px) 92vw, (max-width: 1024px) 82vw, 720px"
-                      imageSrcSetWidths={[640, 960, 1200, 1440]}
-                      imageWidth={1200}
-                      images={productImages.map((mediaItem, index) => ({
-                        alt: mediaItem.description || `${product.title} ${index + 1}`,
-                        url: mediaItem.url,
-                      }))}
-                      onIndexChange={(index) => {
-                        setSelectedImageIndex(index);
-                      }}
-                      onManualNavigation={() => {
-                        setIsDetailAutoplayEnabled(false);
-                      }}
-                      priority
-                    />
+                    {isViewing3DSlide && model3D ? (
+                      <ProductModel3DViewer
+                        modelUrl={model3D.url}
+                        posterUrl={
+                          model3D.poster_url ??
+                          model3D.thumbnail_url ??
+                          productImages[0]?.thumbnail_url ??
+                          productImages[0]?.url ??
+                          null
+                        }
+                        title={product.title}
+                      />
+                    ) : (
+                      <ProductImageCarousel
+                        autoAdvance={productImages.length > 1 && isDetailAutoplayEnabled}
+                        autoAdvanceDelay={5000}
+                        buttonClassName="!h-10 !w-10 !rounded-full !border !border-white/75 !bg-white/94 !text-ocean-500 !shadow-[0_16px_30px_-18px_rgba(15,23,42,0.55)] backdrop-blur-sm hover:!bg-white"
+                        className="flex w-full items-center justify-center"
+                        currentIndex={selectedImageIndex}
+                        imageClassName="max-h-[68dvh] w-auto max-w-full rounded-2xl object-contain"
+                        imageSizes="(max-width: 640px) 92vw, (max-width: 1024px) 82vw, 720px"
+                        imageSrcSetWidths={[640, 960, 1200, 1440]}
+                        imageWidth={1200}
+                        images={productImages.map((mediaItem, index) => ({
+                          alt: mediaItem.description || `${product.title} ${index + 1}`,
+                          url: mediaItem.url,
+                        }))}
+                        onIndexChange={(index) => {
+                          setSelectedImageIndex(index);
+                        }}
+                        onManualNavigation={() => {
+                          setIsDetailAutoplayEnabled(false);
+                        }}
+                        priority
+                      />
+                    )}
                   </div>
                 </div>
 
-                {productImages.length > 1 ? (
+                {totalSlideCount > 1 ? (
                   <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2.5">
                     <button
-                      aria-label="Ver foto anterior"
+                      aria-label="Ver elemento anterior"
                       className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-stone-200 bg-white/95 text-lg font-semibold text-ocean-500 shadow-[0_14px_30px_-24px_rgba(15,23,42,0.4)] transition hover:border-ocean-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-45"
                       disabled={isGalleryNavigating}
                       onClick={() => {
@@ -572,10 +592,44 @@ export function ProductDetailPage() {
                             />
                           </button>
                         ))}
+
+                        {model3D ? (
+                          <button
+                            className={[
+                              "relative snap-start overflow-hidden rounded-2xl border-2 bg-white/94 transition-colors duration-200",
+                              isViewing3DSlide
+                                ? "border-ocean-500 shadow-[0_18px_34px_-26px_rgba(71,85,105,0.55)] ring-1 ring-ocean-200/70"
+                                : "border-white/60 hover:border-brand-500/80",
+                            ].join(" ")}
+                            data-thumbnail-index={model3DSlideIndex}
+                            onClick={() => {
+                              selectGalleryImage(model3DSlideIndex);
+                            }}
+                            type="button"
+                          >
+                            <img
+                              alt={`Vista 3D de ${product.title}`}
+                              className="aspect-square w-full object-cover"
+                              decoding="async"
+                              loading="lazy"
+                              sizes="88px"
+                              src={getOptimizedCatalogImageUrl(
+                                model3D.poster_url ??
+                                  model3D.thumbnail_url ??
+                                  productImages[0]?.thumbnail_url ??
+                                  productImages[0]?.url ??
+                                  model3D.url,
+                                180,
+                                68,
+                              )}
+                            />
+                            <Catalog3DBadge />
+                          </button>
+                        ) : null}
                       </div>
                     </div>
                     <button
-                      aria-label="Ver foto siguiente"
+                      aria-label="Ver elemento siguiente"
                       className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-stone-200 bg-white/95 text-lg font-semibold text-ocean-500 shadow-[0_14px_30px_-24px_rgba(15,23,42,0.4)] transition hover:border-ocean-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-45"
                       disabled={isGalleryNavigating}
                       onClick={() => {
@@ -588,7 +642,7 @@ export function ProductDetailPage() {
                   </div>
                 ) : null}
 
-                {selectedProductImage.description ? (
+                {selectedProductImage?.description ? (
                   <div className="rounded-2xl border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(247,241,233,0.9))] px-4 py-3 text-sm leading-6 text-stone-600 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.35)] ring-1 ring-white/85">
                     <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
                       Sobre esta foto
@@ -611,35 +665,6 @@ export function ProductDetailPage() {
               </div>
             )}
           </div>
-
-          {model3D ? (
-            <div
-              className="relative overflow-hidden rounded-3xl border border-[#cbd5e1]/45 bg-white/96 p-4 shadow-[0_30px_80px_-46px_rgba(15,23,42,0.38)] ring-1 ring-white/80 sm:p-5"
-              style={{
-                background: `linear-gradient(150deg, ${accentColor}15, rgba(255,255,255,0.96) 42%, #f4f8ff)`,
-                borderColor: `${accentColor}32`,
-              }}
-            >
-              <div className="mb-3 flex items-center justify-between gap-2.5">
-                <span className="rounded-full border border-ocean-500/15 bg-white/88 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-ocean-500 shadow-[0_12px_24px_-20px_rgba(71,85,105,0.45)]">
-                  Vista 3D
-                </span>
-              </div>
-              <div className="relative aspect-square w-full overflow-hidden rounded-3xl border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,244,238,0.92))] shadow-[0_28px_62px_-42px_rgba(15,23,42,0.42)] ring-1 ring-white/85">
-                <ProductModel3DViewer
-                  modelUrl={model3D.url}
-                  posterUrl={
-                    model3D.poster_url ??
-                    model3D.thumbnail_url ??
-                    productImages[0]?.thumbnail_url ??
-                    productImages[0]?.url ??
-                    null
-                  }
-                  title={product.title}
-                />
-              </div>
-            </div>
-          ) : null}
         </section>
 
         <aside className="grid gap-3.5 self-start xl:sticky xl:top-24">
