@@ -32,7 +32,8 @@ import {
   createSelectedOptionsSummary,
   type ProductSelectionChoice,
 } from "../types/productAvailability";
-import { getProductImageMediaItems } from "../types/productMedia";
+import { getPrimaryProductModel3D, getProductImageMediaItems } from "../types/productMedia";
+import { ProductModel3DViewer } from "../features/public/components/ProductModel3DViewer";
 import { buildPublicProductDetailUrl, buildUrlFileSlug } from "../lib/publicUrls";
 
 type DetailSectionCardProps = {
@@ -235,6 +236,11 @@ export function ProductDetailPage() {
       url,
     }));
   }, [product]);
+
+  const model3D = useMemo(
+    () => (product ? getPrimaryProductModel3D(product.product_media) : null),
+    [product],
+  );
 
   const selectedProductImage = productImages[selectedImageIndex] ?? productImages[0] ?? null;
   const selectedOptionChoices = useMemo<ProductSelectionChoice[]>(() => {
@@ -605,6 +611,35 @@ export function ProductDetailPage() {
               </div>
             )}
           </div>
+
+          {model3D ? (
+            <div
+              className="relative overflow-hidden rounded-3xl border border-[#cbd5e1]/45 bg-white/96 p-4 shadow-[0_30px_80px_-46px_rgba(15,23,42,0.38)] ring-1 ring-white/80 sm:p-5"
+              style={{
+                background: `linear-gradient(150deg, ${accentColor}15, rgba(255,255,255,0.96) 42%, #f4f8ff)`,
+                borderColor: `${accentColor}32`,
+              }}
+            >
+              <div className="mb-3 flex items-center justify-between gap-2.5">
+                <span className="rounded-full border border-ocean-500/15 bg-white/88 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-ocean-500 shadow-[0_12px_24px_-20px_rgba(71,85,105,0.45)]">
+                  Vista 3D
+                </span>
+              </div>
+              <div className="relative aspect-square w-full overflow-hidden rounded-3xl border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,244,238,0.92))] shadow-[0_28px_62px_-42px_rgba(15,23,42,0.42)] ring-1 ring-white/85">
+                <ProductModel3DViewer
+                  modelUrl={model3D.url}
+                  posterUrl={
+                    model3D.poster_url ??
+                    model3D.thumbnail_url ??
+                    productImages[0]?.thumbnail_url ??
+                    productImages[0]?.url ??
+                    null
+                  }
+                  title={product.title}
+                />
+              </div>
+            </div>
+          ) : null}
         </section>
 
         <aside className="grid gap-3.5 self-start xl:sticky xl:top-24">

@@ -7,6 +7,7 @@ Definir cómo se guardan y renderizan en frontend los elementos multimedia pesad
 - `docs/PRODUCT_3D_PREVIEW.md`: Reglas originales, límites de la tecnología y formato esperado de guardado JSON.
 - `src/features/public/components/ProductModel3DViewer.tsx`: Componente de React que implementa la cámara de WebGL (Three.js).
 - `src/features/public/components/CatalogProduct3DPreviewSlot.tsx`: Contenedor "fallback" que decide si inyectar 3D dinámicamente o quedarse con la foto plana.
+- `src/pages/ProductDetailPage.tsx`: Consume el mismo `ProductModel3DViewer` en el detalle de producto, debajo de la galería de fotos.
 
 ## Flujo o arquitectura
 La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
@@ -35,6 +36,14 @@ La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
   detalle, aunque en ese lugar del catálogo se esté mostrando la foto y no el
   visor interactivo. No se usa en `CatalogProduct3DPreviewSlot`, porque ese
   componente ya muestra el visor 3D directamente.
+- **Un solo componente de visor para todos los sitios**: tanto el catálogo
+  (`CatalogProduct3DPreviewSlot`) como el detalle de producto
+  (`ProductDetailPage`) importan directamente `ProductModel3DViewer` sin
+  duplicar su lógica de carga, cámara o controles. Cualquier mejora al visor
+  (nuevos controles, mejor iluminación, otro loader) se hace una sola vez en
+  `ProductModel3DViewer.tsx` y se propaga a ambos lugares. Al agregar un nuevo
+  sitio que deba mostrar el modelo 3D, importar este mismo componente en vez
+  de reimplementar la carga de Three.js.
 
 ## Dependencias y límites externos
 - **Three.js** y **React Three Fiber**: Motores WebGL subyacentes encargados de las luces, texturas y rotaciones de cámara.
