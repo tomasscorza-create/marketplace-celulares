@@ -8,7 +8,7 @@ Este documento mantiene el registro de las fichas de dominio generadas para docu
 | --- | --- | --- | --- | --- |
 | `aplicacion-y-rutas.md` | Aplicación y roles | Arranque, router, layouts, páginas y fronteras entre UI pública y paneles. | `src/main.tsx`, `src/app/`, `src/layouts/`, `src/pages/` | `documentado` |
 | `autenticacion-y-roles.md` | Aplicación y roles | Proveedor de sesión, rutas protegidas, perfiles y roles (`admin`, `artisan`, `buyer`). | `src/features/auth/`, `src/lib/supabase/client.ts`, `AGENTS.md` | `documentado` |
-| `catalogo-y-productos.md` | Aplicación y roles | Fuentes de catálogo, visibilidad, stock, imágenes, lotes y modelo 3D. | `src/features/public/`, `src/features/artisan/`, `src/pages/CatalogPage.tsx` | `documentado` |
+| `catalogo-y-productos.md` | Aplicación y roles | Fuentes de catálogo, visibilidad, stock, imágenes y modelo 3D. | `src/features/public/`, `src/features/artisan/`, `src/pages/CatalogPage.tsx` | `documentado` |
 | `supabase-esquema-y-migraciones.md` | Backend y datos | Convenciones de migraciones, tablas, RLS, Storage, RPC y validación segura. | `supabase/migrations/`, `docs/DB_SAFETY.md`, `docs/BACKEND_MAP.md` | `documentado` |
 | `funciones-edge.md` | Backend y datos | Funciones Edge, propósitos, llamada desde frontend, autorización y secrets requeridos. | `supabase/functions/` | `documentado` |
 | `operacion-admin.md` | Backend y datos | Gestión de vendedores, categorías, productos, compradores y controles internos. | `src/features/admin/`, `src/pages/Admin*.tsx` | `documentado` |
@@ -20,6 +20,7 @@ Este documento mantiene el registro de las fichas de dominio generadas para docu
 | `visor-3d-y-medios.md` | Medios y UI | Implementación lazy del renderizador Three.js y WebGL. | `docs/PRODUCT_3D_PREVIEW.md`, `src/features/public/` | `documentado` |
 | `notificaciones-internas.md` | Backend y datos | Sistema para mandar alertas auditables a los usuarios. | `src/features/internalNotifications/` | `documentado` |
 | `decisiones-de-dominio.md` | Operación e integración | Reglas críticas sobre la nomenclatura intocable de "artisan". | `docs/DOMAIN_DECISIONS.md`, `AGENTS.md` | `documentado` |
+| `pruebas-automatizadas.md` | Calidad y verificación | Runner, ubicación, alcance y reglas para pruebas unitarias y de componentes. | `vitest.config.ts`, `src/**/*.test.ts(x)`, `package.json` | `documentado` |
 
 ## Mantenimiento
 

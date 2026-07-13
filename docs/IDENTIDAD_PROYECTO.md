@@ -14,7 +14,7 @@
 | Repositorio Git | `marketplace-celulares` → `https://github.com/tomasscorza-create/marketplace-celulares.git` | `git remote -v` debe mostrar exactamente esa URL como `origin`. |
 | Backend Supabase (producción) | Proyecto **"accesorios y celulares"** — project ref **`snlotkvstplwnoiacqyz`** (la URL es `https://<ref>.supabase.co`) | `VITE_SUPABASE_PROJECT_REF` en `.env.local` debe ser `snlotkvstplwnoiacqyz`. La guardia de `src/lib/supabase/client.ts` ya bloquea la conexión si no coincide. |
 | Deploy frontend | Netlify, conectado a este repo, rama de producción **`main`** | Un `git push origin main` dispara el deploy (build según `netlify.toml`). |
-| Rama de trabajo actual | `codex/remove-product-batches` (se unificará a `main` al terminar los planes activos) | `git branch` |
+| Rama de producción y trabajo actual | `main` | `git branch --show-current` debe verificarse en cada sesión; si el dueño abre una rama de trabajo, prevalece el estado real de Git. |
 
 El project ref y la URL de Supabase son identificadores públicos (viajan en cada
 request del navegador); **las claves no** — nunca copiar ni mostrar valores de

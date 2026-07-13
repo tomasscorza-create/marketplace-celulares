@@ -21,7 +21,7 @@ El catálogo público funciona así:
 
 ## Reglas y decisiones vigentes
 
-- **Visibilidad estricta**: Como regla general de negocio, el catálogo público no muestra productos inactivos, con stock 0, o que pertenezcan a vendedores ocultos.
+- **Visibilidad estricta**: El catálogo público exige productos activos y vendedores con rol `artisan` no ocultos. El stock se muestra y se vuelve a validar en carrito/checkout; el RPC de catálogo vigente no excluye por sí solo un producto activo con `stock_quantity = 0`.
 - **Búsqueda guiada por URL**: Todos los filtros (búsqueda, página, orden) deben reflejarse en la URL (`URLSearchParams`) para mantener enlaces compartibles.
 - **Modelos 3D**: Son opcionales. Las tarjetas manejan de forma segura que un producto no tenga archivos GLB/GLTF.
 - **Grillas reactivas**: Se decide la cantidad de columnas no solo mediante media queries, sino por un estado de React evaluando el ancho de la ventana al cargar y redimensionar.
@@ -38,7 +38,7 @@ El catálogo público funciona así:
 ## Riesgos y errores frecuentes
 
 - Modificar el esquema de la tabla de productos sin sincronizar las queries de selección (`select()`) usadas en el frontend, lo cual causa que falten datos.
-- Desesperarse porque un producto recién creado no aparece en el catálogo: siempre revisar si el estado del artesano y el stock cumplen con la condición de visibilidad dictada en `AGENTS.md`.
+- Desesperarse porque un producto recién creado no aparece en el catálogo: revisar primero `is_active`, el rol/visibilidad del vendedor y la respuesta del RPC antes de atribuir el fallo a la UI.
 
 ## Mantenimiento
 

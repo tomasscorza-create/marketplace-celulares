@@ -24,6 +24,8 @@ LOSARTESANOS_RECUPERADO_OK/
 # Generated config outputs. Keep the .ts sources as canonical.
 vite.config.js
 vite.config.d.ts
+vitest.config.js
+vitest.config.d.ts
 tailwind.config.js
 tailwind.config.d.ts
 

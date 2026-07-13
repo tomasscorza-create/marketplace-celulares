@@ -9,6 +9,7 @@ Mantener el registro de la estructura de la base de datos, políticas de segurid
 - `supabase/migrations/`: Carpeta con los archivos `.sql` (ej. `20260527000001_000_setup.sql`) que definen tablas, roles y políticas de forma aditiva.
 - `docs/DB_SAFETY.md`: Protocolo de seguridad que prohíbe conexiones directas a producción y dicta cómo probar o conectarse a un proyecto Supabase.
 - `docs/BACKEND_MAP.md`: Mapa de tablas y funciones actuales que se espera encontrar en el backend (ej. `products`, `profiles`, `cart_items` y funciones como `get_public_catalog_product_feed_v5`).
+- `scripts/lib/backend-schema-audit.mjs`: aplica estáticamente los eventos `create`/`drop` de las migraciones en orden y construye el mapa verificable.
 
 ## Flujo o arquitectura
 
@@ -19,7 +20,8 @@ Mantener el registro de la estructura de la base de datos, políticas de segurid
 
 ## Reglas y decisiones vigentes
 
-- **Base inmutable**: El proyecto original es de solo lectura. No se debe ejecutar `supabase db push` o comandos destructivos contra bases de producción sin antes apuntar a un nuevo proyecto.
+- **Objetivo confirmado**: No se debe ejecutar `supabase db push` o comandos destructivos contra una base sin comprobar primero la identidad vigente en `docs/IDENTIDAD_PROYECTO.md`.
+- **Una sola fuente de verdad**: `supabase/migrations/` es canónico. `supabase/sql/` conserva copias históricas y no debe usarse para inferir el esquema final ni ejecutarse como instalación vigente.
 - **Acceso RPC**: La app utiliza Remote Procedure Calls (ej. `apply_paid_order_inventory`, `get_public_catalog_product_feed_v5`) para la lógica compleja de datos, limitando las mutaciones masivas desde el cliente.
 
 ## Dependencias y límites externos
@@ -28,7 +30,7 @@ Mantener el registro de la estructura de la base de datos, políticas de segurid
 
 ## Validación
 
-- Comandos: `npm run audit:backend` (verifica que la estructura actual coincida con lo esperado por el cliente), `supabase db reset` (sólo en entorno local/Docker para reiniciar la BD de pruebas).
+- Comandos: `npm run docs:backend-map` regenera el mapa para revisión; `npm run audit:backend` verifica referencias contra el resultado final de las migraciones y falla si el mapa difiere; `supabase db reset` se usa sólo en entorno local/Docker.
 
 ## Riesgos y errores frecuentes
 

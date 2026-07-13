@@ -1,31 +1,61 @@
-# Operación del Vendedor
+# Operación del vendedor
 
 ## Propósito
-Guiar las capacidades de los vendedores (internamente artesanos) para gestionar su propia tienda, subir productos, manejar inventario (lotes) y auditar sus ventas.
+
+Guiar las capacidades de los vendedores (internamente `artisan`) para gestionar
+su tienda, productos, disponibilidad, stock y ventas.
 
 ## Fuentes de verdad
-- `src/features/artisan/`: Módulos de validación, creación de productos (`artisanClient.ts`), y gestión de lotes de stock.
-- `src/pages/Artisan*Page.tsx`: Pantallas del dashboard privado, edición de tienda, y lista de productos.
+
+- `src/features/artisan/artisanClient.ts`: alta y actualización de productos, perfiles y medios.
+- `src/features/artisan/artisanProductValidation.ts`: reglas locales antes de guardar.
+- `src/pages/ArtisanProductsPage.tsx`: orquestación del listado y formulario.
+- `supabase/migrations/20260527000016_016_buyer_cart_checkout_alignment.sql`: aplicación atómica de inventario pagado.
+- `supabase/migrations/20260713120000_remove_product_batches.sql`: retiro definitivo del modelo anterior de lotes.
 
 ## Flujo o arquitectura
-El vendedor inicia sesión y es redirigido a `/panel/vendedor`. 
-1. **Gestión de tienda**: El vendedor puede editar su perfil público, bio y banners (`ArtisanStorePage`).
-2. **Productos**: A través de `ArtisanProductsPage` y `ProductQuickEditPage`, puede crear o dar de baja productos, y editar fotos o modelos 3D asociados a ellos.
-3. **Control de inventario (Batches)**: El stock no es un simple número en la tabla de productos; se controla mediante *lotes* (`product_batches`) para trazabilidad del inventario entrante.
-4. **Ventas**: El vendedor revisa las órdenes donde haya participado (leyendo de `order_items` filtrando por sus propios productos) en `ArtisanSalesPage`.
+
+1. El vendedor accede a `/panel/vendedor` con rol técnico `artisan`.
+2. Puede editar tienda, imágenes y datos públicos.
+3. Crea o actualiza una fila de `public.products`, incluyendo
+   `availability_mode`, `stock_quantity` o `lead_time_days` según corresponda.
+4. El carrito y la Edge Function de checkout vuelven a consultar disponibilidad
+   y stock antes de crear la orden.
+5. Cuando un pago se confirma, `apply_paid_order_inventory` descuenta de forma
+   atómica las cantidades de productos con `availability_mode = 'stock'`.
+6. El vendedor gestiona la preparación de sus `order_items` desde ventas.
 
 ## Reglas y decisiones vigentes
-- **Aislamiento por RLS**: Las políticas (RLS) aseguran que el vendedor solo pueda alterar productos o imágenes asociadas estrictamente a su `artisan_id`.
-- **Visibilidad Pública**: Que un vendedor active un producto no garantiza que este aparezca en el catálogo. Si el perfil del vendedor fue suspendido por un admin, todos sus productos se ocultan automáticamente en el frontend (ver `AGENTS.md`).
+
+- `product_batches` y las RPC `create_product_batch`, `update_product_batch` y
+  `delete_product_batch` ya no forman parte del esquema final.
+- El stock disponible vive en `products.stock_quantity`; los productos a pedido
+  usan `lead_time_days` y pueden tener opciones de producción.
+- La UI nunca es la autoridad final para stock: carrito, checkout y la RPC de
+  aplicación de inventario deben volver a validarlo.
+- RLS y Storage deben limitar escrituras al propietario o a un administrador.
+- Un producto activo sólo aparece públicamente si el vendedor también es visible.
 
 ## Dependencias y límites externos
-- Supabase Storage: Depende de buckets dedicados (ej. `artisan-product-images`) para guardar las fotos de manera segura y vinculada al propietario.
+
+- Supabase Database y RLS para productos y ventas.
+- Bucket `artisan-product-images` para fotos y medios permitidos.
+- Edge Functions y Mercado Pago sólo cuando el canal de checkout esté habilitado.
 
 ## Validación
-- Manual: Iniciar sesión como vendedor, crear un producto de prueba, modificar su precio (edición rápida) y constatar que los cambios se reflejan en la base de datos sin poder alterar productos de la competencia.
+
+- `npm test`: valida reglas locales de producto y contratos de checkout.
+- `npm run audit:backend`: confirma que el código no dependa de tablas/RPC retiradas.
+- Manual/local: crear un producto con stock, validar límites en carrito y probar
+  el descuento al confirmar un pago dentro de Supabase local o staging aislado.
 
 ## Riesgos y errores frecuentes
-- Asumir que la columna de stock en un producto se actualiza con un `UPDATE products SET stock = ...`. Se debe usar la función SQL pertinente o generar un lote (`create_product_batch`) para modificar el inventario formalmente.
+
+- Reintroducir lotes porque aparecen en migraciones históricas.
+- Confiar únicamente en el valor mostrado por React para autorizar una compra.
+- Descontar stock desde el navegador en lugar de usar el flujo atómico posterior al pago.
 
 ## Mantenimiento
-Actualizar si el modelo de datos de productos cambia (ej. incluir variantes/tamaños) o si los vendedores adquieren permisos para procesar devoluciones.
+
+Actualizar cuando cambien disponibilidad, inventario, permisos de vendedor o
+procesamiento de ventas. Última revisión: 2026-07-13.

@@ -19,7 +19,8 @@ Codex y otros agentes de IA.
 | Usar Supabase local con Docker | [docs/LOCAL_BACKEND.md](docs/LOCAL_BACKEND.md) |
 | Preparar checkout o Mercado Pago | [docs/CHECKOUT_MERCADOPAGO.md](docs/CHECKOUT_MERCADOPAGO.md) |
 | Revisar el flujo de catálogo/3D | [docs/PRODUCT_3D_PREVIEW.md](docs/PRODUCT_3D_PREVIEW.md) |
-| Entender el plan técnico heredado | [docs/REFACTOR_PLAN.md](docs/REFACTOR_PLAN.md), [docs/NEW_BACKEND_PLAN.md](docs/NEW_BACKEND_PLAN.md) |
+| Ejecutar o ampliar pruebas automatizadas | [contexto/pruebas-automatizadas.md](contexto/pruebas-automatizadas.md) |
+| Consultar planes históricos, no operativos | [docs/REFACTOR_PLAN.md](docs/REFACTOR_PLAN.md), [docs/NEW_BACKEND_PLAN.md](docs/NEW_BACKEND_PLAN.md) |
 | Encontrar contexto futuro por dominio | [contexto/](contexto/) |
 
 ## Desarrollo local
@@ -43,6 +44,16 @@ npm run build
 Para cambios de base de datos, revisar primero las migraciones y el protocolo
 de [AGENTS.md](AGENTS.md). Para cambios visuales, además verificar el flujo
 afectado en la aplicación.
+
+## Pruebas automatizadas
+
+```powershell
+npm test
+npm run test:watch
+```
+
+La suite usa Vitest y React Testing Library. No necesita credenciales ni se
+conecta a Supabase remoto; `npm run preflight` la ejecuta automáticamente.
 
 ## Producción
 

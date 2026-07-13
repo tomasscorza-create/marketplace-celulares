@@ -1,5 +1,10 @@
 # Refactor Plan
 
+> **PLAN HISTÓRICO, NO OPERATIVO.** Conserva decisiones de la etapa de
+> neutralización. Para el estado actual usar `AGENTS.md`,
+> `docs/IDENTIDAD_PROYECTO.md`, `docs/DB_SAFETY.md` y el mapa generado
+> `docs/BACKEND_MAP.md`.
+
 ## Goal
 
 Convert the current marketplace into a neutral, reusable, safer marketplace
@@ -51,7 +56,10 @@ Priority files:
 
 ## Phase 4 - Tests And Release Discipline
 
-- Add unit tests for cart, product configuration, checkout validation, and
-  inventory math.
-- Add integration tests for auth roles and order flows.
+- Baseline completed on 2026-07-13: Vitest and React Testing Library cover cart
+  and shipping rules, product configuration and validation, checkout
+  expiration, fulfillment transitions, shared frontend/Edge contracts, and
+  protected-route role decisions.
+- Keep adding integration tests for Supabase-backed auth sessions, RLS,
+  checkout/order creation, inventory application, and payment webhooks.
 - Add a release checklist for each new business adaptation.

@@ -60,7 +60,7 @@ Documentá, como mínimo, estas fichas si el código actual las confirma:
 - `contexto/autenticacion-y-roles.md`: proveedor de sesión, rutas protegidas,
   perfiles y roles `admin`, `artisan` y `buyer`.
 - `contexto/catalogo-y-productos.md`: fuentes de catálogo, condiciones de
-  visibilidad, producto, stock, imágenes, lotes y 3D opcional.
+  visibilidad, producto, stock, imágenes y 3D opcional.
 
 ### Fase 2 — Backend y datos
 

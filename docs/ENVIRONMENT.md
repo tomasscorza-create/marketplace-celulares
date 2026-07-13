@@ -1,50 +1,60 @@
-# Environment
+# Entornos
 
-Remote backend access is opt-in.
+La conexión Supabase es opt-in y está protegida por
+`src/lib/supabase/client.ts`. La plantilla `.env.example` debe permanecer sin
+credenciales reales.
 
-## Variables
+## Variables públicas del frontend
 
-```bash
-VITE_ENABLE_LOCAL_BACKEND=false
-VITE_ENABLE_REMOTE_BACKEND=false
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
-VITE_SUPABASE_PROJECT_REF=
-VITE_PUBLIC_SITE_URL=http://localhost:5173
-VITE_SENTRY_DSN=
+```text
+VITE_ENABLE_LOCAL_BACKEND
+VITE_ENABLE_REMOTE_BACKEND
+VITE_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY
+VITE_SUPABASE_PROJECT_REF
+VITE_PUBLIC_SITE_URL
+VITE_SENTRY_DSN
 ```
 
-## Connecting Supabase local
+Las variables `VITE_*` terminan en el navegador. Sólo la anon/publishable key de
+Supabase puede usarse allí; nunca `service_role`, contraseñas o tokens de pago.
 
-Use this only with the local Supabase stack:
+## Supabase local
 
-```bash
+```text
 VITE_ENABLE_LOCAL_BACKEND=true
 VITE_ENABLE_REMOTE_BACKEND=false
 VITE_SUPABASE_URL=http://127.0.0.1:54321
-VITE_SUPABASE_ANON_KEY=your-local-publishable-or-anon-key
+VITE_SUPABASE_ANON_KEY=<clave local>
 VITE_SUPABASE_PROJECT_REF=
 ```
 
-## Connecting a new Supabase project
+El cliente sólo acepta `localhost` o `127.0.0.1:54321` como backend local.
 
-Only use fresh credentials from a brand-new project.
+## Backend remoto vigente
 
-```bash
-VITE_ENABLE_REMOTE_BACKEND=true
-VITE_SUPABASE_URL=https://yourprojectref.supabase.co
-VITE_SUPABASE_ANON_KEY=your-new-anon-key
-VITE_SUPABASE_PROJECT_REF=yourprojectref
+En producción, Netlify debe definir `VITE_ENABLE_REMOTE_BACKEND=true`, URL,
+anon key y project ref del proyecto confirmado en
+`docs/IDENTIDAD_PROYECTO.md`. El ref declarado debe coincidir exactamente con
+el subdominio de la URL o el cliente queda deshabilitado.
+
+No copiar valores desde proyectos anteriores. Antes de cambiar variables de
+Netlify o un `.env.local`, comprobar la identidad y ejecutar las auditorías de
+conexiones y secretos.
+
+## URL pública y Sentry
+
+- `VITE_PUBLIC_SITE_URL` debe coincidir con el dominio permitido en Supabase Auth.
+- `VITE_SENTRY_DSN` es opcional y público por diseño.
+- No adjuntar correos, teléfonos, pedidos, payloads o datos personales a Sentry.
+
+## Validación
+
+```powershell
+npm run audit:connections
+npm run audit:secrets
+npm run preflight
 ```
 
-The project ref must match the one in the URL. If it does not match, the
-frontend client stays disabled.
-
-## Sentry error reporting
-
-`VITE_SENTRY_DSN` is optional. When it is set, production builds report render,
-window, unhandled promise, and React Query errors to Sentry. Development builds
-and production builds without a DSN do not initialize Sentry.
-
-Do not attach customer data, emails, phone numbers, order details, or query
-payloads to error-reporting contexts.
+Actualizar esta ficha cuando cambie la guardia del cliente, el proveedor de
+deploy o el contrato de variables. Última revisión: 2026-07-13.

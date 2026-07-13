@@ -1,5 +1,11 @@
 # Auditoría del sistema de carga de productos
 
+> Documento histórico de diagnóstico y ejecución. Las secciones iniciales
+> describen el sistema anterior; no son instrucciones vigentes. El estado final
+> está en las conclusiones de esta auditoría, en
+> `20260713120000_remove_product_batches.sql` y en el mapa generado
+> `docs/BACKEND_MAP.md`.
+
 > Fecha: 2026-07-13. Documento pensado como mapa de contexto para agentes (Codex)
 > que necesiten trabajar sobre esta zona. Refleja el estado del código en `main`
 > (commit `26ba260`). Si el código cambió desde entonces, verificar antes de asumir.

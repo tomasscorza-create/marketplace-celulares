@@ -1,10 +1,22 @@
 # Backend Map
 
-This is a local, read-only map of what the app currently expects from Supabase.
-It is a schema-surface audit, not a replacement for applying and testing the
-SQL in a brand-new Supabase project.
+> Archivo generado por `npm run docs:backend-map`. La auditoría
+> `npm run audit:backend` falla si este contenido no coincide con el código y
+> el resultado final de las migraciones ordenadas. No editar listas a mano.
 
-## Frontend/Function Tables And Views Used
+## Alcance y fuente de verdad
+
+- Fuente canónica del esquema: `supabase/migrations/`, aplicada por nombre en orden ascendente.
+- Última migración inspeccionada: `20260713120000_remove_product_batches.sql`.
+- Consumidores inspeccionados: `src/` y `supabase/functions/`.
+- `supabase/sql/` es referencia histórica y no participa de esta auditoría.
+
+El análisis rastrea tablas, vistas y funciones del esquema `public`. No valida
+columnas, constraints, RLS, políticas de Storage ni el estado de un backend
+remoto; esos puntos requieren Supabase local y las verificaciones de
+`docs/DB_SAFETY.md`.
+
+## Tablas y vistas usadas por la aplicación
 
 - `artisan_storefronts`
 - `buyer_favorites`
@@ -20,12 +32,11 @@ SQL in a brand-new Supabase project.
 - `payment_attempts`
 - `payment_webhook_events`
 - `product_admin_controls`
-- `product_batches`
 - `products`
 - `profiles`
 - `site_content`
 
-## Tables And Views Defined In `supabase/sql`
+## Tablas y vistas del esquema final
 
 - `artisan_storefronts`
 - `buyer_favorites`
@@ -42,20 +53,17 @@ SQL in a brand-new Supabase project.
 - `payment_attempts`
 - `payment_webhook_events`
 - `product_admin_controls`
-- `product_batches`
 - `products`
 - `profiles`
 - `site_content`
 
-## Missing From SQL But Used By Code
+## Tablas o vistas usadas pero ausentes
 
 - none
 
-## RPCs Used By App/Functions
+## RPC usadas por la aplicación
 
 - `apply_paid_order_inventory`
-- `create_product_batch`
-- `delete_product_batch`
 - `get_catalog_activity_state_v1`
 - `get_public_buyer_profile_v1`
 - `get_public_catalog_product_feed_v5`
@@ -63,15 +71,14 @@ SQL in a brand-new Supabase project.
 - `get_public_catalog_storefront_suggestions_v2`
 - `record_catalog_activity_event_v1`
 - `update_order_item_fulfillment_status`
-- `update_product_batch`
 
-## SQL Functions Defined In `supabase/sql`
+## Funciones SQL del esquema final
 
 - `apply_paid_order_inventory`
-- `create_product_batch`
+- `can_read_order`
+- `can_read_order_by_id`
+- `can_read_order_item`
 - `current_user_role`
-- `delete_product_batch`
-- `generate_product_batch_code`
 - `get_catalog_activity_state_v1`
 - `get_public_buyer_profile_v1`
 - `get_public_catalog_product_feed_v5`
@@ -82,50 +89,35 @@ SQL in a brand-new Supabase project.
 - `is_public_artisan_visible`
 - `record_catalog_activity_event_v1`
 - `update_order_item_fulfillment_status`
+
+## RPC usadas pero ausentes
+
+- none
+
+## Objetos históricos eliminados por migraciones posteriores
+
+### Tablas y vistas
+
+- `product_batches`
+
+### Funciones
+
+- `create_product_batch`
+- `delete_product_batch`
+- `generate_product_batch_code`
 - `update_product_batch`
 
-## RPC Drift
+Estas listas explican por qué un objeto puede aparecer en una migración
+histórica sin existir en el esquema vigente. No deben reintroducirse basándose
+únicamente en archivos antiguos.
 
-- none detected by `npm run audit:backend`
+## Validación repetible
 
-The frontend now calls the current catalog RPC surface:
-
-- feed: `get_public_catalog_product_feed_v5`
-- storefront groups: `get_public_catalog_storefront_groups_v6`
-- storefront suggestions: `get_public_catalog_storefront_suggestions_v2`
-
-The local SQL now includes the app-facing RPCs for catalog activity, buyer public
-profiles, and order item fulfillment updates.
-
-## Storage Buckets
-
-Current names still use the internal `artisan` vocabulary:
-
-- `artisan-profile-images`
-- `artisan-product-images`
-
-Keep these names during frontend stabilization. Rename only during the clean
-backend schema phase if we decide to migrate internal vocabulary.
-
-## Edge Functions Present
-
-- `admin-buyer-accounts`
-- `admin-manage-artisans`
-- `create-mercadopago-checkout`
-- `expire-pending-checkouts`
-- `mercadopago-return`
-- `mercadopago-webhook`
-
-They require fresh environment variables for a new project and must not be
-deployed against the original production project.
-
-## Repeatable Audit
-
-Run:
-
-```bash
+```powershell
+npm run docs:backend-map
 npm run audit:backend
 ```
 
-This command exits non-zero while used tables/RPCs are missing from local SQL.
-It should pass before any new Supabase project is linked.
+Regenerar el mapa sólo después de revisar el cambio de esquema. La auditoría
+sale con código distinto de cero si el código usa una tabla/RPC ausente o si el
+mapa quedó desactualizado.

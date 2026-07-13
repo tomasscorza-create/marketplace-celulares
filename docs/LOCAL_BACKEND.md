@@ -1,41 +1,47 @@
-# Local Backend
+# Backend local
 
-Use Supabase local to validate the neutral backend without touching any remote
-project.
+Supabase local es el entorno permitido para aplicar desde cero y probar el
+historial completo sin tocar producción.
 
-## Commands
+## Comandos
 
-```bash
+```powershell
 npm run db:start
 npm run db:status
-npm run db:lint
 npm run db:reset
+npm run db:lint
 npm run db:stop
 ```
 
-## Local URLs
+URLs predeterminadas de Supabase CLI:
 
-- Supabase API: `http://127.0.0.1:54321`
-- Supabase Studio: `http://127.0.0.1:54323`
-- Local database: `postgresql://postgres:postgres@127.0.0.1:54322/postgres`
+- API: `http://127.0.0.1:54321`
+- Studio: `http://127.0.0.1:54323`
+- PostgreSQL: `postgresql://postgres:postgres@127.0.0.1:54322/postgres`
 
-## Current Validation
+## Estado esperado desde las migraciones
 
-The local Supabase stack has applied all migrations in `supabase/migrations`
-through `022_backend_template_completion.sql`.
+El esquema local debe aplicar todos los archivos ordenados de
+`supabase/migrations/`. `npm run audit:backend` informa cuál es la última
+migración inspeccionada y verifica la superficie estática final.
 
-Verified locally:
+Después de `20260713120000_remove_product_batches.sql`:
 
-- required app tables exist, including `site_content`, `order_events`,
-  `catalog_activity_events`, `product_batches`, and `internal_notifications`
-- required app RPCs exist, including the current catalog RPCs and fulfillment
-  status RPC
-- `npm run db:lint` reports no schema errors
+- `product_batches` no existe.
+- `products` no contiene columnas `batch_*` ni `created_via_batch`.
+- Las RPC de creación, actualización y borrado de lotes no existen.
+- Los RPC de catálogo v5/v6 permanecen porque la migración los recrea con su
+  contrato sin columnas de lotes.
 
-## Safety Rules
+## Certificación local
 
-- Do not run `supabase link` for the original production project.
-- Do not run `supabase db push` against the original production project.
-- Keep local keys local; they are development defaults only.
-- Before connecting a hosted backend, create a brand-new Supabase project and
-  use fresh environment variables.
+La documentación no debe afirmar que Docker está validado sólo por una ejecución
+antigua. Para certificar el estado actual hay que ejecutar `db:start`, `db:reset`
+y `db:lint` en la máquina actual, y registrar el resultado de esa tarea.
+
+## Seguridad
+
+- Confirmar que la URL local usa `127.0.0.1` o `localhost` antes de resetear.
+- No usar keys locales en deploys.
+- No ejecutar scripts de `supabase/sql/` como sustituto de las migraciones.
+- Seguir `docs/DB_SAFETY.md` antes de cualquier verificación vinculada.

@@ -1,60 +1,35 @@
-﻿# Domain Decisions
+# Decisiones de dominio
 
-This document records product/domain decisions for turning this repo into a
-neutral marketplace base.
+## Vocabulario híbrido vigente
 
-## Current Decision
+La interfaz usa términos neutrales en español (`vendedor`, `tienda`,
+`comprador`), mientras que los contratos técnicos conservan `artisan`.
 
-Keep the internal `artisan` vocabulary for now, but present neutral wording in
-the UI where practical.
+El vocabulario técnico aparece en:
 
-## Why
-
-The current codebase uses `artisan` across:
-
-- routes such as `/vendedor/:id` and `/panel/vendedor`
-- feature folders such as `src/features/artisan`
-- database columns such as `artisan_id`
-- storage buckets such as `artisan-product-images`
-- SQL policies and Supabase functions
-- user roles such as `artisan`
-
-Renaming all of that to `seller` in one pass would touch frontend routing,
-database schema, RLS policies, storage paths, query keys, order records,
-checkout logic, and historical data assumptions. That is too much risk before
-the new backend schema is designed.
-
-## Product Language
-
-Use neutral Spanish wording in visible copy:
-
-- `vendedor` or `tienda` for UI labels
-- `comprador` for buyer-facing labels
-- `catalogo`, `productos`, `pedidos`, `ventas`
-- avoid previous brand names, city names, event names, and domain-specific copy
-
-Keep technical names stable until the backend rebuild:
-
-- `artisan`
+- rol `artisan`
 - `artisan_id`
 - `artisan_storefronts`
-- `/vendedor`
-- `/panel/vendedor`
+- `src/features/artisan/`
+- buckets `artisan-*`
+- políticas RLS, query keys y contratos de órdenes
 
-## Future Rename Option
+No realizar un reemplazo masivo `artisan` → `seller`. Un cambio así requiere
+migraciones aditivas, compatibilidad de rutas, actualización de RLS/Storage,
+regeneración de tipos y pruebas de datos reales.
 
-After a clean Supabase schema exists, decide whether to migrate internal names:
+## Lenguaje visible
 
-- `artisan` -> `seller`
-- `/vendedor` -> `/vendedor` or `/tienda`
-- `artisan_id` -> `seller_id`
-- `artisan_storefronts` -> `seller_storefronts`
-- storage buckets from `artisan-*` -> `seller-*`
+- Usar `vendedor` o `tienda` en la UI.
+- Usar `comprador`, `catálogo`, `productos`, `pedidos` y `ventas`.
+- No reintroducir marcas, dominios o copys del marketplace de origen.
+- Mantener nombres técnicos existentes hasta una migración planificada.
 
-Do this only as a planned migration with tests and redirects.
+## No negociables
 
-## Non-Negotiables
+- La identidad actual se obtiene de `docs/IDENTIDAD_PROYECTO.md`.
+- No renombrar tablas, columnas, buckets o roles sólo por limpieza estética.
+- No mezclar cambios de vocabulario con pagos, carrito, stock u órdenes.
+- Toda futura migración de dominio debe tener rollback, tests y validación RLS.
 
-- Do not reconnect this repo to the original production backend.
-- Do not rename database concepts while still relying on old migrations.
-- Do not change payment, cart, stock, or order semantics during copy cleanup.
+Última revisión: 2026-07-13.

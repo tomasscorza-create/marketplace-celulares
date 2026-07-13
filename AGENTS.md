@@ -37,6 +37,11 @@ migraciones, configuración, Git o servicios remotos.
   `src/lib/supabase/client.ts`.
 - Los cambios de esquema son aditivos: crear una migración nueva en
   `supabase/migrations/`; nunca reescribir una migración ya aplicada.
+- El modelo de lotes de productos fue retirado. El esquema vigente usa
+  `products.stock_quantity`; la migración
+  `20260713120000_remove_product_batches.sql` elimina `product_batches`, sus
+  columnas y RPC. Las menciones dentro de migraciones anteriores son historia,
+  no contratos actuales.
 - El producto se publica sólo si es activo y su vendedor es un artesano
   visible. El catálogo no muestra filas inexistentes ni productos inactivos.
 - El panel admin puede cargar productos para un vendedor y sus imágenes se
@@ -49,6 +54,9 @@ migraciones, configuración, Git o servicios remotos.
 - Las funciones Edge administrativas son parte del backend operativo. Las
   funciones de checkout/pagos requieren secretos de pago propios antes de ser
   habilitadas o desplegadas para producción.
+- Las pruebas automatizadas usan Vitest y React Testing Library. `npm test`
+  ejecuta la suite una vez, `npm run test:watch` sirve para desarrollo y
+  `npm run preflight` incluye obligatoriamente la suite completa.
 
 ## 3. Mapa de arquitectura
 
@@ -57,13 +65,14 @@ migraciones, configuración, Git o servicios remotos.
 | Arranque y rutas | `src/main.tsx`, `src/app/`, `src/layouts/` | Aplicación, navegación y layouts por rol |
 | Autenticación | `src/features/auth/` | Sesión, roles y rutas protegidas |
 | Catálogo público | `src/features/public/`, `src/pages/CatalogPage.tsx` | Feed, filtros, tarjetas y vista de producto |
-| Vendedores y productos | `src/features/artisan/`, `src/pages/ArtisanProductsPage.tsx` | Alta, edición, fotos, stock, lotes y tienda |
+| Vendedores y productos | `src/features/artisan/`, `src/pages/ArtisanProductsPage.tsx` | Alta, edición, fotos, stock y tienda |
 | Administración | `src/features/admin/`, `src/pages/Admin*.tsx` | Vendedores, categorías, productos y controles |
 | Compradores y pedidos | `src/features/buyer/`, `src/features/orders/` | Carrito, cuenta, órdenes y checkout |
 | Cliente Supabase | `src/lib/supabase/client.ts` | Guardia de entorno y cliente compartido |
 | Esquema de datos | `supabase/migrations/` | Tablas, RLS, Storage, RPC y funciones SQL |
 | Funciones Edge | `supabase/functions/` | Acciones administrativas y checkout seguro |
-| Validaciones | `scripts/`, `package.json` | Auditorías, lint, tipos y build |
+| Pruebas | `src/**/*.test.ts(x)`, `src/test/`, `vitest.config.ts` | Reglas de negocio, autorización y contratos compartidos frontend/Edge |
+| Validaciones | `scripts/`, `package.json` | Tests, auditorías, lint, tipos y build |
 
 ## 4. Flujos críticos
 
@@ -72,11 +81,12 @@ migraciones, configuración, Git o servicios remotos.
 1. Un administrador gestiona una cuenta vendedora o un vendedor gestiona su
    propia cuenta.
 2. Las imágenes se suben al bucket de productos bajo la carpeta del vendedor.
-3. El producto se inserta en `public.products` o mediante la RPC de lotes.
+3. El producto se inserta o actualiza directamente en `public.products`; para
+   productos con disponibilidad inmediata, el stock vive en `stock_quantity`.
 4. El catálogo público muestra sólo productos activos de vendedores visibles.
 
 Si una interfaz muestra éxito pero la tabla no contiene filas, investigar en
-este orden: errores de Storage/RLS, respuesta de inserción/RPC, rol del usuario
+este orden: errores de Storage/RLS, respuesta de inserción, rol del usuario
 y visibilidad/estado del producto. No asumir que el catálogo es el fallo.
 
 ### Supabase

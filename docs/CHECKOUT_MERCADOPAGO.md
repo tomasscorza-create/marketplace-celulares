@@ -1,90 +1,72 @@
-# Checkout And Mercado Pago
+# Checkout y Mercado Pago
 
-This document maps the current checkout/payment surface so the repo can be
-connected to a new Mercado Pago account later without carrying credentials or
-assumptions from the original marketplace.
+## Estado actual
 
-## Current Status
-
-- Checkout is implemented through Supabase Edge Functions.
-- The frontend calls `create-mercadopago-checkout` from
-  `src/features/buyer/checkoutClient.ts`.
-- Payment state is stored in `orders`, `payment_attempts`, and
+- El canal público configurado en `src/config/marketplace.ts` es `whatsapp`.
+- Mientras ese valor siga activo, las rutas y acciones de compra online quedan
+  ocultas o redirigidas; el código de carrito/checkout permanece en el repo.
+- El backend de checkout está implementado mediante Edge Functions, pero este
+  documento no certifica que sus secrets o despliegues estén activos en producción.
+- Los estados se guardan en `orders`, `order_items`, `payment_attempts` y
   `payment_webhook_events`.
-- No Mercado Pago credentials are committed in this repo.
-- Remote backend access is still disabled by default from the frontend.
 
-## Edge Functions
+## Funciones Edge
 
-- `create-mercadopago-checkout`: validates the cart, creates the order/payment
-  attempt, creates the Mercado Pago preference, and returns the checkout URL.
-- `mercadopago-return`: handles buyer return URLs and reconciles payment status.
-- `mercadopago-webhook`: receives Mercado Pago webhook events and updates order
-  and payment attempt state.
-- `expire-pending-checkouts`: expires stale pending checkout attempts.
+- `create-mercadopago-checkout`: vuelve a validar carrito, stock, opciones y
+  dirección; crea orden/intento y solicita una preferencia.
+- `mercadopago-return`: reconcilia el regreso del comprador.
+- `mercadopago-webhook`: verifica eventos y actualiza pago/orden.
+- `expire-pending-checkouts`: cancela intentos pendientes vencidos.
 
-## Required Secrets For A New Backend
+## Secrets requeridos
 
-Use fresh values only. Put these in the new Supabase project secrets, not in
-frontend `.env.local`:
+Los nombres admitidos están en `supabase/functions/.env.example`. Sus valores
+pertenecen al entorno de Edge Functions, nunca al frontend ni al repositorio:
 
-```bash
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-APP_BASE_URL=
-WEBHOOK_BASE_URL=
-MERCADOPAGO_ENVIRONMENT=test
-MERCADOPAGO_TEST_ACCESS_TOKEN=
-MERCADOPAGO_TEST_WEBHOOK_SECRET=
-MERCADOPAGO_PRODUCTION_ACCESS_TOKEN=
-MERCADOPAGO_PRODUCTION_WEBHOOK_SECRET=
-MERCADOPAGO_STATEMENT_DESCRIPTOR=MARKETPLACE
-PENDING_CHECKOUTS_CRON_SECRET=
+```text
+SUPABASE_URL
+SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+APP_BASE_URL
+WEBHOOK_BASE_URL
+MERCADOPAGO_ENVIRONMENT
+MERCADOPAGO_TEST_ACCESS_TOKEN
+MERCADOPAGO_TEST_WEBHOOK_SECRET
+MERCADOPAGO_PRODUCTION_ACCESS_TOKEN
+MERCADOPAGO_PRODUCTION_WEBHOOK_SECRET
+MERCADOPAGO_STATEMENT_DESCRIPTOR
+PENDING_CHECKOUTS_CRON_SECRET
 ```
 
-`supabase/functions/.env.example` contains the same names with empty placeholder
-values.
+El código también admite nombres legacy de fallback para Mercado Pago, pero las
+variables específicas de `test`/`production` son preferibles porque reducen el
+riesgo de mezclar ambientes.
 
-## Frontend Environment
+## Activación segura
 
-The browser only needs the normal Vite/Supabase public values:
+1. Confirmar repo, rama y project ref mediante `docs/IDENTIDAD_PROYECTO.md`.
+2. Verificar que las migraciones requeridas estén aplicadas al objetivo correcto.
+3. Cargar secrets de prueba propios en ese proyecto, sin imprimir valores.
+4. Desplegar sólo las funciones incluidas explícitamente en la tarea.
+5. Configurar return/webhook URLs para el dominio correcto.
+6. Ejecutar un checkout de prueba y revisar tablas, logs y firma del webhook.
+7. Probar rechazo, cancelación, expiración, falta de stock e idempotencia.
+8. Habilitar `salesChannel: "checkout"` únicamente después de la certificación.
+9. Activar credenciales de producción en una tarea separada y explícita.
 
-```bash
-VITE_ENABLE_REMOTE_BACKEND=true
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
-VITE_SUPABASE_PROJECT_REF=
-VITE_PUBLIC_SITE_URL=
-```
+## Reglas de alto riesgo
 
-Keep `VITE_ENABLE_REMOTE_BACKEND=false` until a new backend is intentionally
-ready.
+- No desplegar ni cambiar secrets sin confirmar el proyecto objetivo.
+- No colocar `service_role` ni tokens de Mercado Pago en variables `VITE_*`.
+- No confiar en precios, modificadores o stock enviados por el navegador.
+- No asumir que un deploy de Netlify actualiza Edge Functions o migraciones.
+- No declarar checkout productivo basándose sólo en tests unitarios.
 
-## New Deployment Checklist
+## Cobertura y pendientes
 
-1. Create a brand-new Supabase project.
-2. Apply the clean schema/migrations to that project.
-3. Seed only neutral demo or real data for the new business.
-4. Add fresh Edge Function secrets from the new Supabase and Mercado Pago
-   accounts.
-5. Deploy the four checkout functions to the new project only.
-6. Configure Mercado Pago return URLs and webhook URL for the new deployment.
-7. Run a test checkout with test credentials.
-8. Inspect `orders`, `payment_attempts`, and `payment_webhook_events`.
-9. Only after test checkout works, switch to production Mercado Pago secrets.
+La suite local cubre vencimientos, opciones server-side, tarifas y parte de las
+reglas del carrito. Todavía se requieren pruebas de integración aisladas para
+creación completa de órdenes, RLS, aplicación de inventario, webhooks reales e
+idempotencia antes de habilitar checkout público.
 
-## High-Risk Rules
-
-- Do not deploy these functions to the original project.
-- Do not reuse the original Mercado Pago access token or webhook secret.
-- Do not put service role keys in `.env.local` or any frontend env file.
-- Do not enable production Mercado Pago credentials before test checkout has
-  been verified end to end on the new backend.
-
-## Known Follow-Up Work
-
-- Add automated tests around cart validation and order creation.
-- Add an explicit local/mock checkout path for development without Mercado Pago.
-- Decide whether internal names like `artisan_id` should remain as legacy
-  schema names or be migrated to `seller_id` in a clean schema phase.
+Última revisión: 2026-07-13.

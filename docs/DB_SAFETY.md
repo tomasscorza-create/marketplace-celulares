@@ -1,41 +1,62 @@
-# Database Safety
+# Seguridad de base de datos
 
-The original database is in real production use. Treat it as read-only and out
-of scope for this refactor.
+## Identidad obligatoria
 
-## Forbidden during neutralization
+La fuente vigente es `docs/IDENTIDAD_PROYECTO.md`. Antes de cualquier comando
+remoto comprobar `git remote -v`, rama, project ref y estado de Git. El backend
+de producción correcto es el proyecto independiente de este marketplace;
+cualquier ref diferente debe tratarse como ajeno y bloquear la operación.
 
-- Do not run `supabase db push`.
-- Do not run `supabase db reset`.
-- Do not run `supabase migration repair`.
-- Do not deploy Supabase functions.
-- Do not run SQL against the original project.
-- Do not use the service role key from the original project.
-- Do not copy `.env.local`, `.supabase-secrets.env`, or `supabase/.temp/` into a
-  new repo.
+Nunca copiar ni mostrar claves, contraseñas, `service_role`, tokens de pago o el
+contenido de `.env.local`, `*.secrets.env`, `supabase/.temp/` y `.netlify/`.
 
-## Required before connecting a new backend
+## Fuente de verdad del esquema
 
-1. Create a brand-new Supabase project.
-2. Generate fresh credentials for that project.
-3. Set `VITE_ENABLE_REMOTE_BACKEND=true`.
-4. Set `VITE_SUPABASE_URL`.
-5. Set `VITE_SUPABASE_ANON_KEY`.
-6. Set `VITE_SUPABASE_PROJECT_REF` to the 20-character project ref from the URL.
-7. Run `npm run audit:connections`.
-8. Run `npm run audit:secrets`.
-9. Only then test the app against the new project.
+- `supabase/migrations/` es el historial canónico y se aplica en orden por nombre.
+- Toda modificación crea una migración nueva; no se reescriben migraciones aplicadas.
+- `supabase/sql/` es una referencia histórica y no representa el estado final.
+- `docs/BACKEND_MAP.md` se genera desde código y migraciones mediante
+  `npm run docs:backend-map` y se verifica con `npm run audit:backend`.
 
-## Why the extra project ref exists
+## Protocolo para cambios
 
-The frontend guard requires the declared project ref to match the Supabase URL.
-This prevents an old `.env.local` from silently connecting to the original
-database just because it still has a URL and anon key.
+1. Leer `AGENTS.md` y `docs/IDENTIDAD_PROYECTO.md`.
+2. Revisar `git status --short`, `git remote -v` y `supabase migration list`.
+3. Inspeccionar el diff SQL y confirmar que el objetivo sea el proyecto vigente.
+4. Crear una migración aditiva nueva.
+5. Validar primero en Supabase local cuando Docker esté disponible.
+6. Ejecutar `npm run docs:backend-map`, `npm run audit:backend` y `npm run preflight`.
+7. Ejecutar `supabase db push --dry-run` antes de cualquier aplicación remota.
+8. Aplicar sólo dentro del alcance autorizado.
+9. Verificar después con `supabase migration list` y `supabase db lint --linked`.
 
-## Local secret files found in this copy
+## Operaciones que requieren alcance explícito
 
-This copy currently has local environment/link files. They are ignored by git,
-but they still exist on disk and should be quarantined before this repo is
-shared or used as a template.
+- `supabase db push` o `migration repair` contra remoto.
+- Despliegue de Edge Functions.
+- Cambios de secrets, Auth URLs o proveedores de pago.
+- Borrados, resets, restauraciones o cambios de cuenta/proyecto.
 
-Do not print their values in chat, tickets, commits, docs, or screenshots.
+`supabase db reset` sólo está permitido para la pila local identificada. Nunca
+usar comandos destructivos mientras exista duda sobre el proyecto objetivo.
+
+## Verificación local mínima
+
+```powershell
+npm run audit:backend
+npm run preflight
+npm run build
+```
+
+Para una modificación SQL sumar:
+
+```powershell
+npm run db:start
+npm run db:reset
+npm run db:lint
+npm run db:stop
+```
+
+Estos comandos locales no certifican por sí solos que producción tenga las
+migraciones aplicadas; eso se comprueba separadamente con el proyecto vinculado
+y confirmado.

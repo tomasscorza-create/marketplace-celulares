@@ -9,6 +9,8 @@
     "build": "tsc -b && vite build --config vite.config.ts",
     "preview": "vite preview --config vite.config.ts",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "check": "npm run lint && npm run build",
     "db:start": "supabase start",
     "db:status": "supabase status",
@@ -19,11 +21,12 @@
     "audit:connections": "node scripts/audit-safety.mjs connections",
     "audit:branding": "node scripts/audit-safety.mjs branding",
     "audit:backend": "node scripts/audit-backend-symbols.mjs",
+    "docs:backend-map": "node scripts/audit-backend-symbols.mjs --write-map",
     "audit:encoding": "node scripts/audit-encoding.mjs",
     "audit:large-files": "node scripts/audit-large-files.mjs",
     "audit:safety": "node scripts/audit-safety.mjs all",
     "safety:quarantine": "node scripts/quarantine-local-secrets.mjs",
-    "preflight": "npm run lint && npm run typecheck && npm run audit:secrets && npm run audit:connections && npm run audit:encoding"
+    "preflight": "npm run lint && npm run typecheck && npm run test && npm run audit:backend && npm run audit:secrets && npm run audit:connections && npm run audit:encoding"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
@@ -40,6 +43,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
@@ -50,12 +55,14 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
+    "jsdom": "^29.1.1",
     "postcss": "^8.5.3",
     "sharp": "^0.34.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.58.2",
-    "vite": "^6.3.5",
-    "vite-plugin-pwa": "^1.3.0"
+    "vite": "^6.4.3",
+    "vite-plugin-pwa": "^1.3.0",
+    "vitest": "^4.1.10"
   }
 }
