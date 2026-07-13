@@ -216,10 +216,7 @@ export function ProductDetailPage() {
     setSelectedOptions(initialOptions);
   }, [cartEditState?.selectedOptions, product]);
 
-  const accentColor = useMemo(
-    () => storefront?.storefront_theme_color || "#0f766e",
-    [storefront?.storefront_theme_color],
-  );
+  const accentColor = "#7F6BFF";
 
   const productImages = useMemo(() => {
     if (!product) {
@@ -417,7 +414,7 @@ export function ProductDetailPage() {
                   className={[
                     "group/fav relative inline-flex h-14 w-14 shrink-0 flex-col items-center justify-center gap-0.5 overflow-hidden rounded-2xl border transition-all duration-200 ease-out active:scale-95 disabled:cursor-not-allowed disabled:opacity-60",
                     isFavorite
-                      ? "border-brand-500 bg-gradient-to-b from-[#D1FAE5] to-[#A5F3FC] text-brand-500 shadow-[0_10px_24px_-12px_rgba(15,118,110,0.7)]"
+                      ? "border-brand-500 bg-gradient-to-b from-brand-100 to-brand-50 text-brand-600 shadow-[0_10px_24px_-12px_rgba(124,58,237,0.35)]"
                       : "border-stone-300 bg-white text-stone-400 hover:border-brand-500/45 hover:bg-stone-50 hover:text-brand-600/75",
                   ].join(" ")}
                   disabled={toggleFavoriteMutation.isPending}

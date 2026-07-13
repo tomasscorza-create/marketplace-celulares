@@ -62,10 +62,7 @@ export function ArtisanProfilePage() {
         ? productsQuery.error.message
         : null;
 
-  const heroColor = useMemo(
-    () => storefront?.storefront_theme_color || "#0f766e",
-    [storefront?.storefront_theme_color],
-  );
+  const heroColor = "#7F6BFF";
   const storeTitle = storefront?.store_name || storefront?.full_name || "Tienda independiente";
   const description =
     storefront?.store_description ||

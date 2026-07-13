@@ -10,7 +10,7 @@ type CatalogStorefrontSectionProps = {
 
 function CatalogStorefrontSectionInner({ group }: CatalogStorefrontSectionProps) {
   const { storefront, products, matching_products_count } = group;
-  const themeColor = storefront.storefront_theme_color || "#0f766e";
+  const themeColor = "#7F6BFF";
   const storefrontLabel = storefront.store_name || storefront.full_name;
   const railRef = useRef<HTMLDivElement>(null);
   const [railState, setRailState] = useState({

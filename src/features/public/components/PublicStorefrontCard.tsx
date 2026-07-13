@@ -14,7 +14,7 @@ export function PublicStorefrontCard({
   compact = false,
   showCatalogLink = false,
 }: PublicStorefrontCardProps) {
-  const themeColor = storefront.storefront_theme_color || "#0f766e";
+  const themeColor = "#7F6BFF";
   const storefrontLabel = storefront.store_name || storefront.full_name;
   const [hasProfileImageError, setHasProfileImageError] = useState(false);
 
