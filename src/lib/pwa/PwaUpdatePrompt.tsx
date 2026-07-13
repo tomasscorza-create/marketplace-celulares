@@ -28,13 +28,13 @@ export function PwaUpdatePrompt() {
   return (
     <aside
       aria-live="polite"
-      className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] left-4 right-4 z-[100] mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-teal-200 bg-white p-3 shadow-[0_20px_48px_-20px_rgba(15,23,42,0.5)] sm:left-auto"
+      className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)] left-4 right-4 z-[100] mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-brand-200 bg-white p-3 shadow-elev-3 sm:left-auto"
     >
       <p className="min-w-0 flex-1 text-sm font-medium text-ocean-700">
         Hay una versión nueva disponible.
       </p>
       <button
-        className="shrink-0 rounded-xl bg-teal-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-teal-800"
+        className="shrink-0 rounded-xl bg-brand-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-brand-700"
         onClick={() => void updateServiceWorker(true)}
         type="button"
       >

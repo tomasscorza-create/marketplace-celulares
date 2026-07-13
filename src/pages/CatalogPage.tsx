@@ -581,9 +581,8 @@ export function CatalogPage() {
               className="relative grid gap-5 overflow-hidden rounded-3xl border border-white/30 p-2 sm:p-4 shadow-sm"
             >
               <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
-              <div className="pointer-events-none absolute inset-0 z-0 rounded-3xl bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-35" />
-              <div className="pointer-events-none absolute inset-0 z-0 bg-brand-50/80" />
-              <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
+              <div className="pointer-events-none absolute inset-0 z-0 rounded-3xl bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center" />
+              <div className="pointer-events-none absolute inset-0 z-0 bg-brand-900/10" />
               <div className="relative z-10 grid gap-4">
                 <div className="flex h-14 items-center justify-between rounded-2xl bg-brand-700 px-4 shadow-elev-2 sm:px-5">
                   <h2 className="font-display text-lg font-bold text-white" id="catalog-personalized-title">
@@ -612,9 +611,8 @@ export function CatalogPage() {
             ref={exploreSectionRef}
           >
             <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
-            <div className="pointer-events-none absolute inset-0 z-0 rounded-3xl bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-35" />
-            <div className="pointer-events-none absolute inset-0 z-0 bg-brand-50/80" />
-            <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
+            <div className="pointer-events-none absolute inset-0 z-0 rounded-3xl bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center" />
+            <div className="pointer-events-none absolute inset-0 z-0 bg-brand-900/10" />
             <div className="relative z-10 grid gap-4">
               <div className="flex h-14 items-center justify-between rounded-2xl bg-brand-700 px-4 shadow-elev-2 sm:px-5">
                 <h2 className="font-display text-lg font-bold text-white" id="catalog-explore-title">
