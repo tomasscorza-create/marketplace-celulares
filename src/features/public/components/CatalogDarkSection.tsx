@@ -1,4 +1,4 @@
-﻿import { RevealOnView } from "../../../components/RevealOnView";
+import { RevealOnView } from "../../../components/RevealOnView";
 import type {
   PublicArtisanStorefront,
   PublicCatalogStorefrontGroup,
@@ -40,12 +40,12 @@ export default function CatalogDarkSection({
 }: CatalogDarkSectionProps) {
   return (
     <div
-      className="grid gap-5 overflow-hidden rounded-[1.9rem] border border-black/15 p-4 shadow-[0_28px_60px_-42px_rgba(15,23,42,0.58)] sm:p-5"
-      style={{
-        background:
-          "linear-gradient(180deg, rgba(15,118,110,0.55) 0%, rgba(137,74,26,0.54) 28%, rgba(103,74,36,0.52) 58%, rgba(47,55,83,0.57) 100%)",
-      }}
+      className="relative grid gap-5 overflow-hidden rounded-[1.9rem] border border-white/10 p-4 shadow-[0_28px_60px_-42px_rgba(15,23,42,0.58)] sm:p-5"
     >
+      <div className="pointer-events-none absolute inset-0 z-0 bg-slate-900" />
+      <div className="pointer-events-none absolute -inset-2 z-0 bg-[url('/catalog_dark_bg.webp')] bg-cover bg-center opacity-30 blur-[4px]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-slate-900/50" />
+      <div className="relative z-10 grid gap-5">
       {featuredStorefronts.length > 0 ? (
         <section className="grid gap-3">
           <CatalogSectionHeader
@@ -118,6 +118,7 @@ export default function CatalogDarkSection({
           No pudimos cargar las tiendas relacionadas en este momento.
         </div>
       ) : null}
+      </div>
     </div>
   );
 }

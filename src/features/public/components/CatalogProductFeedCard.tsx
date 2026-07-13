@@ -147,7 +147,7 @@ function CatalogProductFeedCardInner({
     return (
       <article
         className={[
-          "catalog-card group/focus flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/50 bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/80 hover:bg-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] active:scale-[0.995] sm:grid sm:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]",
+          "catalog-card group/focus flex min-w-0 flex-col overflow-hidden rounded-2xl border border-white/70 bg-white/85 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/90 hover:bg-white/95 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] active:scale-[0.995] sm:grid sm:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]",
           boostCardClassName,
         ].join(" ")}
         ref={cardRef}
@@ -257,7 +257,7 @@ function CatalogProductFeedCardInner({
   return (
     <article
       className={[
-        "catalog-card group/focus flex h-full min-w-0 flex-col rounded-2xl border border-white/50 bg-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/80 hover:bg-white/60 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] active:scale-[0.995] [content-visibility:auto] [contain-intrinsic-size:260px]",
+        "catalog-card group/focus flex h-full min-w-0 flex-col rounded-2xl border border-white/70 bg-white/85 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/90 hover:bg-white/95 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] active:scale-[0.995] [content-visibility:auto] [contain-intrinsic-size:260px]",
         boostCardClassName,
       ].join(" ")}
       ref={cardRef}

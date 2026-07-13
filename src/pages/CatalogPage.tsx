@@ -599,10 +599,14 @@ export function CatalogPage() {
 
           <section
             aria-labelledby="catalog-explore-title"
-            className="grid gap-5 border-t border-stone-200/80 pt-6"
+            className="relative grid gap-5 overflow-hidden rounded-[2rem] border border-white/30 p-2 sm:p-4 shadow-sm"
             ref={exploreSectionRef}
           >
-            <div className="rounded-2xl border border-white/50 bg-white/50 px-4 py-4 shadow-sm backdrop-blur-md sm:px-5 sm:py-5">
+            <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
+            <div className="pointer-events-none absolute -inset-2 z-0 bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40 blur-[4px]" />
+            <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
+            <div className="relative z-10 grid gap-5">
+              <div className="rounded-2xl border border-white/70 bg-white/90 px-4 py-4 shadow-sm backdrop-blur-xl sm:px-5 sm:py-5">
               <CatalogSectionHeader
                 id="catalog-explore-title"
                 title="Explorar"
@@ -623,7 +627,7 @@ export function CatalogPage() {
                 {Array.from({ length: CATALOG_FEED_PAGE_SIZE }).map((_, index) => (
                   <div
                     key={index}
-                    className="rounded-2xl border border-white/40 bg-white/40 p-4 shadow-sm backdrop-blur-xl"
+                    className="rounded-2xl border border-white/70 bg-white/85 p-4 shadow-sm backdrop-blur-xl"
                   >
                     <SkeletonBlock className="aspect-square w-full rounded-lg" />
                     <SkeletonBlock className="mt-4 h-4 w-20" />
@@ -723,6 +727,7 @@ export function CatalogPage() {
                 ) : null}
               </div>
             ) : null}
+            </div>
           </section>
         </div>
 
