@@ -20,11 +20,9 @@ import {
   useArtisanProductStats,
   useArtisanProducts,
   useCreateArtisanProduct,
-  useCreateArtisanProductBatch,
   useDeleteArtisanProduct,
   useDeleteArtisanProductBatch,
   useUpdateArtisanProduct,
-  useUpdateArtisanProductBatch,
 } from "../features/artisan/artisanQueries";
 import { getErrorMessage } from "../lib/errors";
 import { ArtisanProductFormSection } from "../features/artisan/components/ArtisanProductFormSection";
@@ -93,8 +91,8 @@ export function ArtisanProductsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-  const [pendingDeleteBatchId, setPendingDeleteBatchId] = useState<string | null>(null);
-  const [isBatchConfirmOpen, setIsBatchConfirmOpen] = useState(false);
+  const [_pendingDeleteBatchId, setPendingDeleteBatchId] = useState<string | null>(null);
+  const [_isBatchConfirmOpen, setIsBatchConfirmOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null);
   const [targetImageIndex, setTargetImageIndex] = useState<number | null>(null);
@@ -232,8 +230,6 @@ export function ArtisanProductsPage() {
   const createProductMutation = useCreateArtisanProduct(targetArtisanId ?? undefined);
   const updateProductMutation = useUpdateArtisanProduct(targetArtisanId ?? undefined);
   const deleteProductMutation = useDeleteArtisanProduct(targetArtisanId ?? undefined);
-  const createBatchMutation = useCreateArtisanProductBatch(targetArtisanId ?? undefined);
-  const updateBatchMutation = useUpdateArtisanProductBatch(targetArtisanId ?? undefined);
   const deleteBatchMutation = useDeleteArtisanProductBatch(targetArtisanId ?? undefined);
 
   // Error agregado de carga (para mostrar en UI si nada cargó).
@@ -332,7 +328,7 @@ export function ArtisanProductsPage() {
 
         setHasDraft(true);
         setDraftPersistenceState("saved");
-        setSplitProductsByImage(draft.splitProductsByImage ?? false);
+        setSplitProductsByImage(false);
         setEditingBatchId(draft.editingBatchId ?? null);
         setEditingBatchCode(draft.editingBatchCode ?? null);
         setEditingProductId(draft.editingProductId ?? null);
@@ -860,9 +856,7 @@ export function ArtisanProductsPage() {
   };
 
   const submitProductForm = useArtisanProductSubmit({
-    createBatch: createBatchMutation.mutateAsync,
     createProduct: createProductMutation.mutateAsync,
-    editingBatchId,
     editingOriginalImageUrls,
     editingProductId,
     onError: setSaveErrorMessage,
@@ -873,9 +867,7 @@ export function ArtisanProductsPage() {
     productImages,
     productModel3DFile,
     refreshProductsAndBatches,
-    splitProductsByImage,
     targetArtisanId,
-    updateBatch: updateBatchMutation.mutateAsync,
     updateProduct: updateProductMutation.mutateAsync,
   });
 
@@ -1118,7 +1110,7 @@ export function ArtisanProductsPage() {
     setPendingDeleteId(productId);
   };
 
-  const handleDeleteBatchRequest = (batchId: string) => {
+  const _handleDeleteBatchRequest = (batchId: string) => {
     setPendingDeleteBatchId(batchId);
   };
 
@@ -1164,7 +1156,7 @@ export function ArtisanProductsPage() {
     );
   };
 
-  const handleDeleteBatch = async (batchId: string) => {
+  const _handleDeleteBatch = async (batchId: string) => {
     if (!targetArtisanId) {
       return;
     }
@@ -1222,7 +1214,7 @@ export function ArtisanProductsPage() {
     }
   };
 
-  const toggleSplitProductsMode = (checked: boolean) => {
+  const _toggleSplitProductsMode = (checked: boolean) => {
     setSplitProductsByImage(checked);
 
     if (!checked) {
@@ -1240,10 +1232,6 @@ export function ArtisanProductsPage() {
     );
   };
 
-  const standaloneProductsCount = productStatsQuery.data?.standaloneProducts ?? productsTotalCount;
-  const batchProductsCount =
-    productStatsQuery.data?.batchProducts ??
-    Math.max(0, totalProductsCount - standaloneProductsCount);
 
   return (
     <PagePlaceholder description="" hideHeader title="">
@@ -1255,11 +1243,7 @@ export function ArtisanProductsPage() {
       ) : null}
 
       {!isManagedProfileLoading && !isCreateFocus && !isEditFocus ? (
-        <ArtisanProductsStatsBar
-          batchProductsCount={batchProductsCount}
-          standaloneProductsCount={standaloneProductsCount}
-          totalCount={totalProductsCount}
-        />
+        <ArtisanProductsStatsBar totalCount={totalProductsCount} />
       ) : null}
 
       {isAdminManaging && isManagedProfileLoading ? (
@@ -1354,55 +1338,7 @@ export function ArtisanProductsPage() {
                 price: value,
               }));
             }}
-            onProductDescriptionChangeForImage={(index, value) => {
-              setProductImages((currentValue) =>
-                currentValue.map((draft, currentIndex) =>
-                  currentIndex === index
-                    ? {
-                        ...draft,
-                        productDescription: value,
-                      }
-                    : draft,
-                ),
-              );
-            }}
-            onProductPriceChangeForImage={(index, value) => {
-              setProductImages((currentValue) =>
-                currentValue.map((draft, currentIndex) =>
-                  currentIndex === index
-                    ? {
-                        ...draft,
-                        productPrice: value,
-                      }
-                    : draft,
-                ),
-              );
-            }}
-            onProductStockQuantityChangeForImage={(index, value) => {
-              setProductImages((currentValue) =>
-                currentValue.map((draft, currentIndex) =>
-                  currentIndex === index
-                    ? {
-                        ...draft,
-                        productStockQuantity: value,
-                      }
-                    : draft,
-                ),
-              );
-            }}
             onProductModel3DFileChange={handleModel3DFileChange}
-            onProductTitleChangeForImage={(index, value) => {
-              setProductImages((currentValue) =>
-                currentValue.map((draft, currentIndex) =>
-                  currentIndex === index
-                    ? {
-                        ...draft,
-                        productTitle: value,
-                      }
-                    : draft,
-                ),
-              );
-            }}
             onRemoveAttribute={(index) => {
               setProductForm((currentValue) => ({
                 ...currentValue,
@@ -1429,34 +1365,12 @@ export function ArtisanProductsPage() {
                 title: value,
               }));
             }}
-            onToggleCustomProductDataForImage={(index) => {
-              setProductImages((currentValue) =>
-                currentValue.map((draft, currentIndex) => {
-                  if (currentIndex !== index) {
-                    return draft;
-                  }
-
-                  if (draft.useCustomProductData) {
-                    return {
-                      ...draft,
-                      useCustomProductData: false,
-                    };
-                  }
-
-                  return {
-                    ...applyDraftProductSnapshot(draft, productForm),
-                    useCustomProductData: true,
-                  };
-                }),
-              );
-            }}
             onToggleActive={(value) => {
               setProductForm((currentValue) => ({
                 ...currentValue,
                 is_active: value,
               }));
             }}
-            onToggleSplitProductsByImage={toggleSplitProductsMode}
             onDropImages={handleBulkImageDrop}
             onTriggerBulkImagePicker={triggerBulkImagePicker}
             onTriggerImagePicker={triggerImagePicker}
@@ -1492,19 +1406,10 @@ export function ArtisanProductsPage() {
         {showManagementList ? (
           <div>
             <ArtisanProductListSection
-              batchPage={managementBatchesPage}
-              batchPageSize={MANAGEMENT_BATCHES_PAGE_SIZE}
-              batches={productBatches}
-              batchesTotalCount={productBatchesTotalCount}
               isLoading={isLoading}
-              onBatchPageChange={setManagementBatchesPage}
               onDelete={handleDeleteRequest}
-              onDeleteBatch={handleDeleteBatchRequest}
               onEdit={(product) => {
                 void startEditing(product);
-              }}
-              onEditBatch={(batchId) => {
-                void startEditingBatch(batchId);
               }}
               onProductPageChange={setManagementProductsPage}
               onSearchChange={setManagementSearch}
@@ -1531,31 +1436,6 @@ export function ArtisanProductsPage() {
         onConfirmDeleteProduct={() => {
           if (pendingDeleteId) {
             void handleDelete(pendingDeleteId);
-          }
-        }}
-        // Crear lote
-        isBatchCreateConfirmOpen={isBatchConfirmOpen}
-        batchCreateProductCount={productImages.length}
-        onCancelBatchCreate={() => {
-          setIsBatchConfirmOpen(false);
-        }}
-        onConfirmBatchCreate={() => {
-          setIsBatchConfirmOpen(false);
-          setStatusMessage(null);
-          setSaveErrorMessage(null);
-          void submitProductForm();
-        }}
-        // Borrar lote
-        pendingDeleteBatchId={pendingDeleteBatchId}
-        pendingDeleteBatchCode={
-          productBatches.find((batch) => batch.id === pendingDeleteBatchId)?.batch_code ?? null
-        }
-        onCancelDeleteBatch={() => {
-          setPendingDeleteBatchId(null);
-        }}
-        onConfirmDeleteBatch={() => {
-          if (pendingDeleteBatchId) {
-            void handleDeleteBatch(pendingDeleteBatchId);
           }
         }}
       />

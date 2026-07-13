@@ -3,12 +3,10 @@ import type { ProductAttribute } from "../../types/productAttributes";
 
 import { sanitizeProductAttributes } from "../../types/productAttributes";
 import type { ProductImageDraft } from "./imageEditorTypes";
-import { resolveDraftProductData } from "./productDraftUtils";
 
 type ValidationParams = {
   productForm: ArtisanProductInput;
   productImages: ProductImageDraft[];
-  splitProductsByImage: boolean;
 };
 
 type ValidationResult = {
@@ -25,29 +23,9 @@ function hasInvalidOptionGroups(productForm: ArtisanProductInput) {
   );
 }
 
-function hasInvalidSplitProduct(productForm: ArtisanProductInput, productImages: ProductImageDraft[]) {
-  return productImages.some((draft) => {
-    const resolved = resolveDraftProductData(draft, productForm);
-
-    if (resolved.title.trim().length < 4) {
-      return true;
-    }
-
-    if (!Number.isFinite(resolved.price) || resolved.price <= 0) {
-      return true;
-    }
-
-    return (
-      productForm.availability_mode === "stock" &&
-      (!Number.isInteger(Number(resolved.stockQuantity)) || Number(resolved.stockQuantity) <= 0)
-    );
-  });
-}
-
 export function validateArtisanProductDraft({
   productForm,
   productImages,
-  splitProductsByImage,
 }: ValidationParams): ValidationResult {
   const sanitizedAttributes = sanitizeProductAttributes(productForm.product_attributes);
 
@@ -106,29 +84,17 @@ export function validateArtisanProductDraft({
   if (hasInvalidOptionGroups(productForm)) {
     return {
       errorMessage:
-        "Revisa las variables del producto: cada grupo debe tener nombre y al menos una opcion.",
+        "Revisá las variables del producto: cada grupo debe tener nombre y al menos una opción.",
       sanitizedAttributes,
     };
   }
 
   if (productImages.length === 0) {
     return {
-      errorMessage: "Carga al menos una foto para publicar el producto.",
+      errorMessage: "Cargá al menos una foto para publicar el producto.",
       sanitizedAttributes,
     };
   }
 
-  if (splitProductsByImage && hasInvalidSplitProduct(productForm, productImages)) {
-    return {
-      errorMessage:
-        "Revisá los productos por foto: cada uno debe tener título, precio y stock válidos.",
-      sanitizedAttributes,
-    };
-  }
-
-  return {
-    errorMessage: null,
-    sanitizedAttributes,
-  };
+  return { errorMessage: null, sanitizedAttributes };
 }
-

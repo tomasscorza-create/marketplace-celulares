@@ -1,31 +1,22 @@
 import { useCallback } from "react";
 
 import type { ArtisanProduct, ArtisanProductInput } from "../../types/artisan";
-import type {
-  ProductBatchInput,
-  ProductBatchMutationResult,
-} from "../../types/productBatch";
 import {
   isProductModel3DMediaItem,
   type ProductMediaItem,
 } from "../../types/productMedia";
 import {
   removeArtisanProductImages,
-  syncArtisanBatchProductAttributes,
-  syncArtisanBatchProductOptions,
   uploadArtisanProductModel,
   uploadArtisanProductImage,
 } from "./artisanClient";
 import type { ProductImageDraft } from "./imageEditorTypes";
-import { resolveDraftProductData } from "./productDraftUtils";
 import { validateArtisanProductDraft } from "./artisanProductValidation";
 import { getErrorMessage } from "../../lib/errors";
 import { compressImage, createProcessedImageFile } from "../../lib/compressImage";
 
 type SubmitParams = {
-  createBatch: (input: ProductBatchInput) => Promise<ProductBatchMutationResult>;
   createProduct: (input: ArtisanProductInput) => Promise<ArtisanProduct>;
-  editingBatchId: string | null;
   editingOriginalImageUrls: string[];
   editingProductId: string | null;
   onError: (message: string) => void;
@@ -36,12 +27,7 @@ type SubmitParams = {
   productImages: ProductImageDraft[];
   productModel3DFile: File | null;
   refreshProductsAndBatches: () => Promise<boolean>;
-  splitProductsByImage: boolean;
   targetArtisanId: string | null;
-  updateBatch: (payload: {
-    batchId: string;
-    input: ProductBatchInput;
-  }) => Promise<ProductBatchMutationResult>;
   updateProduct: (payload: {
     input: ArtisanProductInput;
     productId: string;
@@ -70,43 +56,6 @@ function getPrimaryPosterUrl(mediaItems: ProductMediaItem[]) {
       .map((item) => item.thumbnail_url ?? item.url)
       .find((url): url is string => Boolean(url)) ?? null
   );
-}
-
-function buildBatchPayload(
-  productForm: ArtisanProductInput,
-  productImages: ProductImageDraft[],
-  uploadedMedia: ProductMediaItem[],
-  sanitizedAttributes: ArtisanProductInput["product_attributes"],
-): ProductBatchInput {
-  return {
-    availability_mode_base: productForm.availability_mode,
-    category_id: productForm.category_id,
-    description_base: productForm.description,
-    is_active_base: productForm.is_active,
-    items: productImages.map((draft, index) => {
-      const resolved = resolveDraftProductData(draft, productForm);
-
-      return {
-        description: resolved.description,
-        existing_product_id: draft.existingProductId,
-        image_description: uploadedMedia[index]?.description ?? "",
-        image_url: uploadedMedia[index]?.url ?? "",
-        product_media: uploadedMedia[index] ? [uploadedMedia[index]] : [],
-        position: index + 1,
-        price: resolved.price,
-        stock_quantity: productForm.availability_mode === "stock" ? resolved.stockQuantity : null,
-        title: resolved.title,
-      };
-    }),
-    lead_time_days_base:
-      productForm.availability_mode === "made_to_order" ? productForm.lead_time_days : null,
-    made_to_order_options_base: productForm.made_to_order_options,
-    price_base: Number(productForm.price),
-    product_attributes_base: sanitizedAttributes,
-    stock_quantity_base:
-      productForm.availability_mode === "stock" ? productForm.stock_quantity ?? 0 : null,
-    title_base: productForm.title,
-  };
 }
 
 async function createProductThumbnailImage(draft: ProductImageDraft) {
@@ -239,9 +188,7 @@ async function uploadProductMedia(params: {
 }
 
 export function useArtisanProductSubmit({
-  createBatch,
   createProduct,
-  editingBatchId,
   editingOriginalImageUrls,
   editingProductId,
   onError,
@@ -252,9 +199,7 @@ export function useArtisanProductSubmit({
   productImages,
   productModel3DFile,
   refreshProductsAndBatches,
-  splitProductsByImage,
   targetArtisanId,
-  updateBatch,
   updateProduct,
 }: SubmitParams) {
   const submitProductForm = useCallback(async () => {
@@ -265,7 +210,6 @@ export function useArtisanProductSubmit({
     const validation = validateArtisanProductDraft({
       productForm,
       productImages,
-      splitProductsByImage,
     });
 
     if (validation.errorMessage) {
@@ -324,66 +268,6 @@ export function useArtisanProductSubmit({
       return;
     }
 
-    if (splitProductsByImage) {
-      let batchResult: ProductBatchMutationResult;
-
-      try {
-        const batchPayload = buildBatchPayload(
-          productForm,
-          productImages,
-          uploadedMedia,
-          validation.sanitizedAttributes,
-        );
-
-        batchResult = editingBatchId
-          ? await updateBatch({
-              batchId: editingBatchId,
-              input: batchPayload,
-            })
-          : await createBatch(batchPayload);
-      } catch (error) {
-        if (newUploadedUrls.length > 0) {
-          await removeArtisanProductImages(newUploadedUrls);
-        }
-        onError(getErrorMessage(error, "No pudimos guardar el grupo de productos."));
-        onSavingChange(false);
-        return;
-      }
-
-      if ((batchResult.obsolete_image_urls?.length ?? 0) > 0) {
-        await removeArtisanProductImages(batchResult.obsolete_image_urls);
-      }
-
-      const attributesSyncResponse = await syncArtisanBatchProductAttributes(
-        batchResult.batch_id,
-        batchResult.product_ids ?? [],
-        validation.sanitizedAttributes,
-      );
-      const optionsSyncResponse = await syncArtisanBatchProductOptions(
-        batchResult.batch_id,
-        batchResult.product_ids ?? [],
-        productForm.made_to_order_options,
-      );
-      const syncError = attributesSyncResponse.error ?? optionsSyncResponse.error;
-      const refreshed = await refreshProductsAndBatches();
-
-      if (syncError) {
-        onSuccess(
-          `Grupo guardado, pero no pudimos completar la sincronizacion secundaria: ${getErrorMessage(syncError, "revisá atributos y opciones del grupo.")}`,
-          refreshed,
-        );
-        return;
-      }
-
-      onSuccess(
-        editingBatchId
-          ? "Grupo actualizado correctamente."
-          : `${productImages.length} producto(s) creados en un nuevo grupo.`,
-        refreshed,
-      );
-      return;
-    }
-
     const payload = {
       ...productForm,
       image_urls: uploadedMedia.map((item) => item.url),
@@ -432,9 +316,7 @@ export function useArtisanProductSubmit({
       refreshed,
     );
   }, [
-    createBatch,
     createProduct,
-    editingBatchId,
     editingOriginalImageUrls,
     editingProductId,
     onError,
@@ -445,9 +327,7 @@ export function useArtisanProductSubmit({
     productImages,
     productModel3DFile,
     refreshProductsAndBatches,
-    splitProductsByImage,
     targetArtisanId,
-    updateBatch,
     updateProduct,
   ]);
 

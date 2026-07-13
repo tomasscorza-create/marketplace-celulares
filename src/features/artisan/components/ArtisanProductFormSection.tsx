@@ -42,11 +42,7 @@ type ArtisanProductFormSectionProps = {
   onLeadTimeDaysChange: (value: number | null) => void;
   onOpenEditor: (index: number) => void;
   onPriceChange: (value: number) => void;
-  onProductDescriptionChangeForImage: (index: number, value: string) => void;
   onProductModel3DFileChange: (file: File | null) => void;
-  onProductPriceChangeForImage: (index: number, value: number | null) => void;
-  onProductStockQuantityChangeForImage: (index: number, value: number | null) => void;
-  onProductTitleChangeForImage: (index: number, value: string) => void;
   onRemoveAttribute: (index: number) => void;
   onRemoveImage: (index: number) => void;
   onRemoveModel3D: () => void;
@@ -55,8 +51,6 @@ type ArtisanProductFormSectionProps = {
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onTitleChange: (value: string) => void;
   onToggleActive: (value: boolean) => void;
-  onToggleCustomProductDataForImage: (index: number) => void;
-  onToggleSplitProductsByImage: (value: boolean) => void;
   onTriggerBulkImagePicker: () => void;
   onTriggerImagePicker: (index: number) => void;
   onUpdateMadeToOrderOptions: (options: ProductOptionGroup[]) => void;
@@ -116,11 +110,7 @@ export function ArtisanProductFormSection({
   onLeadTimeDaysChange,
   onOpenEditor,
   onPriceChange,
-  onProductDescriptionChangeForImage,
   onProductModel3DFileChange,
-  onProductPriceChangeForImage,
-  onProductStockQuantityChangeForImage,
-  onProductTitleChangeForImage,
   onRemoveAttribute,
   onRemoveImage,
   onRemoveModel3D,
@@ -129,8 +119,6 @@ export function ArtisanProductFormSection({
   onSubmit,
   onTitleChange,
   onToggleActive,
-  onToggleCustomProductDataForImage,
-  onToggleSplitProductsByImage,
   onTriggerBulkImagePicker,
   onTriggerImagePicker,
   onUpdateMadeToOrderOptions,
@@ -258,7 +246,7 @@ export function ArtisanProductFormSection({
               </p>
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid gap-2">
               <button
                 className={[
                   "rounded-2xl border px-4 py-3 text-left transition-colors",
@@ -266,9 +254,6 @@ export function ArtisanProductFormSection({
                     ? "border-ocean-300 bg-[#E0F2FE] text-ocean-600"
                     : "border-stone-200 bg-white text-stone-700 hover:border-ocean-200",
                 ].join(" ")}
-                onClick={() => {
-                  onToggleSplitProductsByImage(false);
-                }}
                 type="button"
               >
                 <p className="text-sm font-semibold">Un solo producto</p>
@@ -277,23 +262,6 @@ export function ArtisanProductFormSection({
                 </p>
               </button>
 
-              <button
-                className={[
-                  "rounded-2xl border px-4 py-3 text-left transition-colors",
-                  splitProductsByImage
-                    ? "border-brand-300 bg-[#ECFEFF] text-brand-500"
-                    : "border-stone-200 bg-white text-stone-700 hover:border-brand-200",
-                ].join(" ")}
-                onClick={() => {
-                  onToggleSplitProductsByImage(true);
-                }}
-                type="button"
-              >
-                <p className="text-sm font-semibold">1 producto por foto</p>
-                <p className="mt-1 text-xs text-current/80">
-                  Crea un grupo completo y deja editar foto por foto cuando haga falta.
-                </p>
-              </button>
             </div>
           </div>
 
@@ -911,24 +879,13 @@ export function ArtisanProductFormSection({
       </section>
 
       <ProductImagesField
-        availabilityMode={productForm.availability_mode}
-        baseDescription={productForm.description}
-        basePrice={productForm.price}
-        baseStockQuantity={productForm.stock_quantity}
-        baseTitle={productForm.title}
         onDropImages={onDropImages}
         onOpenEditor={onOpenEditor}
-        onProductDescriptionChange={onProductDescriptionChangeForImage}
-        onProductPriceChange={onProductPriceChangeForImage}
-        onProductStockQuantityChange={onProductStockQuantityChangeForImage}
-        onProductTitleChange={onProductTitleChangeForImage}
         onRemoveImage={onRemoveImage}
         onSetPrimaryImage={onSetPrimaryImage}
-        onToggleCustomProductData={onToggleCustomProductDataForImage}
         onTriggerBulkImagePicker={onTriggerBulkImagePicker}
         onTriggerImagePicker={onTriggerImagePicker}
         productImages={productImages}
-        splitProductsByImage={splitProductsByImage}
       />
 
       <section className="grid gap-3 rounded-[1.75rem] border border-stone-200 bg-white p-4 sm:p-5">
