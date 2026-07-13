@@ -446,8 +446,9 @@ Reglas para ejecutar este plan con eficiencia, sin re-explorar lo ya relevado:
 - 2026-07-13: Fase 5. `preflight`, build, `git diff --check` y la búsqueda de lotes en
   `src/` pasaron. Las migraciones y `supabase db lint --linked` se verificaron alineados
   antes de poner los metadatos locales de enlace en cuarentena; las auditorías de secretos,
-  conexiones y codificación ahora pasan. `audit:large-files` sigue informando archivos
-  extensos como deuda técnica, pero no es un control bloqueante.
+  conexiones y codificación ahora pasan. Desde 2026-07-13, `audit:large-files`
+  también es un control bloqueante de `preflight`; su contrato vigente está en
+  `contexto/modularidad.md`.
 
 ## Criterios de aceptación
 

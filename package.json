@@ -23,10 +23,10 @@
     "audit:backend": "node scripts/audit-backend-symbols.mjs",
     "docs:backend-map": "node scripts/audit-backend-symbols.mjs --write-map",
     "audit:encoding": "node scripts/audit-encoding.mjs",
-    "audit:large-files": "node scripts/audit-large-files.mjs",
+    "audit:large-files": "node scripts/audit-large-files.mjs 1000 --check",
     "audit:safety": "node scripts/audit-safety.mjs all",
     "safety:quarantine": "node scripts/quarantine-local-secrets.mjs",
-    "preflight": "npm run lint && npm run typecheck && npm run test && npm run audit:backend && npm run audit:secrets && npm run audit:connections && npm run audit:encoding"
+    "preflight": "npm run lint && npm run typecheck && npm run test && npm run audit:backend && npm run audit:secrets && npm run audit:connections && npm run audit:encoding && npm run audit:large-files"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",

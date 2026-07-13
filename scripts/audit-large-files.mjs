@@ -2,7 +2,9 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
 const rootDir = process.cwd();
-const threshold = Number.parseInt(process.argv[2] ?? "400", 10);
+const thresholdArgument = process.argv.find((argument) => /^\d+$/.test(argument));
+const threshold = Number.parseInt(thresholdArgument ?? "1000", 10);
+const shouldFail = process.argv.includes("--check");
 const targetDirs = ["src", "supabase", "scripts"];
 const extensions = new Set([".ts", ".tsx", ".js", ".mjs", ".css", ".sql"]);
 const ignoredDirs = new Set(["node_modules", "dist", ".git", ".temp"]);
@@ -55,7 +57,14 @@ for (const dir of targetDirs) {
 rows.sort((left, right) => right.lines - left.lines);
 
 if (rows.length === 0) {
-  console.log(`No files over ${threshold} lines.`);
+  console.log(`No files with ${threshold} lines or more.`);
 } else {
   console.table(rows);
+
+  if (shouldFail) {
+    console.error(
+      `Large-file limit exceeded: split every listed file below ${threshold} lines.`,
+    );
+    process.exitCode = 1;
+  }
 }

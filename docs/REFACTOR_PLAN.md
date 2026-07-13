@@ -36,6 +36,13 @@ base that can be connected to a brand-new backend.
 
 ## Phase 3 - Modularization
 
+Estado 2026-07-13: completada la barrera estructural inicial. `preflight`
+bloquea archivos de 1000 líneas o más y las primeras extracciones separaron
+soporte admin, reglas del contacto comprador, soporte del checkout Edge y
+composición de la página de productos. La guía operativa vigente está en
+`contexto/modularidad.md`; la lista siguiente queda como historial y backlog de
+extracciones más finas.
+
 Split large files by responsibility:
 
 - API/client calls

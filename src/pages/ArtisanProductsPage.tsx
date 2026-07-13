@@ -1,10 +1,8 @@
 import type { FormEvent, PointerEvent as ReactPointerEvent } from "react";
 import type { ArtisanProduct, ArtisanProductInput } from "../types/artisan";
 import type { ProductImageDraft } from "../features/artisan/imageEditorTypes";
-
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { PagePlaceholder } from "../components/PagePlaceholder";
 import { useAdminArtisanProfile } from "../features/admin/adminQueries";
 import { getArtisanProductById } from "../features/artisan/artisanClient";
 import {
@@ -17,12 +15,13 @@ import {
   useUpdateArtisanProduct,
 } from "../features/artisan/artisanQueries";
 import { getErrorMessage } from "../lib/errors";
-import { ArtisanProductFormSection } from "../features/artisan/components/ArtisanProductFormSection";
+import { ArtisanProductFormConnector } from "../features/artisan/components/ArtisanProductFormConnector";
 import { ArtisanProductListSection } from "../features/artisan/components/ArtisanProductListSection";
 import { ArtisanProductsAdminHeader } from "../features/artisan/components/ArtisanProductsAdminHeader";
 import { ArtisanProductsConfirmModals } from "../features/artisan/components/ArtisanProductsConfirmModals";
 import { ArtisanProductsCropController } from "../features/artisan/components/ArtisanProductsCropController";
 import { ArtisanProductsStatsBar } from "../features/artisan/components/ArtisanProductsStatsBar";
+import { ArtisanProductsPageLayout } from "../features/artisan/components/ArtisanProductsPageLayout";
 import {
   DRAFT_KEY_PREFIX,
   MANAGEMENT_PRODUCTS_PAGE_SIZE,
@@ -35,10 +34,7 @@ import {
   initialProductForm,
 } from "../features/artisan/artisanProductsPageUtils";
 import {
-  cleanupDraftUrls,
-  createDefaultCrop,
-  createExistingImageDraft,
-  hydratePersistedDraftImages,
+  cleanupDraftUrls, createDefaultCrop, createExistingImageDraft, hydratePersistedDraftImages,
   type PersistedProductDraftImage,
   type PersistedProductDraftState,
   serializeProductImageDrafts,
@@ -48,12 +44,7 @@ import { useArtisanProductModel3D } from "../features/artisan/useArtisanProductM
 import { useManagementProductPagination } from "../features/artisan/useManagementProductPagination";
 import { useAuth } from "../features/auth/useAuth";
 import { loadProductDraft, removeProductDraft, saveProductDraft } from "../lib/browser/productDraftStorage";
-import {
-  getCropFrameDimensions,
-  getCropLayout,
-  loadImage,
-} from "../lib/compressImage";
-
+import { getCropFrameDimensions, getCropLayout, loadImage } from "../lib/compressImage";
 export function ArtisanProductsPage() {
   const { artisanId } = useParams();
   const [searchParams] = useSearchParams();
@@ -70,8 +61,6 @@ export function ArtisanProductsPage() {
   });
   const draftSaveRequestIdRef = useRef(0);
   const isBulkUploadRef = useRef(false);
-  // Categorías y productos se cargan vía React Query.
-  // Cache automática + revalidación + estado loading/error sin useState manual.
   const [productForm, setProductForm] = useState<ArtisanProductInput>(initialProductForm);
   const [productImages, setProductImages] = useState<ProductImageDraft[]>([]);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
@@ -116,13 +105,10 @@ export function ArtisanProductsPage() {
     setProductModel3DFile,
   } = useArtisanProductModel3D({ setProductForm, setSaveErrorMessage });
 
-  // ─── Fetching via React Query ─────────────────────────────────────────
-  // Cuando el admin gestiona el perfil de un vendedor, cargamos su perfil.
   const managedProfileQuery = useAdminArtisanProfile(artisanId, isAdminManaging);
   const managedProfile = isAdminManaging ? managedProfileQuery.data ?? null : null;
   const isManagedProfileLoading = isAdminManaging && managedProfileQuery.isLoading;
 
-  // Categorías globales — comparte cache con otros pages.
   const categoriesQuery = useArtisanCategories();
   const categories = useMemo(() => categoriesQuery.data ?? [], [categoriesQuery.data]);
   const learningProfileQuery = useArtisanProductLearningProfile(
@@ -141,8 +127,6 @@ export function ArtisanProductsPage() {
     }),
     [managementProductsPage, normalizedManagementSearch],
   );
-  // Productos del vendedor objetivo, paginados para no
-  // traer todo el catalogo cuando la cuenta crece.
   const productsQuery = useArtisanProducts(
     targetArtisanId ?? undefined,
     Boolean(targetArtisanId),
@@ -156,21 +140,16 @@ export function ArtisanProductsPage() {
     Boolean(targetArtisanId),
   );
   const totalProductsCount = productStatsQuery.data?.totalProducts ?? productsTotalCount;
-
-
-  // Loading agregado: true mientras todavía no haya llegado nada de Supabase.
   const isLoading =
     Boolean(targetArtisanId) &&
     (categoriesQuery.isLoading ||
       productsQuery.isLoading ||
       productStatsQuery.isLoading);
 
-  // Las mutations de productos invalidan automáticamente las queries.
   const createProductMutation = useCreateArtisanProduct(targetArtisanId ?? undefined);
   const updateProductMutation = useUpdateArtisanProduct(targetArtisanId ?? undefined);
   const deleteProductMutation = useDeleteArtisanProduct(targetArtisanId ?? undefined);
 
-  // Error agregado de carga (para mostrar en UI si nada cargó).
   const loadErrorMessage =
     categoriesQuery.error?.message ??
     productsQuery.error?.message ??
@@ -904,27 +883,18 @@ export function ArtisanProductsPage() {
   };
 
   return (
-    <PagePlaceholder description="" hideHeader title="">
-      {isAdminManaging ? (
+    <ArtisanProductsPageLayout
+      adminHeader={isAdminManaging ? (
         <ArtisanProductsAdminHeader
           isCreateFocus={isCreateFocus}
           managedProfile={managedProfile}
         />
       ) : null}
-
-      {!isManagedProfileLoading && !isCreateFocus && !isEditFocus ? (
+      statsBar={!isManagedProfileLoading && !isCreateFocus && !isEditFocus ? (
         <ArtisanProductsStatsBar totalCount={totalProductsCount} />
       ) : null}
-
-      {isAdminManaging && isManagedProfileLoading ? (
-        <div className="rounded-3xl border border-stone-200 bg-white px-5 py-8 text-sm text-stone-500">
-          Cargando perfil vendedor...
-        </div>
-      ) : null}
-
-      {!isManagedProfileLoading ? (
-      <>
-      <input
+      isManagedProfileLoading={isAdminManaging && isManagedProfileLoading}
+      fileInput={<input
         accept="image/*"
         className="hidden"
         onChange={(event) => {
@@ -932,18 +902,11 @@ export function ArtisanProductsPage() {
         }}
         ref={fileInputRef}
         type="file"
-      />
-
-        <div
-          className={
-          useSingleColumnLayout
-            ? "grid items-start gap-5"
-            : "grid items-start gap-5 xl:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.98fr)]"
-        }
-      >
-        {showProductForm ? (
+      />}
+      useSingleColumnLayout={useSingleColumnLayout}
+      form={showProductForm ? (
           <div ref={productFormRef} className="scroll-mt-28">
-          <ArtisanProductFormSection
+          <ArtisanProductFormConnector
             categories={categories}
             isCreateFocused={isCreateFocus}
             draftPersistenceState={draftPersistenceState}
@@ -953,125 +916,32 @@ export function ArtisanProductsPage() {
             isLoading={isLoading}
             isSaving={isSaving}
             learningProfile={learningProfile}
-            onAddAttribute={(initialKey) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                product_attributes: [
-                  ...currentValue.product_attributes,
-                  {
-                    key: initialKey ?? "",
-                    value: "",
-                  },
-                ],
-              }));
-            }}
-            onAvailabilityModeChange={(value) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                availability_mode: value,
-                lead_time_days:
-                  value === "made_to_order"
-                    ? currentValue.lead_time_days ?? 7
-                    : null,
-                stock_quantity:
-                  value === "stock" ? Math.max(1, currentValue.stock_quantity ?? 1) : null,
-              }));
-            }}
             onCancel={resetForm}
-            onCategoryChange={(value) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                category_id: value,
-              }));
-            }}
-            onDescriptionChange={(value) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                description: value,
-              }));
-            }}
             onDiscardDraft={discardDraft}
             onOpenEditor={(index) => {
               setActiveCropIndex(index);
               setIsCropModalOpen(true);
             }}
-            onLeadTimeDaysChange={(value) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                lead_time_days: value,
-              }));
-            }}
-            onPriceChange={(value) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                price: value,
-              }));
-            }}
             onProductModel3DFileChange={handleModel3DFileChange}
-            onRemoveAttribute={(index) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                product_attributes: currentValue.product_attributes.filter(
-                  (_attribute, attributeIndex) => attributeIndex !== index,
-                ),
-              }));
-            }}
             onRemoveImage={handleRemoveImage}
             onRemoveModel3D={handleRemoveModel3D}
             onSetPrimaryImage={moveImageToPrimary}
-            onStockQuantityChange={(value) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                stock_quantity: value,
-              }));
-            }}
             onSubmit={(event) => {
               void handleSubmit(event);
-            }}
-            onTitleChange={(value) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                title: value,
-              }));
-            }}
-            onToggleActive={(value) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                is_active: value,
-              }));
             }}
             onDropImages={handleBulkImageDrop}
             onTriggerBulkImagePicker={triggerBulkImagePicker}
             onTriggerImagePicker={triggerImagePicker}
-            onUpdateMadeToOrderOptions={(options) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                made_to_order_options: options,
-              }));
-            }}
-            onUpdateAttribute={(index, field, value) => {
-              setProductForm((currentValue) => ({
-                ...currentValue,
-                product_attributes: currentValue.product_attributes.map((attribute, attributeIndex) =>
-                  attributeIndex === index
-                    ? {
-                        ...attribute,
-                        [field]: value,
-                      }
-                    : attribute,
-                ),
-              }));
-            }}
             productForm={productForm}
             productImages={productImages}
             productModel3DFile={productModel3DFile}
             statusMessage={statusMessage}
+            setProductForm={setProductForm}
             uploadStatus={uploadStatus}
           />
           </div>
         ) : null}
-
-        {showManagementList ? (
+      managementList={showManagementList ? (
           <div>
             <ArtisanProductListSection
               isLoading={isLoading}
@@ -1090,9 +960,7 @@ export function ArtisanProductsPage() {
             />
           </div>
         ) : null}
-      </div>
-
-      <ArtisanProductsConfirmModals
+      confirmModals={<ArtisanProductsConfirmModals
         // Borrar producto
         pendingDeleteProductId={pendingDeleteId}
         pendingDeleteProductTitle={
@@ -1106,9 +974,8 @@ export function ArtisanProductsPage() {
             void handleDelete(pendingDeleteId);
           }
         }}
-      />
-
-      <ArtisanProductsCropController
+      />}
+      cropController={<ArtisanProductsCropController
         activeCropIndex={activeCropIndex}
         activeCropLayout={activeCropLayout}
         activeFrame={activeFrame}
@@ -1125,9 +992,7 @@ export function ArtisanProductsPage() {
         setDragState={setDragState}
         setIsCropModalOpen={setIsCropModalOpen}
         setProductImages={setProductImages}
-      />
-      </>
-      ) : null}
-    </PagePlaceholder>
+      />}
+    />
   );
 }

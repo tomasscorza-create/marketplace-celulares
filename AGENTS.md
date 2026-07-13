@@ -54,6 +54,9 @@ migraciones, configuración, Git o servicios remotos.
 - Las funciones Edge administrativas son parte del backend operativo. Las
   funciones de checkout/pagos requieren secretos de pago propios antes de ser
   habilitadas o desplegadas para producción.
+- `npm run preflight` bloquea módulos de código, scripts o SQL con 1000 líneas
+  o más. Antes de ampliar un archivo cercano al límite, extraer por dominio sin
+  romper sus exports públicos.
 - Las pruebas automatizadas usan Vitest y React Testing Library. `npm test`
   ejecuta la suite una vez, `npm run test:watch` sirve para desarrollo y
   `npm run preflight` incluye obligatoriamente la suite completa.

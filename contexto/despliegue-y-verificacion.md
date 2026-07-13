@@ -19,7 +19,7 @@ Explicar cómo se construye el empaquetado de producción del frontend, qué her
 ## Reglas y decisiones vigentes
 
 - **Variables de Producción**: En producción, las variables seguras (como `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`) se configuran directamente en el panel web de Netlify. Nunca se versionan en el repositorio ni se empujan `.env` globales de producción.
-- **Preflight local**: Antes de cualquier publicación o commit grande estructural, se exige correr `npm run preflight` (que agrupa lint, tipos, pruebas automatizadas y auditorías de seguridad).
+- **Preflight local**: Antes de cualquier publicación o commit grande estructural, se exige correr `npm run preflight` (que agrupa lint, tipos, pruebas automatizadas, auditorías de seguridad y el límite bloqueante de tamaño de módulos).
 - **Desacople estricto**: Si se publica un cambio en Netlify que requiere una nueva vista o función SQL, la migración de Supabase debe haberse corrido y validado *antes* en el proyecto remoto.
 
 ## Dependencias y límites externos
@@ -30,7 +30,7 @@ Explicar cómo se construye el empaquetado de producción del frontend, qué her
 
 ## Validación
 
-- Comandos: `npm test`, `npm run preflight` y `npm run build` aseguran que la app pase las pruebas y estándares de calidad locales antes de considerar subirla.
+- Comandos: `npm test`, `npm run audit:large-files`, `npm run preflight` y `npm run build` aseguran que la app pase las pruebas y estándares de calidad locales antes de considerar subirla.
 - Manual: Revisar la consola del navegador y la pestaña Network tras un deploy en staging para confirmar que las variables de entorno se inyectaron correctamente en el bundle de Vite.
 
 ## Riesgos y errores frecuentes
