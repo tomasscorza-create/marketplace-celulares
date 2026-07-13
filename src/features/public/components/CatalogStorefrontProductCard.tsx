@@ -21,7 +21,7 @@ const priceFormatter = new Intl.NumberFormat("es-AR", {
 });
 
 const railBuyActionClassName =
-  "inline-flex h-7 min-w-[5.25rem] max-w-[6.75rem] items-center justify-center whitespace-nowrap rounded-md bg-ocean-600 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-ocean-700 disabled:cursor-not-allowed disabled:opacity-50";
+  "inline-flex h-7 min-w-[5.25rem] max-w-[6.75rem] items-center justify-center whitespace-nowrap rounded-md px-2.5 text-[11px]";
 
 const railPriceClassName = "block text-sm font-semibold leading-none text-stone-950";
 

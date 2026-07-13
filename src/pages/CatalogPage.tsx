@@ -28,7 +28,6 @@ import { CatalogProductFeedCard } from "../features/public/components/CatalogPro
 import { CatalogProductShowcase } from "../features/public/components/CatalogProductShowcase";
 import { CatalogScrollControls } from "../features/public/components/CatalogScrollControls";
 import { CatalogSearchSection } from "../features/public/components/CatalogSearchSection";
-import { CatalogSectionHeader } from "../features/public/components/CatalogSectionHeader";
 import { CatalogStickySearchBar } from "../features/public/components/CatalogStickySearchBar";
 import { CatalogTasteChoiceModal } from "../features/public/components/CatalogTasteChoiceModal";
 import {
@@ -585,25 +584,16 @@ export function CatalogPage() {
               <div className="pointer-events-none absolute inset-0 z-0 rounded-3xl bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40" />
               <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
               <div className="relative z-10 grid gap-4">
-                <div className="group relative min-h-[52px] overflow-hidden rounded-xl border border-white/20 px-3 py-2 shadow-elev-2 transition-all duration-300 hover:border-white/40 sm:rounded-2xl sm:px-4 sm:py-2">
-                  <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/badge_bg.webp')] bg-cover bg-center opacity-100 transition-transform duration-700 ease-out group-hover:scale-105" />
-                  <div className="pointer-events-none absolute inset-0 z-0 bg-stone-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-stone-900/65" />
-                  <div className="relative z-10">
-                    <CatalogSectionHeader
-                      action={
-                        <Link
-                          className="inline-flex min-h-8 items-center rounded-lg border border-white/25 bg-white/10 px-3 text-xs font-semibold text-white transition-colors hover:border-white/45 hover:bg-white/20"
-                          to="/catalogo/para-vos"
-                        >
-                          Ver todo
-                        </Link>
-                      }
-                      id="catalog-personalized-title"
-                      tone="ocean"
-                      onDark
-                      title="Para ti"
-                    />
-                  </div>
+                <div className="flex h-14 items-center justify-between rounded-2xl bg-brand-700 px-4 shadow-elev-2 sm:px-5">
+                  <h2 className="font-display text-lg font-bold text-white" id="catalog-personalized-title">
+                    Para ti
+                  </h2>
+                  <Link
+                    className="inline-flex min-h-9 items-center rounded-full bg-white/15 px-3.5 text-xs font-semibold text-white transition-colors hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                    to="/catalogo/para-vos"
+                  >
+                    Ver todo
+                  </Link>
                 </div>
 
                 <CatalogProductShowcase
@@ -624,25 +614,15 @@ export function CatalogPage() {
             <div className="pointer-events-none absolute inset-0 z-0 rounded-3xl bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-40" />
             <div className="pointer-events-none absolute inset-0 z-0 bg-white/50" />
             <div className="relative z-10 grid gap-4">
-              <div className="group relative min-h-[52px] overflow-hidden rounded-xl border border-white/20 px-3 py-2 shadow-elev-2 transition-all duration-300 hover:border-white/40 sm:rounded-2xl sm:px-4 sm:py-2">
-                <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/badge_bg.webp')] bg-cover bg-center opacity-100 transition-transform duration-700 ease-out group-hover:scale-105" />
-                <div className="pointer-events-none absolute inset-0 z-0 bg-stone-900/75 backdrop-blur-sm transition-colors duration-500 group-hover:bg-stone-900/65" />
-                <div className="relative z-10">
-                  <CatalogSectionHeader
-                    id="catalog-explore-title"
-                    onDark
-                    title="Explorar"
-                  />
-                  {totalCount > 0 ? (
-                    <p className="mt-0.5 truncate text-xs leading-4 text-stone-300 sm:mt-1 sm:text-sm">
-                      Encuentra lo que buscas entre más de{" "}
-                      <span className="font-semibold text-white">
-                        {totalCount.toLocaleString("es-AR")}
-                      </span>{" "}
-                      productos tecnológicos y accesorios.
-                    </p>
-                  ) : null}
-                </div>
+              <div className="flex h-14 items-center justify-between rounded-2xl bg-brand-700 px-4 shadow-elev-2 sm:px-5">
+                <h2 className="font-display text-lg font-bold text-white" id="catalog-explore-title">
+                  Explorar
+                </h2>
+                {totalCount > 0 ? (
+                  <span className="text-xs font-medium text-white/75">
+                    {totalCount.toLocaleString("es-AR")} productos
+                  </span>
+                ) : null}
               </div>
 
             {isLoading ? (

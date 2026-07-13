@@ -104,12 +104,12 @@ export function CatalogProduct3DPreviewSlot({
                   price: Number(product.price),
                 }}
                 variant="compact"
-                className="inline-flex h-7 min-w-[4.8rem] items-center justify-center rounded-md bg-ocean-600 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-ocean-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-7 min-w-[4.8rem] items-center justify-center rounded-md px-2.5 text-[11px]"
                 label={isSoldOut ? "Consultar" : "WhatsApp"}
               />
             ) : (
               <AddToCartButton
-                className="inline-flex h-7 min-w-[4.8rem] items-center justify-center rounded-md bg-ocean-600 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-ocean-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex h-7 min-w-[4.8rem] items-center justify-center rounded-md bg-brand-500 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50"
                 compact
                 disabled={isSoldOut}
                 disabledLabel="Sin stock"

@@ -67,7 +67,7 @@ export function WhatsAppButton({ message, className }: WhatsAppButtonProps) {
       aria-label="Consultar por WhatsApp"
       className={[
         "group/wa flex h-14 cursor-pointer items-center overflow-hidden rounded-full",
-        "bg-whatsapp text-white shadow-elev-whatsapp",
+        "bg-stone-800 text-white shadow-elev-2",
         "transition-[background-color,box-shadow] duration-300",
         "hover:bg-whatsapp hover:shadow-elev-whatsapp",
         isExpanded ? "bg-whatsapp shadow-elev-whatsapp" : "",

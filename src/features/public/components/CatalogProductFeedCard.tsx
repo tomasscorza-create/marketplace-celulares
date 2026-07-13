@@ -32,13 +32,13 @@ const priceFormatter = new Intl.NumberFormat("es-AR", {
 });
 
 const storeActionClassName =
-  "inline-flex h-7 min-w-0 items-center justify-start rounded-md px-1.5 text-[10px] font-medium text-ocean-500 transition-colors hover:bg-stone-100 hover:text-blue-600 sm:text-[11px]";
+  "inline-flex h-7 min-w-0 items-center justify-start rounded-md px-1.5 text-[10px] font-medium text-ocean-500 transition-colors hover:bg-brand-50 hover:text-brand-600 sm:text-[11px]";
 
 const featuredBuyActionClassName =
-  "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg bg-blue-600 px-3 text-xs font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:h-9 sm:px-3.5 sm:text-[13px]";
+  "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg px-3 text-xs sm:h-9 sm:px-3.5 sm:text-[13px]";
 
 const compactBuyActionClassName =
-  "inline-flex h-7 min-w-[4.9rem] items-center justify-center whitespace-nowrap rounded-md bg-blue-600 px-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:min-w-[5.25rem] sm:text-xs";
+  "inline-flex h-7 min-w-[4.9rem] items-center justify-center whitespace-nowrap rounded-md px-2.5 text-[11px] sm:min-w-[5.25rem] sm:text-xs";
 
 const extraActionClassName =
   "inline-flex h-8 w-full min-w-0 items-center justify-center whitespace-nowrap rounded-lg border border-stone-200 bg-white px-3 text-xs font-semibold text-ocean-700 transition-colors hover:border-stone-300 hover:bg-stone-50 sm:h-9 sm:px-3.5 sm:text-[13px]";
@@ -106,7 +106,7 @@ function CatalogProductFeedCardInner({
     ? "border-brand-300 bg-brand-50/45 hover:border-brand-400"
     : "";
   const boostImageShellClassName = item.isBoosted
-    ? "bg-blue-50/50"
+    ? "bg-brand-50/50"
     : "bg-white/30";
   const navigate = useNavigate();
   const cardRef = useRef<HTMLElement | null>(null);
