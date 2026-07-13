@@ -1,45 +1,60 @@
-# Neutral Marketplace
+# Marketplace Celulares
 
-This repository is being converted from a city-specific marketplace into a
-neutral, reusable marketplace base.
+Marketplace de celulares y accesorios basado en React, Vite y Supabase. Este
+repositorio es un proyecto independiente: no debe reconectarse, sincronizarse
+ni reutilizar credenciales de marketplaces anteriores.
 
-## Current safety state
+## Punto de entrada
 
-- Remote backend access is disabled by default.
-- Supabase only initializes when all of these are present:
-  - `VITE_ENABLE_REMOTE_BACKEND=true`
-  - `VITE_SUPABASE_URL`
-  - `VITE_SUPABASE_ANON_KEY`
-  - `VITE_SUPABASE_PROJECT_REF` matching the project ref in the URL
-- Local files such as `.env.local`, `.supabase-secrets.env`, and
-  `supabase/.temp/` must never be shared or copied into a derived repo.
+Este README es la guía para personas. Antes de hacer cambios técnicos, leer
+[AGENTS.md](AGENTS.md): es el manual operativo obligatorio para sesiones de
+Codex y otros agentes de IA.
 
-## Safe commands
+| Si necesitas… | Consulta primero |
+| --- | --- |
+| Entender decisiones, arquitectura, seguridad o estado actual | [AGENTS.md](AGENTS.md) |
+| Trabajar con Supabase y migraciones | [docs/DB_SAFETY.md](docs/DB_SAFETY.md), [docs/BACKEND_MAP.md](docs/BACKEND_MAP.md) |
+| Configurar variables de entorno | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) |
+| Usar Supabase local con Docker | [docs/LOCAL_BACKEND.md](docs/LOCAL_BACKEND.md) |
+| Preparar checkout o Mercado Pago | [docs/CHECKOUT_MERCADOPAGO.md](docs/CHECKOUT_MERCADOPAGO.md) |
+| Revisar el flujo de catálogo/3D | [docs/PRODUCT_3D_PREVIEW.md](docs/PRODUCT_3D_PREVIEW.md) |
+| Entender el plan técnico heredado | [docs/REFACTOR_PLAN.md](docs/REFACTOR_PLAN.md), [docs/NEW_BACKEND_PLAN.md](docs/NEW_BACKEND_PLAN.md) |
+| Encontrar contexto futuro por dominio | [contexto/](contexto/) |
 
-```bash
-npm run lint
-npm run typecheck
-npm run build
-npm run audit:secrets
-npm run audit:connections
-npm run audit:branding
-npm run audit:backend
-npm run audit:encoding
-npm run audit:large-files
-npm run db:start
-npm run db:lint
+## Desarrollo local
+
+```powershell
+npm install
+npm run dev
 ```
 
-`npm run preflight` runs lint, typecheck, connection/secret audits, and the
-encoding audit. It may fail while old local secret files still exist. That is
-intentional.
+La aplicación necesita variables locales en `.env.local`. Copiá
+`.env.example` como referencia, pero nunca subas `.env.local`, claves de
+servicio, contraseñas ni archivos temporales de Supabase.
 
-Local Supabase setup and validation notes live in `docs/LOCAL_BACKEND.md`.
-Checkout and Mercado Pago setup notes live in `docs/CHECKOUT_MERCADOPAGO.md`.
-Product 3D preview planning lives in `docs/PRODUCT_3D_PREVIEW.md`.
+## Verificación antes de cambiar o publicar
 
-## Golden rule
+```powershell
+npm run preflight
+npm run build
+```
 
-Do not run Supabase link, db push, migration, reset, or function deploy commands
-against the original production project. This repo should only connect to a
-brand-new backend after the safety checklist in `docs/DB_SAFETY.md` is complete.
+Para cambios de base de datos, revisar primero las migraciones y el protocolo
+de [AGENTS.md](AGENTS.md). Para cambios visuales, además verificar el flujo
+afectado en la aplicación.
+
+## Producción
+
+El frontend se publica en Netlify y usa un proyecto Supabase de producción
+independiente. Las variables de producción se guardan en el proveedor de
+deploy, no en este repositorio.
+
+Las migraciones viven en `supabase/migrations/` y son la fuente de verdad del
+esquema. Las funciones Edge viven en `supabase/functions/`. Ambos recursos
+deben desplegarse explícitamente; publicar el frontend no los actualiza.
+
+## Regla principal
+
+No ejecutar comandos de conexión, migración, despliegue o borrado contra un
+proyecto remoto que no haya sido identificado y confirmado como el backend de
+este marketplace.
