@@ -113,6 +113,13 @@ La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
   Storage; la validación de extensión (`.glb`/`.gltf`) y de 8MB en
   `useArtisanProductModel3D.ts` es solo del lado del cliente. Pendiente de
   endurecer si se prioriza la fase 2 de `docs/PRODUCT_3D_PREVIEW.md`.
+- (Corregido 2026-07-13) En `CatalogProduct3DPreviewSlot.tsx`, el `<canvas>`
+  de Three.js (dentro de `ProductModel3DViewer`) usa `z-10` y cubre toda la
+  tarjeta para permitir el arrastre. El contenedor con el botón "Ver detalle"
+  tenía `z-[2]`, por debajo del canvas: el botón se veía bien (el canvas es
+  transparente ahí) pero el click lo recibía el canvas, no el link. Se subió
+  ese contenedor a `z-20`. Cualquier overlay interactivo nuevo sobre el
+  visor debe ir por encima de `z-10` para no repetir este bug.
 
 ## Mantenimiento
 Actualizar si la dependencia a Three.js se sustituye por etiquetas nativas modernas (ej. `<model-viewer>` de Google) o si se agregan proyecciones AR nativas (Realidad Aumentada) a futuro.

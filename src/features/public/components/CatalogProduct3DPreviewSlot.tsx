@@ -58,7 +58,7 @@ export function CatalogProduct3DPreviewSlot({
         {categoryLabel}
       </span>
 
-      <div className="pointer-events-none relative z-[2] grid h-full grid-rows-[1fr_auto] p-3 sm:p-4">
+      <div className="pointer-events-none relative z-20 grid h-full grid-rows-[1fr_auto] p-3 sm:p-4">
         {model3D ? (
           <div aria-hidden="true" />
         ) : (
