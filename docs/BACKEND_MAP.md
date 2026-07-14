@@ -7,7 +7,7 @@
 ## Alcance y fuente de verdad
 
 - Fuente canónica del esquema: `supabase/migrations/`, aplicada por nombre en orden ascendente.
-- Última migración inspeccionada: `20260713160000_save_category_spec_template_rpc.sql`.
+- Última migración inspeccionada: `20260714120000_count_products_by_category_spec_labels.sql`.
 - Consumidores inspeccionados: `src/` y `supabase/functions/`.
 - `supabase/sql/` es referencia histórica y no participa de esta auditoría.
 
@@ -66,6 +66,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 ## RPC usadas por la aplicación
 
 - `apply_paid_order_inventory`
+- `count_products_by_category_spec_labels`
 - `get_catalog_activity_state_v1`
 - `get_public_buyer_profile_v1`
 - `get_public_catalog_product_feed_v5`
@@ -81,6 +82,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `can_read_order`
 - `can_read_order_by_id`
 - `can_read_order_item`
+- `count_products_by_category_spec_labels`
 - `current_user_role`
 - `get_catalog_activity_state_v1`
 - `get_public_buyer_profile_v1`

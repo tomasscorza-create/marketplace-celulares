@@ -24,10 +24,35 @@ export async function saveCategorySpecTemplate(
 ) {
   const client = getSupabaseClient();
 
-  return client
-    .rpc("save_category_spec_template", {
-      target_category_id: categoryId,
-      field_labels: fields.map((field) => field.field_label),
-    })
-    .returns<AdminCategorySpecTemplateField[]>();
+  const response = await client.rpc("save_category_spec_template", {
+    target_category_id: categoryId,
+    field_labels: fields.map((field) => field.field_label),
+  });
+
+  return {
+    ...response,
+    data: (response.data ?? null) as AdminCategorySpecTemplateField[] | null,
+  };
+}
+
+export type CategorySpecFieldUsage = {
+  field_label: string;
+  product_count: number;
+};
+
+export async function countProductsByCategorySpecLabels(
+  categoryId: string,
+  fieldLabels: string[],
+) {
+  const client = getSupabaseClient();
+
+  const response = await client.rpc("count_products_by_category_spec_labels", {
+    target_category_id: categoryId,
+    field_labels: fieldLabels,
+  });
+
+  return {
+    ...response,
+    data: (response.data ?? null) as CategorySpecFieldUsage[] | null,
+  };
 }

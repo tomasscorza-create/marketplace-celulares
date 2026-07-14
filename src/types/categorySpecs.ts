@@ -10,6 +10,8 @@ export type CategorySpecValue = {
   value: string;
 };
 
+export const MAX_CATEGORY_SPEC_FIELDS = 20;
+
 export function sanitizeCategorySpecValues(values: CategorySpecValue[]) {
   return values
     .map((entry) => ({
@@ -17,5 +19,5 @@ export function sanitizeCategorySpecValues(values: CategorySpecValue[]) {
       value: entry.value.trim(),
     }))
     .filter((entry) => entry.label.length > 0 && entry.value.length > 0)
-    .slice(0, 20);
+    .slice(0, MAX_CATEGORY_SPEC_FIELDS);
 }
