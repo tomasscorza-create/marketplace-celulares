@@ -109,7 +109,7 @@ export function PublicLayout() {
       </header>
 
       <main
-        className="relative z-10 mx-auto max-w-6xl px-4 pb-6 pt-4 sm:px-6 sm:py-10"
+        className="relative z-10 mx-auto max-w-6xl px-4 pb-6 pt-2 sm:px-6 sm:pb-10 sm:pt-4"
         id="main-content"
         tabIndex={-1}
       >

@@ -130,31 +130,34 @@ function CatalogStickySearchBarInner({
               <form className="grid gap-2" onSubmit={onSearchSubmit}>
                 <div className="flex gap-2">
                   <input
-                    className="h-10 min-w-0 flex-1 rounded-full border border-stone-300 bg-white px-4 text-sm text-stone-900 outline-none focus:border-brand-500 focus:shadow-[0_0_0_3px_rgba(8,145,178,0.18)]"
+                    className="h-10 min-w-0 flex-1 rounded-full border border-stone-300 bg-white px-4 text-sm text-stone-900 shadow-sm outline-none transition-all duration-300 focus:border-brand-500 focus:shadow-[0_4px_20px_-4px_rgba(8,145,178,0.25)]"
                     onChange={(event) => {
                       onDraftSearchChange(event.target.value);
                     }}
-                    placeholder="Buscar piezas o vendedores"
+                    placeholder="Buscar iPhone, fundas, accesorios..."
                     type="search"
                     value={draftSearch}
                   />
                   <button
-                    className="inline-flex h-10 shrink-0 items-center justify-center rounded-full bg-brand-500 px-4 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
+                    className="inline-flex h-10 w-10 sm:w-auto shrink-0 items-center justify-center rounded-full bg-brand-500 px-0 sm:px-5 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:scale-105 hover:bg-brand-400 hover:shadow-md active:scale-95"
                     onClick={() => {
                       setIsExpanded(false);
                       setIsFiltersMenuOpen(false);
                     }}
                     type="submit"
                   >
-                    Ir
+                    <span className="hidden sm:inline">Ir</span>
+                    <svg className="sm:hidden h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                      <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                   </button>
                   <button
                     aria-expanded={isFiltersMenuOpen}
                     className={[
-                      "inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full border px-4 text-sm font-semibold transition-colors",
+                      "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors",
                       isFiltersMenuOpen
-                        ? "border-ocean-500 bg-ocean-50 text-ocean-500"
-                        : "border-stone-300 bg-white text-stone-700 hover:border-ocean-300 hover:text-ocean-500",
+                        ? "border-brand-500 bg-brand-50 text-brand-500"
+                        : "border-stone-300 bg-white text-stone-700 hover:border-brand-500 hover:bg-brand-50 hover:text-brand-500",
                     ].join(" ")}
                     onClick={() => {
                       setIsFiltersMenuOpen((currentValue) => !currentValue);
@@ -163,8 +166,10 @@ function CatalogStickySearchBarInner({
                     }}
                     type="button"
                   >
-                    Filtros
-                    <span aria-hidden="true">{isFiltersMenuOpen ? "^" : "v"}</span>
+                    <span className="sr-only">Filtros</span>
+                    <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    </svg>
                   </button>
                 </div>
               </form>

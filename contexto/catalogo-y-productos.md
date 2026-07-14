@@ -22,6 +22,7 @@ El catálogo público funciona así:
 ## Reglas y decisiones vigentes
 
 - **Visibilidad estricta**: El catálogo público exige productos activos y vendedores con rol `artisan` no ocultos. El stock se muestra y se vuelve a validar en carrito/checkout; el RPC de catálogo vigente no excluye por sí solo un producto activo con `stock_quantity = 0`.
+- **Sección "Para ti" Condicional**: La sección personalizada ("Para ti") requiere estrictamente recolectar al menos 6 productos válidos para mostrarse. Si hay menos de 6, la sección se oculta por completo para evitar espacios vacíos en la grilla y se pasa directamente al "Explorar".
 - **Búsqueda guiada por URL**: Todos los filtros (búsqueda, página, orden) deben reflejarse en la URL (`URLSearchParams`) para mantener enlaces compartibles.
 - **Modelos 3D**: Son opcionales. Las tarjetas manejan de forma segura que un producto no tenga archivos GLB/GLTF.
 - **Grillas reactivas**: Se decide la cantidad de columnas no solo mediante media queries, sino por un estado de React evaluando el ancho de la ventana al cargar y redimensionar.

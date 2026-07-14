@@ -66,7 +66,7 @@ export function getCatalogPersonalizedItems(params: {
         index,
     )
     .map(({ item }) => item)
-    .slice(0, 5);
+    .slice(0, CATALOG_PERSONALIZED_ITEM_COUNT);
 }
 
 /**

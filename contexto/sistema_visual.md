@@ -24,8 +24,13 @@
    - El botón principal oscuro (`bg-slate-900`) posee un sutil gradiente brillante interno y una sombra coloreada al pasar el cursor (hover).
    - El botón secundario es translúcido y responde elevándose ligeramente con transiciones suaves (`duration-300` o `duration-500`).
 
-4. **Transiciones Micro-Animadas:**
+4. **Transiciones Micro-Animadas y Estados Compactos:**
    - La respuesta del cursor es clave. Las tarjetas de producto hacen un `hover:-translate-y-1` para dar la sensación física de que se levantan del panel de vidrio base.
+   - Las secciones grandes (como "Para ti") utilizan comportamiento de acordeón (collapsible) con estados compactos. Al colapsar, las interfaces deben esconder por completo paddings, fondos e íconos redundantes para maximizar el espacio en pantalla, utilizando trucos modernos de CSS Grid (`grid-template-rows: 0fr/1fr`) junto con `opacity` para animaciones fluidas y nativas.
+   - En estados inactivos o compactos de componentes resaltados, el color se relaja (por ejemplo, transicionando a tonos de "acuarela pastel" suaves) y recupera su intensidad brillante (`brand-700` o `sky-400`) únicamente cuando está expandido o activo.
+
+5. **Listas y Banners (Stripes):**
+   - Para romper la monotonía visual, algunos contenedores horizontales grandes (como las tiendas destacadas) reemplazan los fondos blancos puros con degradados diagonales que alternan en franjas (`repeating-linear-gradient` o `bg-gradient-to-tr` difuminados) para dar un efecto de cinta o bandera sin ensuciar la legibilidad.
 
 **Validación:**
 - Cualquier nuevo componente que se agregue al catálogo o layout principal DEBE respetar este esquema de transparencia y desenfoque, evitando los parches de color sólido `bg-white` a menos que sea un componente anidado muy pequeño.

@@ -180,40 +180,22 @@ function CatalogSearchSectionInner({
 
       <form aria-label="Buscar en el catálogo" className="grid gap-2" onSubmit={onSearchSubmit}>
         <div className="flex items-center gap-2">
-          <div className="relative min-w-0 flex-1">
-            <svg
-              className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-              />
-            </svg>
+          <div className="group relative min-w-0 flex-1">
             <input
-              className="h-10 w-full rounded-full border border-stone-300 bg-white py-2 pl-10 pr-12 text-sm text-stone-900 outline-none transition-all focus:border-brand-500 focus:shadow-[0_0_0_3px_rgba(8,145,178,0.18)] sm:h-11"
+              className="h-10 w-full rounded-full border border-stone-300 bg-white py-2 pl-5 pr-12 text-sm text-stone-900 shadow-sm outline-none transition-all duration-300 focus:border-brand-500 focus:shadow-[0_4px_20px_-4px_rgba(8,145,178,0.25)] sm:h-11"
               onChange={(event) => {
                 onDraftSearchChange(event.target.value);
               }}
-              placeholder="Buscar piezas o vendedores"
+              placeholder="Buscar iPhone, fundas, accesorios..."
               type="search"
               value={draftSearch}
             />
             <button
-              className="absolute right-1 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-brand-500 text-white transition-colors hover:bg-brand-600"
+              className="absolute right-1.5 top-1/2 inline-flex h-7 w-7 sm:h-8 sm:w-8 -translate-y-1/2 items-center justify-center rounded-full bg-brand-500 text-white shadow-sm transition-all duration-300 hover:scale-105 hover:bg-brand-400 hover:shadow-md active:scale-95"
               type="submit"
             >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                />
+              <svg className="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="sr-only">Buscar</span>
             </button>
@@ -226,7 +208,7 @@ function CatalogSearchSectionInner({
               aria-expanded={isFiltersMenuOpen}
               aria-haspopup="dialog"
               className={[
-                "inline-flex h-10 items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-4 text-sm font-medium text-stone-700 transition-all duration-500 ease-out hover:border-ocean-500 hover:text-ocean-500 sm:h-11",
+                "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-stone-300 bg-white text-stone-700 transition-all duration-500 ease-out hover:border-brand-500 hover:text-brand-500 hover:bg-brand-50 sm:h-11 sm:w-11",
                 categoryBarActive ? "opacity-100 scale-100" : "opacity-45 scale-[0.94]",
               ].join(" ")}
               onClick={() => {
@@ -242,8 +224,10 @@ function CatalogSearchSectionInner({
               }}
               type="button"
             >
-              <span>Filtros</span>
-              <span aria-hidden="true">{isFiltersMenuOpen ? "^" : "v"}</span>
+              <span className="sr-only">Filtros</span>
+              <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
             </button>
 
             {isFiltersMenuOpen && filterPanelPos
@@ -439,7 +423,6 @@ function CatalogSearchSectionInner({
         >
           {categoryScroll.canLeft ? (
             <>
-              <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-stone-100/90 to-transparent" />
               <button
                 className="absolute left-0 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-stone-200 bg-white shadow-sm transition-all hover:border-stone-300 hover:shadow active:scale-95"
                 onClick={() => scrollCategories("left")}
@@ -452,7 +435,7 @@ function CatalogSearchSectionInner({
             </>
           ) : null}
 
-          <div className="no-scrollbar flex gap-2.5 overflow-x-auto pb-0.5" ref={categoryScrollRef}>
+          <div className="no-scrollbar flex gap-2.5 overflow-x-auto pb-0.5 [mask-image:linear-gradient(to_right,black_85%,transparent_100%)] sm:[mask-image:linear-gradient(to_right,black_92%,transparent_100%)]" ref={categoryScrollRef}>
             <button
               className={[
                 "shrink-0 rounded-full border px-3.5 py-1.5 text-[11px] font-medium tracking-[0.04em] transition-all duration-150",
@@ -486,11 +469,11 @@ function CatalogSearchSectionInner({
                 {category.name}
               </button>
             ))}
+            <div aria-hidden="true" className="w-6 shrink-0 sm:w-8" />
           </div>
 
           {categoryScroll.canRight ? (
             <>
-              <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-stone-100/90 to-transparent" />
               <button
                 className="absolute right-0 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-stone-200 bg-white shadow-sm transition-all hover:border-stone-300 hover:shadow active:scale-95"
                 onClick={() => scrollCategories("right")}

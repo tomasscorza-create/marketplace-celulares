@@ -102,6 +102,7 @@ export function CatalogPage() {
   const [shouldRequestSecondaryCatalog, setShouldRequestSecondaryCatalog] = useState(false);
   const [isStickyCatalogSearchVisible, setIsStickyCatalogSearchVisible] = useState(false);
   const [isTasteChoiceModalOpen, setIsTasteChoiceModalOpen] = useState(false);
+  const [isParaTiExpanded, setIsParaTiExpanded] = useState(false);
   const pendingNotificationsQuery = useArtisanPendingInternalNotificationCount(
     user?.id,
     role === "artisan",
@@ -257,38 +258,36 @@ export function CatalogPage() {
       return;
     }
 
+    let lastScrollY = window.scrollY;
+
     const updateFromScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      const isScrollingUp = currentScrollY < lastScrollY - 2;
+      const isScrollingDown = currentScrollY > lastScrollY + 2;
+
       const rect = searchSection.getBoundingClientRect();
-      setIsStickyCatalogSearchVisible(rect.bottom < 86 && window.scrollY > 120);
+      const isPastSearchSection = rect.bottom < 86 && currentScrollY > 120;
+
+      if (isPastSearchSection) {
+        if (isScrollingUp) {
+          setIsStickyCatalogSearchVisible(true);
+        } else if (isScrollingDown) {
+          setIsStickyCatalogSearchVisible(false);
+        }
+      } else {
+        setIsStickyCatalogSearchVisible(false);
+      }
+      
+      lastScrollY = currentScrollY;
     };
 
-    if (typeof IntersectionObserver === "undefined") {
-      updateFromScroll();
-      window.addEventListener("scroll", updateFromScroll, { passive: true });
-      window.addEventListener("resize", updateFromScroll);
-
-      return () => {
-        window.removeEventListener("scroll", updateFromScroll);
-        window.removeEventListener("resize", updateFromScroll);
-      };
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsStickyCatalogSearchVisible(!entry.isIntersecting && window.scrollY > 120);
-      },
-      {
-        rootMargin: "-86px 0px 0px 0px",
-        threshold: 0.02,
-      },
-    );
-
-    observer.observe(searchSection);
     window.addEventListener("scroll", updateFromScroll, { passive: true });
+    window.addEventListener("resize", updateFromScroll);
 
     return () => {
-      observer.disconnect();
       window.removeEventListener("scroll", updateFromScroll);
+      window.removeEventListener("resize", updateFromScroll);
     };
   }, []);
 
@@ -568,40 +567,58 @@ export function CatalogPage() {
           />
         </div>
 
-        <div className="grid gap-4 rounded-3xl border border-white/40 bg-gradient-to-br from-blue-950 via-blue-800 to-sky-400 p-3 shadow-elev-2 backdrop-blur-2xl sm:gap-5 sm:p-5">
+        <div className={`grid rounded-3xl border border-white/40 bg-gradient-to-br from-blue-950 via-blue-800 to-sky-400 p-3 shadow-elev-2 backdrop-blur-2xl sm:p-5 transition-all duration-500 ${isParaTiExpanded ? 'gap-4 sm:gap-5' : 'gap-2 sm:gap-3'}`}>
           {catalogLoadErrorMessage ? (
             <div className="rounded-2xl border border-brand-500 bg-brand-100 px-4 py-3 text-sm text-brand-500">
               {catalogLoadErrorMessage}
             </div>
           ) : null}
 
-          {feedCollections.personalizedShowcaseItems.length > 0 ? (
+          {feedCollections.personalizedShowcaseItems.length >= 6 ? (
             <section
               aria-labelledby="catalog-personalized-title"
-              className="relative grid gap-5 overflow-hidden rounded-3xl border border-white/30 p-2 sm:p-4 shadow-sm"
+              className={`relative grid overflow-hidden rounded-3xl border shadow-sm transition-all duration-500 ease-in-out ${isParaTiExpanded ? 'gap-5 border-white/30 p-2 sm:p-4' : 'gap-0 border-transparent p-0 shadow-none'}`}
             >
-              <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
-              <div className="pointer-events-none absolute -inset-2 z-0 rounded-3xl bg-[url('/catalog_personalized_bg.webp')] bg-cover bg-center opacity-20 blur-sm" />
-              <div className="pointer-events-none absolute inset-0 z-0 bg-stone-950/25" />
-              <div className="relative z-10 grid gap-2 sm:gap-4">
-                <div className="relative flex h-[38px] sm:h-14 items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-r from-brand-700 via-brand-600 to-blue-600 px-3 sm:px-5 shadow-elev-2">
+              <div className={`pointer-events-none absolute inset-0 z-0 bg-white transition-opacity duration-500 ${isParaTiExpanded ? 'opacity-100' : 'opacity-0'}`} />
+              <div className={`pointer-events-none absolute -inset-2 z-0 rounded-3xl bg-[url('/catalog_personalized_bg.webp')] bg-cover bg-center blur-sm transition-opacity duration-500 ${isParaTiExpanded ? 'opacity-20' : 'opacity-0'}`} />
+              <div className={`pointer-events-none absolute inset-0 z-0 bg-stone-950/25 transition-opacity duration-500 ${isParaTiExpanded ? 'opacity-100' : 'opacity-0'}`} />
+              <div className={`relative z-10 grid ${isParaTiExpanded ? 'gap-2 sm:gap-4' : 'gap-0'}`}>
+                <div className={`relative flex items-center justify-between overflow-hidden rounded-2xl px-3 sm:px-5 shadow-elev-2 z-20 transition-all duration-500 ease-in-out ${isParaTiExpanded ? 'h-[38px] sm:h-14 bg-gradient-to-r from-brand-700 via-brand-600 to-blue-600' : 'h-[34px] sm:h-[50px] bg-gradient-to-r from-sky-400 via-cyan-300 to-teal-400'}`}>
                   <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_0%,rgba(255,255,255,0.22),transparent_38%)]" />
-                  <h2 className="relative font-display text-[13px] sm:text-lg font-bold text-white" id="catalog-personalized-title">
-                    Para ti
-                  </h2>
+                  <button 
+                    type="button"
+                    onClick={() => setIsParaTiExpanded((prev) => !prev)}
+                    className="relative flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-lg py-1 pr-2 -ml-1 transition-opacity hover:opacity-80"
+                    aria-expanded={isParaTiExpanded}
+                  >
+                    <h2 className="font-display text-[13px] sm:text-lg font-bold text-white" id="catalog-personalized-title">
+                      Para ti
+                    </h2>
+                    <svg className={`h-4 w-4 text-white transition-transform duration-500 ${isParaTiExpanded ? 'rotate-180' : 'rotate-0'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
                   <Link
-                    className="relative inline-flex min-h-[26px] sm:min-h-9 items-center rounded-full bg-white/15 px-3 sm:px-3.5 text-[10px] sm:text-xs font-semibold text-white transition-colors hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                    className={`relative inline-flex items-center rounded-full bg-white/15 px-3 sm:px-3.5 text-[10px] sm:text-xs font-semibold text-white transition-all duration-500 hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${isParaTiExpanded ? 'h-[26px] sm:h-9 opacity-100 scale-100' : 'h-[24px] sm:h-8 opacity-0 scale-95 pointer-events-none'}`}
                     to="/catalogo/para-vos"
                   >
                     Ver todo
                   </Link>
                 </div>
 
-                <CatalogProductShowcase
-                  isLiteMode={adaptiveMode.isLiteMode}
-                  items={feedCollections.personalizedShowcaseItems}
-                  presentation="product-grid"
-                />
+                <div 
+                  className={`grid transition-[grid-template-rows,opacity] duration-500 ease-in-out ${isParaTiExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+                >
+                  <div className="overflow-hidden min-h-0">
+                    <div className="pt-2 sm:pt-4">
+                      <CatalogProductShowcase
+                        isLiteMode={adaptiveMode.isLiteMode}
+                        items={feedCollections.personalizedShowcaseItems}
+                        presentation="product-grid"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
           ) : null}
