@@ -50,7 +50,11 @@ migraciones, configuración, Git o servicios remotos.
   a otros usuarios.
 - El modelo 3D es opcional. Sólo se sube cuando se selecciona manualmente un
   `.glb` o `.gltf`; las fotos no generan modelos 3D. El catálogo puede mostrar
-  una tarjeta visual de reserva cuando el producto no tiene un modelo real.
+  una tarjeta visual de reserva cuando el producto no tiene un modelo real. El
+  detalle de producto también muestra el visor 3D interactivo, integrado como
+  un slide más de la misma galería de fotos; ambos lugares reutilizan
+  `ProductModel3DViewer.tsx` sin duplicar su lógica (ver
+  `contexto/visor-3d-y-medios.md`).
 - Las funciones Edge administrativas son parte del backend operativo. Las
   funciones de checkout/pagos requieren secretos de pago propios antes de ser
   habilitadas o desplegadas para producción.

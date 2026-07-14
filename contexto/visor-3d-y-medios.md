@@ -95,7 +95,7 @@ La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
   arriesgar rendimiento.
 
 ## Dependencias y límites externos
-- **Three.js** y **React Three Fiber**: Motores WebGL subyacentes encargados de las luces, texturas y rotaciones de cámara.
+- **Three.js** (sin React Three Fiber; el proyecto no depende de esa librería): `GLTFLoader`, `OrbitControls` y `MeshoptDecoder` se importan dinámicamente dentro de `ProductModel3DViewer.tsx` para las luces, texturas, controles de cámara y decodificación de mallas comprimidas.
 
 ## Validación
 - Automática: `npm run build` debe terminar con `PWA precache audit passed` y no listar `three-vendor` en el manifiesto de precache.
