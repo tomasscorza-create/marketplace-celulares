@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 
 import { AuthProvider } from "../features/auth/AuthProvider";
+import { AnalyticsProvider } from "../features/analytics/AnalyticsProvider";
 import { PwaUpdatePrompt } from "../lib/pwa/PwaUpdatePrompt";
 import { AppQueryProvider } from "../lib/query/AppQueryProvider";
 import { marketplaceConfig } from "../config/marketplace";
@@ -34,8 +35,10 @@ export function App() {
   return (
     <AppQueryProvider>
       <AuthProvider>
-        <RouterProvider router={router} />
-        <PwaUpdatePrompt />
+        <AnalyticsProvider>
+          <RouterProvider router={router} />
+          <PwaUpdatePrompt />
+        </AnalyticsProvider>
       </AuthProvider>
     </AppQueryProvider>
   );

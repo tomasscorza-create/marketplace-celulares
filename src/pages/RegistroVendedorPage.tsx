@@ -20,6 +20,7 @@ function validateArtisanField(
     fullName: string;
     password: string;
     passwordConfirm: string;
+    termsAccepted: boolean;
   },
 ) {
   if (field === "fullName" && values.fullName.trim().length < 2) {
@@ -60,6 +61,10 @@ function validateArtisanField(
     return "Ingresa la clave de alta de vendedor.";
   }
 
+  if (field === "termsAccepted" && !values.termsAccepted) {
+    return "Debés aceptar los términos y la política de privacidad.";
+  }
+
   return undefined;
 }
 
@@ -69,11 +74,12 @@ function buildArtisanErrors(values: {
   fullName: string;
   password: string;
   passwordConfirm: string;
+  termsAccepted: boolean;
 }): ArtisanSignupErrors {
   const errors: FieldErrors<ArtisanSignupField> = {};
 
   (
-    ["fullName", "email", "password", "passwordConfirm", "accessPassword"] as const
+    ["fullName", "email", "password", "passwordConfirm", "accessPassword", "termsAccepted"] as const
   ).forEach((field) => {
     const error = validateArtisanField(field, values);
 
@@ -95,6 +101,8 @@ export function RegistroVendedorPage() {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [accessPassword, setAccessPassword] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [analyticsConsent, setAnalyticsConsent] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<ArtisanSignupErrors>({});
 
   const updateFieldError = (field: ArtisanSignupField, nextError?: string) => {
@@ -120,6 +128,7 @@ export function RegistroVendedorPage() {
         fullName,
         password,
         passwordConfirm,
+        termsAccepted,
       }),
     );
   };
@@ -135,6 +144,7 @@ export function RegistroVendedorPage() {
       fullName,
       password,
       passwordConfirm,
+      termsAccepted,
     });
     setFieldErrors(nextErrors);
 
@@ -146,6 +156,7 @@ export function RegistroVendedorPage() {
 
     try {
       const { data, error } = await signUpArtisan({
+        analyticsConsent,
         email: email.trim(),
         fullName: fullName.trim(),
         password,
@@ -168,6 +179,8 @@ export function RegistroVendedorPage() {
       setPassword("");
       setPasswordConfirm("");
       setAccessPassword("");
+      setTermsAccepted(false);
+      setAnalyticsConsent(false);
       setFieldErrors({});
 
       if (data.session) {
@@ -192,6 +205,7 @@ export function RegistroVendedorPage() {
         <div className="rounded-2xl border border-ocean-100 bg-ocean-50 p-5 sm:p-6">
           <ArtisanSignupForm
             accessPassword={accessPassword}
+            analyticsConsent={analyticsConsent}
             email={email}
             fieldErrors={fieldErrors}
             fullName={fullName}
@@ -210,6 +224,7 @@ export function RegistroVendedorPage() {
                     fullName,
                     password,
                     passwordConfirm,
+                    termsAccepted,
                   }),
                 );
               }
@@ -228,11 +243,13 @@ export function RegistroVendedorPage() {
                     fullName,
                     password,
                     passwordConfirm,
+                    termsAccepted,
                   }),
                 );
               }
             }}
             onFieldBlur={validateField}
+            onAnalyticsConsentChange={setAnalyticsConsent}
             onFullNameChange={(value) => {
               setFullName(value);
               setErrorMessage(null);
@@ -247,6 +264,7 @@ export function RegistroVendedorPage() {
                     fullName: value,
                     password,
                     passwordConfirm,
+                    termsAccepted,
                   }),
                 );
               }
@@ -265,6 +283,7 @@ export function RegistroVendedorPage() {
                     fullName,
                     password: value,
                     passwordConfirm,
+                    termsAccepted,
                   }),
                 );
               }
@@ -278,6 +297,7 @@ export function RegistroVendedorPage() {
                     fullName,
                     password: value,
                     passwordConfirm,
+                    termsAccepted,
                   }),
                 );
               }
@@ -296,6 +316,7 @@ export function RegistroVendedorPage() {
                     fullName,
                     password,
                     passwordConfirm: value,
+                    termsAccepted,
                   }),
                 );
               }
@@ -305,6 +326,13 @@ export function RegistroVendedorPage() {
             }}
             password={password}
             passwordConfirm={passwordConfirm}
+            onTermsAcceptedChange={(value) => {
+              setTermsAccepted(value);
+              if (fieldErrors.termsAccepted) {
+                updateFieldError("termsAccepted", value ? undefined : "Debés aceptar los términos y la política de privacidad.");
+              }
+            }}
+            termsAccepted={termsAccepted}
           />
 
           {statusMessage ? (

@@ -1,5 +1,7 @@
 export const queryKeys = {
   admin: {
+    analyticsOverview: (days: number) => ["admin", "analytics-overview", days] as const,
+    analyticsUserHistory: (userId: string) => ["admin", "analytics-user-history", userId] as const,
     categories: ["admin", "categories"] as const,
     artisanProfiles: ["admin", "artisan-profiles"] as const,
     artisanProfile: (artisanId: string) => ["admin", "artisan-profile", artisanId] as const,

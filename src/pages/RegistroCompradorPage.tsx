@@ -17,10 +17,12 @@ const BUYER_SIGNUP_DRAFT_KEY = "buyer_signup_draft";
 function validateBuyerField(
   field: BuyerSignupField,
   values: {
+    analyticsConsent?: boolean;
     email: string;
     fullName: string;
     password: string;
     passwordConfirm: string;
+    termsAccepted: boolean;
   },
 ) {
   if (field === "fullName" && values.fullName.trim().length < 2) {
@@ -57,18 +59,24 @@ function validateBuyerField(
     }
   }
 
+  if (field === "termsAccepted" && !values.termsAccepted) {
+    return "Debés aceptar los términos y la política de privacidad.";
+  }
+
   return undefined;
 }
 
 function buildBuyerErrors(values: {
+  analyticsConsent?: boolean;
   email: string;
   fullName: string;
   password: string;
   passwordConfirm: string;
+  termsAccepted: boolean;
 }): BuyerSignupErrors {
   const errors: FieldErrors<BuyerSignupField> = {};
 
-  (["fullName", "email", "password", "passwordConfirm"] as const).forEach((field) => {
+  (["fullName", "email", "password", "passwordConfirm", "termsAccepted"] as const).forEach((field) => {
     const error = validateBuyerField(field, values);
 
     if (error) {
@@ -88,6 +96,8 @@ export function RegistroCompradorPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [analyticsConsent, setAnalyticsConsent] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<BuyerSignupErrors>({});
 
   useEffect(() => {
@@ -159,6 +169,7 @@ export function RegistroCompradorPage() {
         fullName,
         password,
         passwordConfirm,
+        termsAccepted,
       }),
     );
   };
@@ -173,6 +184,7 @@ export function RegistroCompradorPage() {
       fullName,
       password,
       passwordConfirm,
+      termsAccepted,
     });
     setFieldErrors(nextErrors);
 
@@ -183,7 +195,12 @@ export function RegistroCompradorPage() {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await signUpBuyer({ email: email.trim(), fullName: fullName.trim(), password });
+      const { data, error } = await signUpBuyer({
+        analyticsConsent,
+        email: email.trim(),
+        fullName: fullName.trim(),
+        password,
+      });
 
       if (error) {
         setErrorMessage(error.message);
@@ -200,6 +217,8 @@ export function RegistroCompradorPage() {
       setEmail("");
       setPassword("");
       setPasswordConfirm("");
+      setTermsAccepted(false);
+      setAnalyticsConsent(false);
       setFieldErrors({});
       localStorage.removeItem(BUYER_SIGNUP_DRAFT_KEY);
 
@@ -222,6 +241,7 @@ export function RegistroCompradorPage() {
       <div className="mx-auto max-w-md">
         <div className="rounded-2xl border border-brand-100 bg-stone-50 p-5 sm:p-6">
           <BuyerSignupForm
+            analyticsConsent={analyticsConsent}
             email={email}
             fieldErrors={fieldErrors}
             fullName={fullName}
@@ -239,11 +259,13 @@ export function RegistroCompradorPage() {
                     fullName,
                     password,
                     passwordConfirm,
+                    termsAccepted,
                   }),
                 );
               }
             }}
             onFieldBlur={validateField}
+            onAnalyticsConsentChange={setAnalyticsConsent}
             onFullNameChange={(value) => {
               setFullName(value);
               setErrorMessage(null);
@@ -257,6 +279,7 @@ export function RegistroCompradorPage() {
                     fullName: value,
                     password,
                     passwordConfirm,
+                    termsAccepted,
                   }),
                 );
               }
@@ -274,6 +297,7 @@ export function RegistroCompradorPage() {
                     fullName,
                     password: value,
                     passwordConfirm,
+                    termsAccepted,
                   }),
                 );
               }
@@ -286,6 +310,7 @@ export function RegistroCompradorPage() {
                     fullName,
                     password: value,
                     passwordConfirm,
+                    termsAccepted,
                   }),
                 );
               }
@@ -303,6 +328,7 @@ export function RegistroCompradorPage() {
                     fullName,
                     password,
                     passwordConfirm: value,
+                    termsAccepted,
                   }),
                 );
               }
@@ -312,6 +338,13 @@ export function RegistroCompradorPage() {
             }}
             password={password}
             passwordConfirm={passwordConfirm}
+            onTermsAcceptedChange={(value) => {
+              setTermsAccepted(value);
+              if (fieldErrors.termsAccepted) {
+                updateFieldError("termsAccepted", value ? undefined : "Debés aceptar los términos y la política de privacidad.");
+              }
+            }}
+            termsAccepted={termsAccepted}
           />
 
           {statusMessage ? (

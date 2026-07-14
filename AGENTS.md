@@ -75,6 +75,14 @@ migraciones, configuración, Git o servicios remotos.
 - Las pruebas automatizadas usan Vitest y React Testing Library. `npm test`
   ejecuta la suite una vez, `npm run test:watch` sirve para desarrollo y
   `npm run preflight` incluye obligatoriamente la suite completa.
+- La analítica interna separa visitas anónimas agregadas de sesiones
+  individuales. Un visitante sin consentimiento no recibe ID persistente ni se
+  vincula luego con una cuenta. Sólo compradores y vendedores con consentimiento
+  versionado vigente generan `analytics_sessions` y `analytics_events`.
+- La clasificación de dispositivo es general y estimada; no usar canvas,
+  WebGL, fuentes, audio, identificadores publicitarios ni otras técnicas de
+  fingerprinting. La IP nunca se almacena: `collect-analytics` sólo puede
+  procesarla en memoria para rate limit y ciudad/región aproximadas.
 
 ## 3. Mapa de arquitectura
 
@@ -92,6 +100,7 @@ migraciones, configuración, Git o servicios remotos.
 | Funciones Edge | `supabase/functions/` | Acciones administrativas y checkout seguro |
 | Pruebas | `src/**/*.test.ts(x)`, `src/test/`, `vitest.config.ts` | Reglas de negocio, autorización y contratos compartidos frontend/Edge |
 | Validaciones | `scripts/`, `package.json` | Tests, auditorías, lint, tipos y build |
+| Analítica interna | `src/features/analytics/`, `src/pages/AdminAnalyticsPage.tsx`, `supabase/functions/collect-analytics/` | Consentimiento, métricas agregadas, eventos permitidos e informes admin |
 
 ## 4. Flujos críticos
 

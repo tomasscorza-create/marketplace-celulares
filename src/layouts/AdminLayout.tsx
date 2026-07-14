@@ -2,6 +2,7 @@ import { PanelLayoutShell } from "./PanelLayoutShell";
 
 const adminLinks = [
   { to: "/panel/admin", label: "Inicio", end: true },
+  { to: "/panel/admin/analitica", label: "Analítica" },
   { to: "/panel/admin/ventas", label: "Ventas" },
   { to: "/panel/admin/facturacion", label: "Facturacion" },
   { to: "/panel/admin/productos", label: "Productos" },

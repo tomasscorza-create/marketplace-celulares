@@ -14,12 +14,15 @@ Las funciones se agrupan en dos ramas principales:
 
 1. **Administración**: `admin-buyer-accounts`, `admin-manage-artisans`. Invocadas desde el panel de admin con tokens JWT. Ejecutan acciones privilegiadas.
 2. **Pagos (Checkout)**: `create-mercadopago-checkout`, `expire-pending-checkouts`, `mercadopago-return`, `mercadopago-webhook`. Manejan la creación de preferencias de pago, callbacks asíncronos y caducidad de carritos abandonados.
+3. **Analítica**: `collect-analytics` recibe métricas anónimas agregadas o eventos de cuentas consentidas. Es pública para admitir visitas sin sesión, pero valida una lista cerrada de payloads y comprueba JWT + consentimiento antes de guardar actividad individual.
 
 ## Reglas y decisiones vigentes
 
 - **Secretos por Nombre**: Las funciones requieren secrets (ej. tokens de Mercado Pago o Service Role Keys) configurados en el proyecto de Supabase. Nunca se guardan sus valores en el código fuente, solo se referencian por nombre.
 - **Despliegue Independiente**: Las funciones no se despliegan automáticamente con el frontend de Netlify; se deben desplegar con `supabase functions deploy [nombre]` hacia el proyecto Supabase activo.
 - **Autenticación en llamadas**: La app frontend invoca estas funciones mandando el token JWT del usuario logueado. Las funciones validan este token antes de operar.
+- **Excepción pública controlada**: `collect-analytics` usa `verify_jwt = false` para contar visitas sin cuenta. No confía en identidad enviada por el cliente; cuando se solicita seguimiento individual valida el JWT dentro de la función.
+- **GeoIP opcional**: `IPINFO_TOKEN` habilita ciudad/región aproximadas. La IP se usa sólo en memoria y no se persiste.
 
 ## Dependencias y límites externos
 

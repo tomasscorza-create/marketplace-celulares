@@ -63,6 +63,9 @@ const RegistroCompradorPage = lazy(async () => ({
 const RegistroVendedorPage = lazy(async () => ({
   default: (await import("../pages/RegistroVendedorPage")).RegistroVendedorPage,
 }));
+const PrivacyPage = lazy(async () => ({
+  default: (await import("../pages/PrivacyPage")).PrivacyPage,
+}));
 const ArtisanDashboardPage = lazy(async () => ({
   default: (await import("../pages/ArtisanDashboardPage")).ArtisanDashboardPage,
 }));
@@ -99,6 +102,9 @@ const BuyerProfilePage = lazy(async () => ({
 }));
 const AdminDashboardPage = lazy(async () => ({
   default: (await import("../pages/AdminDashboardPage")).AdminDashboardPage,
+}));
+const AdminAnalyticsPage = lazy(async () => ({
+  default: (await import("../pages/AdminAnalyticsPage")).AdminAnalyticsPage,
 }));
 const AdminSalesPage = lazy(async () => ({
   default: (await import("../pages/AdminSalesPage")).AdminSalesPage,
@@ -209,6 +215,10 @@ export const router = createBrowserRouter([
         element: withRouteLoader(<RegistroVendedorPage />),
       },
       {
+        path: "privacidad",
+        element: withRouteLoader(<PrivacyPage />),
+      },
+      {
         path: "perfil/cliente",
         element: (
           <ProtectedRoute allowedRoles={["buyer"]}>
@@ -296,6 +306,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: withRouteLoader(<AdminDashboardPage />),
+      },
+      {
+        path: "analitica",
+        element: withRouteLoader(<AdminAnalyticsPage />),
       },
       {
         path: "ventas",

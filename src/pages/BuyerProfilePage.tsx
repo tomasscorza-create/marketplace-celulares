@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 import { PagePlaceholder } from "../components/PagePlaceholder";
 import { useAuth } from "../features/auth/useAuth";
+import { trackAnalyticsEvent } from "../features/analytics/analyticsClient";
 import { useBuyerFavorites, useToggleBuyerFavorite } from "../features/buyer/buyerQueries";
 import {
   usePublicBuyerProfile,
@@ -164,6 +165,11 @@ export function BuyerProfilePage() {
 
     try {
       await toggleFavoriteMutation.mutateAsync(productId);
+      void trackAnalyticsEvent("favorite_add", {
+        entityId: productId,
+        entityType: "product",
+        path: window.location.pathname,
+      });
       setIsInterestModalOpen(false);
     } catch (error) {
       setInterestError(

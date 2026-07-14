@@ -8,12 +8,14 @@ type SignInWithPasswordInput = {
 };
 
 type SignUpBuyerInput = {
+  analyticsConsent: boolean;
   email: string;
   fullName: string;
   password: string;
 };
 
 type SignUpArtisanInput = {
+  analyticsConsent: boolean;
   email: string;
   fullName: string;
   password: string;
@@ -51,6 +53,7 @@ export async function signInWithPassword({
 }
 
 export async function signUpBuyer({
+  analyticsConsent,
   email,
   fullName,
   password,
@@ -62,6 +65,8 @@ export async function signUpBuyer({
     password,
     options: {
       data: {
+        analytics_consent: analyticsConsent,
+        analytics_policy_version: "2026-07-analytics-v1",
         full_name: fullName,
       },
     },
@@ -69,6 +74,7 @@ export async function signUpBuyer({
 }
 
 export async function signUpArtisan({
+  analyticsConsent,
   email,
   fullName,
   password,
@@ -81,6 +87,8 @@ export async function signUpArtisan({
     password,
     options: {
       data: {
+        analytics_consent: analyticsConsent,
+        analytics_policy_version: "2026-07-analytics-v1",
         full_name: fullName,
         requested_role: "artisan",
         artisan_access_key: sellerPassword,

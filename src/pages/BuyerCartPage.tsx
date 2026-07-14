@@ -6,6 +6,7 @@ import { Link, useLocation } from "react-router-dom";
 import { PagePlaceholder } from "../components/PagePlaceholder";
 import { buildWhatsAppUrl } from "../components/WhatsAppButton";
 import { useAuth } from "../features/auth/useAuth";
+import { trackAnalyticsEvent } from "../features/analytics/analyticsClient";
 import { useBuyerPreferences } from "../features/buyer/buyerQueries";
 import {
   useBuyerCartValidation,
@@ -511,6 +512,11 @@ export function BuyerCartPage() {
                     setCartError(response.error?.message || "No pudimos iniciar el pago en este momento.");
                     return;
                   }
+
+                  void trackAnalyticsEvent("checkout_start", {
+                    entityType: "checkout",
+                    path: window.location.pathname,
+                  });
 
                   window.location.href = response.data.checkoutUrl;
                 }}

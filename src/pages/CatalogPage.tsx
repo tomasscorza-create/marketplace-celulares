@@ -13,6 +13,7 @@ const CatalogDarkSection = lazy(
 );
 
 import { useAuth } from "../features/auth/useAuth";
+import { trackAnalyticsEvent } from "../features/analytics/analyticsClient";
 import { useArtisanPendingInternalNotificationCount } from "../features/internalNotifications/internalNotificationsQueries";
 import {
   trackCatalogCategory,
@@ -478,6 +479,7 @@ export function CatalogPage() {
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       trackCatalogSearch(draftSearch);
+      void trackAnalyticsEvent("search", { path: "/catalogo" });
       syncCatalogActivityState();
       updateCatalogParams({ search: draftSearch });
     },
@@ -493,6 +495,11 @@ export function CatalogPage() {
 
       if (nextCategory) {
         trackCatalogCategory(nextCategory.id);
+        void trackAnalyticsEvent("filter", {
+          entityId: nextCategory.id,
+          entityType: "category",
+          path: "/catalogo",
+        });
         syncCatalogActivityState();
       }
 
@@ -503,6 +510,7 @@ export function CatalogPage() {
 
   const handleSortOrderChange = useCallback(
     (nextSortOrder: PublicCatalogSortOrder) => {
+      void trackAnalyticsEvent("filter", { path: "/catalogo" });
       updateCatalogParams({ sortOrder: nextSortOrder });
     },
     [updateCatalogParams],

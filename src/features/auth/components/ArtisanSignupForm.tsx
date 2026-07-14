@@ -14,42 +14,51 @@ export type ArtisanSignupField =
   | "email"
   | "password"
   | "passwordConfirm"
-  | "accessPassword";
+  | "accessPassword"
+  | "termsAccepted";
 
 export type ArtisanSignupErrors = FieldErrors<ArtisanSignupField>;
 
 type ArtisanSignupFormProps = {
   accessPassword: string;
+  analyticsConsent: boolean;
   email: string;
   fieldErrors: ArtisanSignupErrors;
   fullName: string;
   isSubmitting: boolean;
   onAccessPasswordChange: (value: string) => void;
+  onAnalyticsConsentChange: (value: boolean) => void;
   onEmailChange: (value: string) => void;
   onFieldBlur: (field: ArtisanSignupField) => void;
   onFullNameChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
   onPasswordConfirmChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onTermsAcceptedChange: (value: boolean) => void;
   password: string;
   passwordConfirm: string;
+  termsAccepted: boolean;
 };
 
 export function ArtisanSignupForm({
   accessPassword,
+  analyticsConsent,
   email,
   fieldErrors,
   fullName,
   isSubmitting,
   onAccessPasswordChange,
+  onAnalyticsConsentChange,
   onEmailChange,
   onFieldBlur,
   onFullNameChange,
   onPasswordChange,
   onPasswordConfirmChange,
   onSubmit,
+  onTermsAcceptedChange,
   password,
   passwordConfirm,
+  termsAccepted,
 }: ArtisanSignupFormProps) {
   return (
     <form className="grid gap-4" noValidate onSubmit={onSubmit}>
@@ -194,6 +203,40 @@ export function ArtisanSignupForm({
           </span>
         )}
       </label>
+
+      <div className="grid gap-3 rounded-2xl border border-ocean-200 bg-white p-4">
+        <label className="flex items-start gap-3 text-sm text-stone-700">
+          <input
+            checked={termsAccepted}
+            className="mt-1 h-4 w-4 shrink-0 accent-brand-500"
+            onChange={(event) => onTermsAcceptedChange(event.target.checked)}
+            type="checkbox"
+          />
+          <span>
+            Acepto los términos de uso y la política de privacidad. Podés revisarlos en{" "}
+            <a className="font-semibold text-ocean-600 hover:underline" href="/privacidad" rel="noreferrer" target="_blank">
+              Privacidad
+            </a>
+            .
+          </span>
+        </label>
+        {fieldErrors.termsAccepted ? (
+          <span className={fieldErrorClassName}>{fieldErrors.termsAccepted}</span>
+        ) : null}
+
+        <label className="flex items-start gap-3 text-sm text-stone-700">
+          <input
+            checked={analyticsConsent}
+            className="mt-1 h-4 w-4 shrink-0 accent-brand-500"
+            onChange={(event) => onAnalyticsConsentChange(event.target.checked)}
+            type="checkbox"
+          />
+          <span>
+            Permito métricas internas vinculadas con mi cuenta. Es opcional, no usa fingerprinting
+            y se puede revocar cuando quieras.
+          </span>
+        </label>
+      </div>
 
       <button
         className={`${getActionButtonClassName({ fullWidth: true, variant: "primary" })} mt-2 sm:w-fit`}

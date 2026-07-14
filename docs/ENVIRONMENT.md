@@ -48,6 +48,16 @@ conexiones y secretos.
 - `VITE_SENTRY_DSN` es opcional y público por diseño.
 - No adjuntar correos, teléfonos, pedidos, payloads o datos personales a Sentry.
 
+## Analítica y ubicación aproximada
+
+- `collect-analytics` funciona sin proveedor geográfico y no guarda IP.
+- El secret backend opcional `IPINFO_TOKEN` habilita ciudad, región, país y zona
+  horaria aproximados. Nunca definirlo como `VITE_*` ni incluirlo en el bundle.
+- La función ignora coordenadas, postal, ASN y otros campos aunque el proveedor
+  los devuelva.
+- Agregar o rotar este secret es una operación remota separada que requiere
+  confirmar el proyecto Supabase vigente.
+
 ## Validación
 
 ```powershell
@@ -57,4 +67,4 @@ npm run preflight
 ```
 
 Actualizar esta ficha cuando cambie la guardia del cliente, el proveedor de
-deploy o el contrato de variables. Última revisión: 2026-07-13.
+deploy o el contrato de variables. Última revisión: 2026-07-14.

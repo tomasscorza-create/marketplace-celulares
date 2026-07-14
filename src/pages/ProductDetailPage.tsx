@@ -7,6 +7,7 @@ import { isOnlinePurchaseEnabled } from "../config/marketplace";
 import { WhatsAppProductButton } from "../components/WhatsAppProductButton";
 import { ProductImageCarousel } from "../components/ProductImageCarousel";
 import { useAuth } from "../features/auth/useAuth";
+import { trackAnalyticsEvent } from "../features/analytics/analyticsClient";
 import { AddToCartButton } from "../features/buyer/components/AddToCartButton";
 import { useUpdateCartItemSelection } from "../features/buyer/cartQueries";
 import {
@@ -394,7 +395,15 @@ export function ProductDetailPage() {
                   ].join(" ")}
                   disabled={toggleFavoriteMutation.isPending}
                   onClick={async () => {
-                    await toggleFavoriteMutation.mutateAsync(product.id).catch(() => undefined);
+                    const wasFavorite = isFavorite;
+                    const response = await toggleFavoriteMutation.mutateAsync(product.id).catch(() => null);
+                    if (response && !wasFavorite) {
+                      void trackAnalyticsEvent("favorite_add", {
+                        entityId: product.id,
+                        entityType: "product",
+                        path: window.location.pathname,
+                      });
+                    }
                   }}
                   title={isFavorite ? "Quitar de favoritos" : "Guardar en favoritos"}
                   type="button"
@@ -837,6 +846,13 @@ export function ProductDetailPage() {
                           idle: "Comprar",
                           login: "Ingresar para comprar",
                           pending: "Comprando...",
+                        }}
+                        onAdded={() => {
+                          void trackAnalyticsEvent("cart_add", {
+                            entityId: product.id,
+                            entityType: "product",
+                            path: window.location.pathname,
+                          });
                         }}
                         product={product}
                         selection={

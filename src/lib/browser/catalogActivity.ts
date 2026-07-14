@@ -1,4 +1,5 @@
 import { getSupabaseClient, hasSupabaseEnv } from "../supabase/client";
+import { isAnalyticsTrackingAllowed } from "../../features/analytics/analyticsClient";
 
 type CatalogActivityState = {
   recentArtisanIds: string[];
@@ -49,7 +50,7 @@ function mergeCatalogActivityState(
 }
 
 export function getCatalogActivityState(): CatalogActivityState {
-  if (!isBrowserAvailable()) {
+  if (!isBrowserAvailable() || !isAnalyticsTrackingAllowed()) {
     return initialState;
   }
 
@@ -71,6 +72,15 @@ export function getCatalogActivityState(): CatalogActivityState {
   }
 }
 
+export function clearCatalogActivityState() {
+  if (!isBrowserAvailable()) return;
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Privacy cleanup remains best-effort when storage is blocked.
+  }
+}
+
 function saveCatalogActivityState(nextValue: CatalogActivityState) {
   if (!isBrowserAvailable()) {
     return;
@@ -88,6 +98,10 @@ function sanitizeSearchTerm(search: string) {
 }
 
 export async function loadCatalogActivityStateFromAccount() {
+  if (!isAnalyticsTrackingAllowed()) {
+    clearCatalogActivityState();
+    return initialState;
+  }
   const currentValue = getCatalogActivityState();
 
   if (!hasSupabaseEnv || !isBrowserAvailable()) {
@@ -128,7 +142,7 @@ async function syncCatalogActivityToAccount(input: {
   productId?: string;
   searchTerm?: string;
 }) {
-  if (!hasSupabaseEnv || !isBrowserAvailable()) {
+  if (!hasSupabaseEnv || !isBrowserAvailable() || !isAnalyticsTrackingAllowed()) {
     return;
   }
 
@@ -152,23 +166,13 @@ async function syncCatalogActivityToAccount(input: {
 }
 
 export function trackCatalogSearch(search: string) {
-  const normalizedSearch = sanitizeSearchTerm(search);
-  if (!normalizedSearch) {
-    return;
-  }
-
-  const currentValue = getCatalogActivityState();
-  saveCatalogActivityState(
-    mergeCatalogActivityState(currentValue, {
-      recentSearches: [normalizedSearch],
-    }),
-  );
-  void syncCatalogActivityToAccount({
-    searchTerm: normalizedSearch,
-  });
+  // The analytics module counts the action without retaining the free-text query.
+  // Keep this function for callers that also refresh catalog personalization.
+  void search;
 }
 
 export function trackCatalogCategory(categoryId: string | null | undefined) {
+  if (!isAnalyticsTrackingAllowed()) return;
   if (!categoryId) {
     return;
   }
@@ -189,6 +193,7 @@ export function trackCatalogProductView(input: {
   categoryId: string;
   productId: string;
 }) {
+  if (!isAnalyticsTrackingAllowed()) return;
   const currentValue = getCatalogActivityState();
   saveCatalogActivityState(
     mergeCatalogActivityState(currentValue, {
