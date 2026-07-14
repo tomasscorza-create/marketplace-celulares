@@ -91,7 +91,9 @@ export function useArtisanProductDraftPersistence({
           draft.title?.trim() ||
           draft.description?.trim() ||
           Number(draft.price) > 0 ||
-          (draft.imageDrafts?.length ?? 0) > 0;
+          (draft.imageDrafts?.length ?? 0) > 0 ||
+          (draft.product_attributes?.length ?? 0) > 0 ||
+          (draft.category_spec_values?.length ?? 0) > 0;
 
         if (!hasContent) {
           return;
