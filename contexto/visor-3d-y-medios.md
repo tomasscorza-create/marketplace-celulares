@@ -80,6 +80,19 @@ La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
   soporta la Vibration API (desktop, iOS Safari) o si el toque no es táctil
   (mouse/trackpad), así que no hace falta feature-detection adicional en el
   resto del componente.
+- **Calidad visual de bajo costo**: sobre las 2 luces originales
+  (`keyLight` direccional + `fillLight` hemisferio) se sumó `rimLight`, una
+  tercera direccional lila/índigo fija en la escena para separar el objeto
+  del fondo con un borde de luz al girar. El renderer usa
+  `ACESFilmicToneMapping` con `toneMappingExposure = 1.1` para un contraste
+  más "foto de producto". También hay una sombra de contacto barata bajo el
+  modelo: un plano `MeshBasicMaterial` con una textura radial generada por
+  `canvas` (`createContactShadowCanvas`), sin shadow maps de Three (no hay
+  pase de render extra, es un solo draw call transparente). Todo se libera
+  en `cleanupRenderer` (geometría, material y textura de la sombra). No se
+  agregó un environment map de reflejos a propósito: el PMREM que requiere
+  tiene un costo de render adicional real y el pedido explícito era no
+  arriesgar rendimiento.
 
 ## Dependencias y límites externos
 - **Three.js** y **React Three Fiber**: Motores WebGL subyacentes encargados de las luces, texturas y rotaciones de cámara.

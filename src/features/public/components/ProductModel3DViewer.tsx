@@ -57,6 +57,27 @@ type DisposableObject3D = Object3D & {
   material?: Material | Material[];
 };
 
+function createContactShadowCanvas() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 128;
+
+  const context = canvas.getContext("2d");
+
+  if (!context) {
+    return canvas;
+  }
+
+  const gradient = context.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gradient.addColorStop(0, "rgba(15,23,42,0.38)");
+  gradient.addColorStop(0.7, "rgba(15,23,42,0.16)");
+  gradient.addColorStop(1, "rgba(15,23,42,0)");
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, 128, 128);
+
+  return canvas;
+}
+
 function disposeObject3D(object: Object3D) {
   object.traverse?.((child) => {
     const disposableChild = child as DisposableObject3D;
@@ -177,11 +198,14 @@ export function ProductModel3DViewer({
         const controls = new OrbitControls(camera, renderer.domElement);
         const keyLight = new Three.DirectionalLight(0xffffff, 2.4);
         const fillLight = new Three.HemisphereLight(0xe0f2fe, 0x475569, 1.2);
+        const rimLight = new Three.DirectionalLight(0xa5b4fc, 1.3);
         const loader = new GLTFLoader();
         loader.setMeshoptDecoder(MeshoptDecoder);
 
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isLiteMode ? 1.2 : 1.8));
         renderer.outputColorSpace = Three.SRGBColorSpace;
+        renderer.toneMapping = Three.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.1;
         renderer.domElement.setAttribute("aria-label", `Modelo 3D de ${title}`);
         renderer.domElement.setAttribute("role", "img");
         renderer.domElement.className =
@@ -232,7 +256,8 @@ export function ProductModel3DViewer({
         window.addEventListener("pointercancel", handleGridPointerUp);
 
         keyLight.position.set(2.6, 4, 3.4);
-        scene.add(keyLight, fillLight);
+        rimLight.position.set(-2.4, 1.8, -3.2);
+        scene.add(keyLight, fillLight, rimLight);
 
         controls.enableDamping = true;
         controls.enablePan = false;
@@ -309,6 +334,22 @@ export function ProductModel3DViewer({
         model.scale.setScalar(scale);
         scene.add(model);
 
+        const shadowTexture = new Three.CanvasTexture(createContactShadowCanvas());
+        const shadowRadius = Math.max(size.x, size.z) * scale * 0.85;
+        const contactShadow = new Three.Mesh(
+          new Three.PlaneGeometry(1, 1),
+          new Three.MeshBasicMaterial({
+            depthWrite: false,
+            map: shadowTexture,
+            transparent: true,
+          }),
+        );
+
+        contactShadow.rotation.x = -Math.PI / 2;
+        contactShadow.scale.set(shadowRadius, shadowRadius, 1);
+        contactShadow.position.y = (box.min.y - center.y) * scale + 0.01;
+        scene.add(contactShadow);
+
         camera.position.set(0, 0.4, 4.2);
         controls.target.set(0, 0, 0);
         controls.update();
@@ -341,6 +382,9 @@ export function ProductModel3DViewer({
           controls.dispose();
           controlsApiRef.current = null;
           disposeObject3D(model);
+          contactShadow.geometry.dispose();
+          contactShadow.material.dispose();
+          shadowTexture.dispose();
           renderer.dispose();
           renderer.domElement.remove();
         };
