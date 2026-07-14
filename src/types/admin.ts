@@ -3,6 +3,7 @@ import type {
   FulfillmentStatus,
   PaymentStatus,
 } from "./commerce";
+import type { CategorySpecTemplateField } from "./categorySpecs";
 import type { ProductAvailabilityMode } from "./productAvailability";
 
 export type AdminCategory = {
@@ -202,12 +203,7 @@ export type AdminCategoryInput = {
   slug: string;
 };
 
-export type AdminCategorySpecTemplateField = {
-  id: string;
-  category_id: string;
-  field_label: string;
-  sort_order: number;
-};
+export type AdminCategorySpecTemplateField = CategorySpecTemplateField;
 
 export type AdminCategorySpecTemplateInput = {
   field_label: string;

@@ -1,3 +1,5 @@
+import { sanitizeTrimmedPairs } from "../lib/sanitizeTextPairs";
+
 export type ProductAttribute = {
   key: string;
   value: string;
@@ -97,12 +99,11 @@ export function getProductAttributeValueSuggestions(attributeKey: string) {
   return PRODUCT_ATTRIBUTE_VALUE_SUGGESTIONS[attributeKey.trim().toLowerCase()] ?? [];
 }
 
+export const MAX_PRODUCT_ATTRIBUTES = 12;
+
 export function sanitizeProductAttributes(attributes: ProductAttribute[]) {
-  return attributes
-    .map((attribute) => ({
-      key: attribute.key.trim(),
-      value: attribute.value.trim(),
-    }))
-    .filter((attribute) => attribute.key.length > 0 && attribute.value.length > 0)
-    .slice(0, 12);
+  return sanitizeTrimmedPairs(
+    attributes.map((attribute) => [attribute.key, attribute.value]),
+    MAX_PRODUCT_ATTRIBUTES,
+  ).map(([key, value]) => ({ key, value }));
 }

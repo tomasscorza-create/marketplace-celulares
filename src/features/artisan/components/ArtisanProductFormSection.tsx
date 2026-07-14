@@ -9,6 +9,7 @@ import type { ArtisanProductLearningProfile } from "../artisanProductLearning";
 import { useEffect, useRef, useState } from "react";
 import {
   getProductAttributeValueSuggestions,
+  MAX_PRODUCT_ATTRIBUTES,
   PRODUCT_ATTRIBUTE_SUGGESTIONS,
 } from "../../../types/productAttributes";
 import { ProductLearningPanel } from "./ProductLearningPanel";
@@ -111,7 +112,7 @@ export function ArtisanProductFormSection({
   const formTitle = editingProductId ? "Editar producto" : "Nuevo producto";
   const submitLabel = editingProductId ? "Guardar cambios" : "Crear producto";
   const showTopSummary = !isCreateFocused || Boolean(editingProductId);
-  const canAddMoreAttributes = productForm.product_attributes.length < 12;
+  const canAddMoreAttributes = productForm.product_attributes.length < MAX_PRODUCT_ATTRIBUTES;
   const selectedCategoryName =
     categories.find((category) => category.id === productForm.category_id)?.name ??
     "esta categoria";

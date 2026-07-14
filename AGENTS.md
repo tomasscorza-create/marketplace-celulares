@@ -86,6 +86,7 @@ migraciones, configuración, Git o servicios remotos.
 | Vendedores y productos | `src/features/artisan/`, `src/pages/ArtisanProductsPage.tsx` | Alta, edición, fotos, stock y tienda |
 | Administración | `src/features/admin/`, `src/pages/Admin*.tsx` | Vendedores, categorías, productos y controles |
 | Compradores y pedidos | `src/features/buyer/`, `src/features/orders/` | Carrito, cuenta, órdenes y checkout |
+| Datos compartidos entre roles | `src/features/categorySpecs/` | Cliente y hooks leídos tanto por admin (gestión de plantillas) como por vendedores (completar valores); usar este patrón sólo cuando un mismo dato deba leerse desde dos features de rol distinto, en vez de duplicar el lector en cada una o crear un import cruzado entre `admin/` y `artisan/` |
 | Cliente Supabase | `src/lib/supabase/client.ts` | Guardia de entorno y cliente compartido |
 | Esquema de datos | `supabase/migrations/` | Tablas, RLS, Storage, RPC y funciones SQL |
 | Funciones Edge | `supabase/functions/` | Acciones administrativas y checkout seguro |
