@@ -583,14 +583,14 @@ export function CatalogPage() {
               <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
               <div className="pointer-events-none absolute -inset-2 z-0 rounded-3xl bg-[url('/catalog_personalized_bg.webp')] bg-cover bg-center opacity-20 blur-sm" />
               <div className="pointer-events-none absolute inset-0 z-0 bg-stone-950/25" />
-              <div className="relative z-10 grid gap-4">
-                <div className="relative flex h-14 items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-r from-brand-700 via-brand-600 to-blue-600 px-4 shadow-elev-2 sm:px-5">
+              <div className="relative z-10 grid gap-2 sm:gap-4">
+                <div className="relative flex h-[38px] sm:h-14 items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-r from-brand-700 via-brand-600 to-blue-600 px-3 sm:px-5 shadow-elev-2">
                   <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_0%,rgba(255,255,255,0.22),transparent_38%)]" />
-                  <h2 className="relative font-display text-lg font-bold text-white" id="catalog-personalized-title">
+                  <h2 className="relative font-display text-[13px] sm:text-lg font-bold text-white" id="catalog-personalized-title">
                     Para ti
                   </h2>
                   <Link
-                    className="relative inline-flex min-h-9 items-center rounded-full bg-white/15 px-3.5 text-xs font-semibold text-white transition-colors hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                    className="relative inline-flex min-h-[26px] sm:min-h-9 items-center rounded-full bg-white/15 px-3 sm:px-3.5 text-[10px] sm:text-xs font-semibold text-white transition-colors hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                     to="/catalogo/para-vos"
                   >
                     Ver todo
@@ -614,14 +614,14 @@ export function CatalogPage() {
             <div className="pointer-events-none absolute inset-0 z-0 bg-white" />
             <div className="pointer-events-none absolute -inset-2 z-0 rounded-3xl bg-[url('/catalog_explore_bg.webp')] bg-cover bg-center opacity-20 blur-sm" />
             <div className="pointer-events-none absolute inset-0 z-0 bg-stone-950/25" />
-            <div className="relative z-10 grid gap-4">
-              <div className="relative flex h-14 items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-r from-brand-700 via-brand-600 to-blue-600 px-4 shadow-elev-2 sm:px-5">
+            <div className="relative z-10 grid gap-2 sm:gap-4">
+              <div className="relative flex h-[38px] sm:h-14 items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-r from-brand-700 via-brand-600 to-blue-600 px-3 sm:px-5 shadow-elev-2">
                 <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_0%,rgba(255,255,255,0.22),transparent_38%)]" />
-                <h2 className="relative font-display text-lg font-bold text-white" id="catalog-explore-title">
+                <h2 className="relative font-display text-[13px] sm:text-lg font-bold text-white" id="catalog-explore-title">
                   Explorar
                 </h2>
                 {totalCount > 0 ? (
-                  <span className="relative text-xs font-medium text-white/75">
+                  <span className="relative text-[10px] sm:text-xs font-medium text-white/75">
                     {totalCount.toLocaleString("es-AR")} productos
                   </span>
                 ) : null}

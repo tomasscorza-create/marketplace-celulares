@@ -1,4 +1,4 @@
-﻿import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import type { PublicCatalogStorefrontGroup } from "../../../types/public";
@@ -58,7 +58,9 @@ function CatalogStorefrontSectionInner({ group }: CatalogStorefrontSectionProps)
   }
 
   return (
-    <section className="catalog-card min-w-0 overflow-hidden rounded-2xl border border-stone-200 bg-white p-3 shadow-sm transition-all duration-200 hover:border-ocean-300 hover:shadow-[0_22px_46px_-36px_rgba(15,23,42,0.34)] [content-visibility:auto] [contain-intrinsic-size:540px] sm:p-4">
+    <section 
+      className="catalog-card min-w-0 overflow-hidden rounded-2xl border border-stone-200 bg-gradient-to-tr from-white via-sky-100 to-white p-3 shadow-sm transition-all duration-200 hover:border-ocean-300 hover:shadow-[0_22px_46px_-36px_rgba(15,23,42,0.34)] [content-visibility:auto] [contain-intrinsic-size:540px] sm:p-4"
+    >
       <div className="flex flex-col gap-3 border-b border-stone-200 pb-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-center gap-3">
           <div
