@@ -198,6 +198,7 @@ export function AdminCategoriesPage() {
     }
 
     const wasEditing = Boolean(editingCategoryId);
+    let createdCategory: AdminCategory | null = null;
 
     try {
       if (editingCategoryId) {
@@ -206,7 +207,7 @@ export function AdminCategoriesPage() {
           input: categoryForm,
         });
       } else {
-        await createCategoryMutation.mutateAsync(categoryForm);
+        createdCategory = await createCategoryMutation.mutateAsync(categoryForm);
       }
     } catch (error) {
       setSaveErrorMessage(
@@ -218,12 +219,22 @@ export function AdminCategoriesPage() {
     }
 
     // Éxito: el invalidate de la mutation ya disparó el refetch en background.
+    if (wasEditing) {
+      resetForm();
+      setStatusMessage("Categoria actualizada correctamente.");
+      return;
+    }
+
+    if (createdCategory) {
+      // Entrar directo en modo edición de la categoría recién creada para
+      // que el editor de especificaciones quede visible sin pasos extra.
+      startEditing(createdCategory);
+      setStatusMessage("Categoria creada. Agregá sus especificaciones abajo.");
+      return;
+    }
+
     resetForm();
-    setStatusMessage(
-      wasEditing
-        ? "Categoria actualizada correctamente."
-        : "Categoria creada correctamente.",
-    );
+    setStatusMessage("Categoria creada correctamente.");
   };
 
   const startEditing = (category: AdminCategory) => {

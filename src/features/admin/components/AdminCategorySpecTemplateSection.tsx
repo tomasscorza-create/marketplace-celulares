@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { getActionButtonClassName } from "../../../components/ActionButton";
 import type { AdminCategorySpecTemplateField } from "../../../types/admin";
@@ -26,35 +26,98 @@ export function AdminCategorySpecTemplateSection({
   template,
 }: AdminCategorySpecTemplateSectionProps) {
   const [fieldLabels, setFieldLabels] = useState<string[]>([]);
+  const [draftInput, setDraftInput] = useState("");
+  const [quickAddHint, setQuickAddHint] = useState<string | null>(null);
+  const [dragSourceIndex, setDragSourceIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isCheckingUsage, setIsCheckingUsage] = useState(false);
   const [pendingRemoval, setPendingRemoval] = useState<CategorySpecFieldUsage[] | null>(null);
   const canAddMoreFields = fieldLabels.length < MAX_CATEGORY_SPEC_FIELDS;
   const isBusy = isSaving || isCheckingUsage;
+  // Sólo sincroniza fieldLabels desde el servidor una vez por categoría (al
+  // cargar). Un refetch en segundo plano (foco de ventana, invalidación tras
+  // guardar) no debe pisar ediciones locales todavía no guardadas.
+  const syncedCategoryIdRef = useRef<string | null>(null);
 
   useEffect(() => {
+    if (isLoading || syncedCategoryIdRef.current === categoryId) {
+      return;
+    }
+
+    syncedCategoryIdRef.current = categoryId;
     setFieldLabels(template.map((field) => field.field_label));
+    setDraftInput("");
+    setQuickAddHint(null);
     setStatusMessage(null);
     setErrorMessage(null);
     setPendingRemoval(null);
-  }, [categoryId, template]);
+  }, [categoryId, isLoading, template]);
 
   const editFields = (updater: (current: string[]) => string[]) => {
     setFieldLabels(updater);
     setPendingRemoval(null);
   };
 
-  const moveField = (index: number, direction: -1 | 1) => {
-    const targetIndex = index + direction;
+  const commitLabels = (rawText: string) => {
+    const candidates = rawText
+      .split(/[,\n]/)
+      .map((piece) => piece.trim())
+      .filter((piece) => piece.length > 0);
 
-    if (targetIndex < 0 || targetIndex >= fieldLabels.length) {
+    if (candidates.length === 0) {
+      return;
+    }
+
+    let skippedDuplicate = false;
+    let skippedLimit = false;
+
+    editFields((current) => {
+      const next = [...current];
+      const existingLower = new Set(next.map((label) => label.trim().toLowerCase()));
+
+      for (const candidate of candidates) {
+        if (next.length >= MAX_CATEGORY_SPEC_FIELDS) {
+          skippedLimit = true;
+          break;
+        }
+
+        const lower = candidate.toLowerCase();
+
+        if (existingLower.has(lower)) {
+          skippedDuplicate = true;
+          continue;
+        }
+
+        next.push(candidate);
+        existingLower.add(lower);
+      }
+
+      return next;
+    });
+
+    if (skippedLimit) {
+      setQuickAddHint(`Llegaste al máximo de ${MAX_CATEGORY_SPEC_FIELDS} campos.`);
+    } else if (skippedDuplicate) {
+      setQuickAddHint("Algún campo ya existía y no se agregó de nuevo.");
+    } else {
+      setQuickAddHint(null);
+    }
+  };
+
+  const reorderField = (sourceIndex: number, targetIndex: number) => {
+    if (sourceIndex === targetIndex) {
       return;
     }
 
     editFields((current) => {
+      if (sourceIndex < 0 || sourceIndex >= current.length) {
+        return current;
+      }
+
       const next = [...current];
-      const [moved] = next.splice(index, 1);
+      const [moved] = next.splice(sourceIndex, 1);
       next.splice(targetIndex, 0, moved);
 
       return next;
@@ -135,107 +198,152 @@ export function AdminCategorySpecTemplateSection({
 
   return (
     <section className="grid gap-4 rounded-3xl border border-stone-200 bg-stone-50/80 p-4 sm:p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="space-y-1">
-          <p className="text-sm font-semibold text-stone-900">
-            Especificaciones de {categoryName}
-          </p>
-          <p className="text-sm text-stone-500">
-            Define los campos (ej. RAM, Memoria) que los vendedores completaran
-            al cargar un producto de esta categoria.
-          </p>
-          <p className="text-xs text-stone-400">
-            {fieldLabels.length}/{MAX_CATEGORY_SPEC_FIELDS} campos
-          </p>
-        </div>
-
-        <button
-          className={getActionButtonClassName({ size: "sm", variant: "ghost" })}
-          disabled={isLoading || isBusy || !canAddMoreFields}
-          onClick={() => {
-            editFields((current) => [...current, ""]);
-          }}
-          type="button"
-        >
-          Agregar campo
-        </button>
-      </div>
-
-      {!canAddMoreFields ? (
-        <p className="text-xs text-stone-500">
-          Llegaste al máximo de {MAX_CATEGORY_SPEC_FIELDS} campos por categoría. Quitá alguno para agregar otro.
+      <div className="space-y-1">
+        <p className="text-sm font-semibold text-stone-900">
+          Especificaciones de {categoryName}
         </p>
-      ) : null}
+        <p className="text-sm text-stone-500">
+          Escribí un campo y presioná Enter (ej. RAM). Podés pegar varios
+          separados por coma para cargarlos todos de una vez.
+        </p>
+        <p className="text-xs text-stone-400">
+          {fieldLabels.length}/{MAX_CATEGORY_SPEC_FIELDS} campos
+        </p>
+      </div>
 
       {isLoading ? (
         <p className="text-sm text-stone-500">Cargando plantilla...</p>
       ) : (
-        <div className="grid gap-3">
-          {fieldLabels.map((label, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-[minmax(0,1fr)_auto_auto_auto] items-center gap-2 rounded-2xl border border-stone-200 bg-white p-3"
-            >
-              <input
-                className="rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none transition focus:border-brand-300 disabled:opacity-60"
-                disabled={isBusy}
-                onChange={(event) => {
-                  const nextValue = event.target.value;
+        <>
+          <div className="flex flex-wrap items-center gap-2">
+            {fieldLabels.map((label, index) => (
+              <div
+                key={index}
+                className={[
+                  "flex items-center gap-0.5 rounded-full border bg-white py-1 pl-1 pr-1.5 transition-colors",
+                  dragOverIndex === index && dragSourceIndex !== null && dragSourceIndex !== index
+                    ? "border-brand-300 bg-brand-50"
+                    : "border-stone-200",
+                ].join(" ")}
+                onDragOver={(event) => {
+                  if (dragSourceIndex === null || isBusy) {
+                    return;
+                  }
 
-                  editFields((current) =>
-                    current.map((entry, entryIndex) =>
-                      entryIndex === index ? nextValue : entry,
-                    ),
-                  );
+                  event.preventDefault();
+                  setDragOverIndex(index);
                 }}
-                placeholder="Ej. RAM"
-                type="text"
-                value={label}
-              />
+                onDrop={(event) => {
+                  event.preventDefault();
 
-              <button
-                className="rounded-full border border-stone-200 px-3 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100 disabled:opacity-40"
-                disabled={isBusy || index === 0}
-                onClick={() => {
-                  moveField(index, -1);
+                  if (dragSourceIndex !== null) {
+                    reorderField(dragSourceIndex, index);
+                  }
+
+                  setDragSourceIndex(null);
+                  setDragOverIndex(null);
                 }}
-                type="button"
               >
-                ↑
-              </button>
+                <span
+                  aria-label="Arrastrar para reordenar"
+                  className={[
+                    "select-none rounded-full px-1 text-xs leading-none text-stone-400",
+                    isBusy ? "cursor-not-allowed" : "cursor-grab active:cursor-grabbing",
+                  ].join(" ")}
+                  draggable={!isBusy}
+                  onDragEnd={() => {
+                    setDragSourceIndex(null);
+                    setDragOverIndex(null);
+                  }}
+                  onDragStart={(event) => {
+                    setDragSourceIndex(index);
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/plain", String(index));
+                  }}
+                >
+                  ⋮⋮
+                </span>
 
-              <button
-                className="rounded-full border border-stone-200 px-3 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100 disabled:opacity-40"
-                disabled={isBusy || index === fieldLabels.length - 1}
-                onClick={() => {
-                  moveField(index, 1);
-                }}
-                type="button"
-              >
-                ↓
-              </button>
+                <input
+                  className="min-w-0 bg-transparent px-1 py-0.5 text-sm text-stone-900 outline-none disabled:opacity-60"
+                  disabled={isBusy}
+                  onChange={(event) => {
+                    const nextValue = event.target.value;
 
-              <button
-                className="rounded-full border border-stone-200 px-3 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100 disabled:opacity-40"
-                disabled={isBusy}
-                onClick={() => {
-                  editFields((current) =>
-                    current.filter((_entry, entryIndex) => entryIndex !== index),
-                  );
-                }}
-                type="button"
-              >
-                Quitar
-              </button>
-            </div>
-          ))}
+                    editFields((current) =>
+                      current.map((entry, entryIndex) =>
+                        entryIndex === index ? nextValue : entry,
+                      ),
+                    );
+                  }}
+                  style={{ width: `${Math.max(4, label.length + 2)}ch` }}
+                  type="text"
+                  value={label}
+                />
 
-          {fieldLabels.length === 0 ? (
-            <p className="rounded-2xl border border-dashed border-stone-300 bg-white/80 p-4 text-sm text-stone-500">
-              Esta categoria todavia no tiene campos de especificaciones.
-            </p>
-          ) : null}
-        </div>
+                <button
+                  aria-label={`Quitar ${label || "campo"}`}
+                  className="rounded-full px-1.5 text-sm font-medium leading-none text-stone-400 transition-colors hover:bg-rose-50 hover:text-rose-600 disabled:opacity-40"
+                  disabled={isBusy}
+                  onClick={() => {
+                    editFields((current) =>
+                      current.filter((_entry, entryIndex) => entryIndex !== index),
+                    );
+                  }}
+                  type="button"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+
+            {fieldLabels.length === 0 ? (
+              <p className="text-sm text-stone-500">
+                Todavía no hay campos. Escribí el primero abajo.
+              </p>
+            ) : null}
+          </div>
+
+          <div>
+            <input
+              className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none transition focus:border-brand-300 disabled:opacity-60"
+              disabled={isBusy || !canAddMoreFields}
+              onBlur={() => {
+                if (draftInput.trim()) {
+                  commitLabels(draftInput);
+                  setDraftInput("");
+                }
+              }}
+              onChange={(event) => {
+                setDraftInput(event.target.value);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  commitLabels(draftInput);
+                  setDraftInput("");
+                }
+              }}
+              onPaste={(event) => {
+                const pastedText = event.clipboardData.getData("text");
+
+                if (/[,\n]/.test(pastedText)) {
+                  event.preventDefault();
+                  commitLabels(pastedText);
+                  setDraftInput("");
+                }
+              }}
+              placeholder={
+                canAddMoreFields
+                  ? "Ej. RAM (Enter para agregar, o pegá una lista separada por comas)"
+                  : `Llegaste al máximo de ${MAX_CATEGORY_SPEC_FIELDS} campos.`
+              }
+              type="text"
+              value={draftInput}
+            />
+            {quickAddHint ? <p className="mt-1 text-xs text-stone-500">{quickAddHint}</p> : null}
+          </div>
+        </>
       )}
 
       {pendingRemoval ? (
