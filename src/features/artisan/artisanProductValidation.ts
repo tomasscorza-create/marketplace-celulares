@@ -1,7 +1,9 @@
 import type { ArtisanProductInput } from "../../types/artisan";
 import type { ProductAttribute } from "../../types/productAttributes";
+import type { CategorySpecValue } from "../../types/categorySpecs";
 
 import { sanitizeProductAttributes } from "../../types/productAttributes";
+import { sanitizeCategorySpecValues } from "../../types/categorySpecs";
 import type { ProductImageDraft } from "./imageEditorTypes";
 
 type ValidationParams = {
@@ -12,6 +14,7 @@ type ValidationParams = {
 type ValidationResult = {
   errorMessage: string | null;
   sanitizedAttributes: ProductAttribute[];
+  sanitizedCategorySpecValues: CategorySpecValue[];
 };
 
 function hasInvalidOptionGroups(productForm: ArtisanProductInput) {
@@ -28,11 +31,15 @@ export function validateArtisanProductDraft({
   productImages,
 }: ValidationParams): ValidationResult {
   const sanitizedAttributes = sanitizeProductAttributes(productForm.product_attributes);
+  const sanitizedCategorySpecValues = sanitizeCategorySpecValues(
+    productForm.category_spec_values,
+  );
 
   if (!productForm.category_id) {
     return {
       errorMessage: "Necesitás al menos una categoría activa para guardar productos.",
       sanitizedAttributes,
+      sanitizedCategorySpecValues,
     };
   }
 
@@ -40,6 +47,7 @@ export function validateArtisanProductDraft({
     return {
       errorMessage: "El título debe tener al menos 4 caracteres.",
       sanitizedAttributes,
+      sanitizedCategorySpecValues,
     };
   }
 
@@ -47,6 +55,7 @@ export function validateArtisanProductDraft({
     return {
       errorMessage: "Ingresá un precio mayor a 0 para publicar el producto.",
       sanitizedAttributes,
+      sanitizedCategorySpecValues,
     };
   }
 
@@ -58,6 +67,7 @@ export function validateArtisanProductDraft({
     return {
       errorMessage: "Ingresá un stock válido mayor a 0.",
       sanitizedAttributes,
+      sanitizedCategorySpecValues,
     };
   }
 
@@ -69,6 +79,7 @@ export function validateArtisanProductDraft({
       return {
         errorMessage: "Definí una demora de producción en días para la producción bajo demanda.",
         sanitizedAttributes,
+        sanitizedCategorySpecValues,
       };
     }
 
@@ -77,6 +88,7 @@ export function validateArtisanProductDraft({
         errorMessage:
           "Revisá las variables de producción bajo demanda: cada grupo debe tener nombre y al menos una opción.",
         sanitizedAttributes,
+        sanitizedCategorySpecValues,
       };
     }
   }
@@ -86,6 +98,7 @@ export function validateArtisanProductDraft({
       errorMessage:
         "Revisá las variables del producto: cada grupo debe tener nombre y al menos una opción.",
       sanitizedAttributes,
+      sanitizedCategorySpecValues,
     };
   }
 
@@ -93,8 +106,9 @@ export function validateArtisanProductDraft({
     return {
       errorMessage: "Cargá al menos una foto para publicar el producto.",
       sanitizedAttributes,
+      sanitizedCategorySpecValues,
     };
   }
 
-  return { errorMessage: null, sanitizedAttributes };
+  return { errorMessage: null, sanitizedAttributes, sanitizedCategorySpecValues };
 }

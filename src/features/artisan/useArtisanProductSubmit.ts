@@ -269,6 +269,7 @@ export function useArtisanProductSubmit({
           : productForm.product_media.filter(isProductModel3DMediaItem)),
       ],
       product_attributes: validation.sanitizedAttributes,
+      category_spec_values: validation.sanitizedCategorySpecValues,
       price: Number(productForm.price),
     };
 

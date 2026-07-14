@@ -17,6 +17,7 @@ type ForwardedProps = Omit<
   | "onTitleChange"
   | "onToggleActive"
   | "onUpdateAttribute"
+  | "onUpdateCategorySpecValue"
   | "onUpdateMadeToOrderOptions"
 >;
 
@@ -49,7 +50,11 @@ export function ArtisanProductFormConnector({
         }));
       }}
       onCategoryChange={(category_id) => {
-        setProductForm((current) => ({ ...current, category_id }));
+        setProductForm((current) => ({
+          ...current,
+          category_id,
+          category_spec_values: [],
+        }));
       }}
       onDescriptionChange={(description) => {
         setProductForm((current) => ({ ...current, description }));
@@ -84,6 +89,27 @@ export function ArtisanProductFormConnector({
             attributeIndex === index ? { ...attribute, [field]: value } : attribute,
           ),
         }));
+      }}
+      onUpdateCategorySpecValue={(label, value) => {
+        setProductForm((current) => {
+          const existingIndex = current.category_spec_values.findIndex(
+            (entry) => entry.label === label,
+          );
+
+          if (existingIndex === -1) {
+            return {
+              ...current,
+              category_spec_values: [...current.category_spec_values, { label, value }],
+            };
+          }
+
+          return {
+            ...current,
+            category_spec_values: current.category_spec_values.map((entry, index) =>
+              index === existingIndex ? { ...entry, value } : entry,
+            ),
+          };
+        });
       }}
       onUpdateMadeToOrderOptions={(made_to_order_options) => {
         setProductForm((current) => ({ ...current, made_to_order_options }));

@@ -26,6 +26,7 @@ El catálogo público funciona así:
 - **Búsqueda guiada por URL**: Todos los filtros (búsqueda, página, orden) deben reflejarse en la URL (`URLSearchParams`) para mantener enlaces compartibles.
 - **Modelos 3D**: Son opcionales. Las tarjetas manejan de forma segura que un producto no tenga archivos GLB/GLTF.
 - **Grillas reactivas**: Se decide la cantidad de columnas no solo mediante media queries, sino por un estado de React evaluando el ancho de la ventana al cargar y redimensionar.
+- **Especificaciones por categoría**: El admin define, por categoría, una plantilla de campos de texto libre (tabla `category_spec_templates`, gestionada desde `AdminCategoriesPage.tsx` al editar una categoría). Al cargar o editar un producto (mismo formulario compartido por admin y vendedor), si la categoría elegida tiene plantilla, se muestra una sección para completar el valor de cada campo; se guarda como snapshot en `products.category_spec_values` (jsonb, `{label, value}[]`), desacoplado de la plantilla. Cambiar la categoría del producto descarta los valores cargados. El detalle público (`ProductDetailPage.tsx`) muestra esta tabla debajo de la descripción cuando el producto tiene valores. Cliente y hooks compartidos en `src/features/categorySpecs/`.
 
 ## Dependencias y límites externos
 

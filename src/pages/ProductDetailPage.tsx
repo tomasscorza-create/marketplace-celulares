@@ -34,48 +34,10 @@ import {
 } from "../types/productAvailability";
 import { getPrimaryProductModel3D, getProductImageMediaItems } from "../types/productMedia";
 import { Catalog3DBadge } from "../features/public/components/Catalog3DBadge";
+import { DetailSectionCard } from "../features/public/components/DetailSectionCard";
 import { ProductModel3DViewer } from "../features/public/components/ProductModel3DViewer";
+import { ProductOptionSelector } from "../features/public/components/ProductOptionSelector";
 import { buildPublicProductDetailUrl, buildUrlFileSlug } from "../lib/publicUrls";
-
-type DetailSectionCardProps = {
-  eyebrow?: string;
-  title: string;
-  description?: string;
-  children?: React.ReactNode;
-  toneClassName?: string;
-  trailing?: React.ReactNode;
-  trailingClassName?: string;
-};
-
-function DetailSectionCard({
-  eyebrow,
-  title,
-  description,
-  children,
-  toneClassName = "",
-  trailing,
-  trailingClassName = "right-4 top-4 sm:right-5 sm:top-5",
-}: DetailSectionCardProps) {
-  return (
-    <section
-      className={[
-        "relative overflow-hidden rounded-3xl border border-stone-200/90 bg-[linear-gradient(165deg,rgba(255,255,255,0.98),rgba(249,246,240,0.96)_52%,rgba(237,243,255,0.94))] p-4 shadow-[0_28px_58px_-40px_rgba(15,23,42,0.35)] ring-1 ring-white/70 sm:p-5",
-        toneClassName,
-      ].join(" ")}
-    >
-      <div className="pointer-events-none absolute inset-x-8 top-0 h-16 rounded-full bg-white/55 blur-3xl" />
-      {trailing ? <div className={`absolute z-10 ${trailingClassName}`}>{trailing}</div> : null}
-      {eyebrow ? (
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400">
-          {eyebrow}
-        </p>
-      ) : null}
-      <h2 className="mt-1.5 text-lg font-semibold tracking-tight text-ocean-500 sm:text-xl">{title}</h2>
-      {description ? <p className="mt-1.5 text-sm leading-6 text-stone-600">{description}</p> : null}
-      {children ? <div className="mt-3">{children}</div> : null}
-    </section>
-  );
-}
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -688,6 +650,25 @@ export function ProductDetailPage() {
 
             <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-600">{product.description}</p>
 
+            {product.category_spec_values && product.category_spec_values.length > 0 ? (
+              <div className="mt-4 rounded-2xl border border-stone-200/80 bg-white/72 p-4">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
+                  Especificaciones
+                </p>
+                <dl className="mt-2 grid gap-1.5">
+                  {product.category_spec_values.map((spec) => (
+                    <div
+                      key={spec.label}
+                      className="flex items-baseline justify-between gap-3 text-sm"
+                    >
+                      <dt className="text-stone-500">{spec.label}</dt>
+                      <dd className="font-medium text-stone-900">{spec.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            ) : null}
+
             <div className="mt-4 grid gap-3">
               <div className="relative overflow-hidden rounded-2xl border border-stone-200/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.92),rgba(247,241,233,0.92)_55%,rgba(237,243,255,0.9))] px-4 py-4 shadow-[0_18px_40px_-34px_rgba(15,23,42,0.2)]">
                 <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[radial-gradient(circle_at_left,rgba(8,145,178,0.12),transparent_72%)]" />
@@ -898,95 +879,14 @@ export function ProductDetailPage() {
           </DetailSectionCard>
 
           {hasSelectableOptions ? (
-            <DetailSectionCard
-              eyebrow={canConfigureForPurchase ? "Personaliza" : "Variantes"}
-              title={canConfigureForPurchase ? "Elige tus opciones" : "Opciones de la pieza"}
-              toneClassName="border-stone-200 bg-white/95"
-            >
-              {canConfigureForPurchase ? (
-                <div className="grid gap-3">
-                  {product.made_to_order_options.map((option) => (
-                    <label key={option.id} className="grid gap-2 text-sm font-medium text-stone-700">
-                      <span className="flex flex-wrap items-center gap-2">
-                        <span>{option.label}</span>
-                        <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-stone-500">
-                          {option.required ? "Requerido" : "Opcional"}
-                        </span>
-                      </span>
-                      <select
-                        className="rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
-                        onChange={(event) => {
-                          setSelectedOptions((currentValue) => {
-                            if (!event.target.value) {
-                              const nextValue = { ...currentValue };
-                              delete nextValue[option.id];
-                              return nextValue;
-                            }
-
-                            return {
-                              ...currentValue,
-                              [option.id]: event.target.value,
-                            };
-                          });
-                        }}
-                        value={selectedOptions[option.id] ?? ""}
-                      >
-                        {!option.required ? <option value="">Sin seleccionar</option> : null}
-                        {option.choices.map((choice) => (
-                          <option key={choice.id} value={choice.id}>
-                            {choice.label}
-                            {choice.priceModifier > 0
-                              ? ` (+$${Number(choice.priceModifier).toLocaleString("es-AR")})`
-                              : ""}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  ))}
-
-                  <div
-                    className={[
-                      "rounded-2xl border px-4 py-2.5 text-sm leading-6",
-                      missingRequiredOption
-                        ? "border-brand-200 bg-brand-50 text-stone-700"
-                        : "border-ocean-100 bg-brand-50 text-stone-700",
-                    ].join(" ")}
-                  >
-                    {missingRequiredOption
-                      ? "Faltan elecciones para habilitar la compra."
-                      : selectedOptionsSummary
-                        ? `Resumen: ${selectedOptionsSummary}.`
-                        : "Configuracion lista para continuar."}
-                  </div>
-                </div>
-              ) : (
-                <div className="grid gap-2.5">
-                  {product.made_to_order_options.map((option) => (
-                    <div key={option.id} className="rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-sm font-semibold text-stone-700">{option.label}</p>
-                        <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-stone-500 ring-1 ring-stone-200">
-                          {option.required ? "Requerido" : "Opcional"}
-                        </span>
-                      </div>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {option.choices.map((choice) => (
-                          <span
-                            key={choice.id}
-                            className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-medium text-stone-600"
-                          >
-                            {choice.label}
-                            {choice.priceModifier > 0
-                              ? ` (+$${Number(choice.priceModifier).toLocaleString("es-AR")})`
-                              : ""}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </DetailSectionCard>
+            <ProductOptionSelector
+              canConfigureForPurchase={canConfigureForPurchase}
+              missingRequiredOption={missingRequiredOption}
+              product={product}
+              selectedOptions={selectedOptions}
+              selectedOptionsSummary={selectedOptionsSummary}
+              setSelectedOptions={setSelectedOptions}
+            />
           ) : null}
 
           <DetailSectionCard

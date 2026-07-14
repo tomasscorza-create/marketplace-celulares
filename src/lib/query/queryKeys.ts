@@ -41,6 +41,9 @@ export const queryKeys = {
   auth: {
     profile: (userId: string) => ["auth", "profile", userId] as const,
   },
+  categorySpecs: {
+    template: (categoryId: string) => ["category-specs", "template", categoryId] as const,
+  },
   siteContent: {
     items: (contentKeys: string[]) => ["site-content", [...contentKeys].sort()] as const,
   },

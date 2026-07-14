@@ -55,6 +55,14 @@ migraciones, configuración, Git o servicios remotos.
   un slide más de la misma galería de fotos; ambos lugares reutilizan
   `ProductModel3DViewer.tsx` sin duplicar su lógica (ver
   `contexto/visor-3d-y-medios.md`).
+- El admin puede definir, por categoría, una plantilla de especificaciones
+  técnicas (campos de texto libre, ej. RAM, Memoria) en la tabla
+  `category_spec_templates`. Al cargar o editar un producto (formulario
+  compartido admin/vendedor), esos campos se completan y se guardan como
+  snapshot en `products.category_spec_values`, desacoplado de la plantilla.
+  Cambiar la categoría de un producto descarta los valores cargados; no se
+  intenta migrar valores entre plantillas distintas. Ver
+  `contexto/catalogo-y-productos.md`.
 - Las funciones Edge administrativas son parte del backend operativo. Las
   funciones de checkout/pagos requieren secretos de pago propios antes de ser
   habilitadas o desplegadas para producción.

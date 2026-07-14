@@ -4,6 +4,7 @@ import type {
   ProductSelectionChoice,
 } from "./productAvailability";
 import type { ProductAttribute } from "./productAttributes";
+import type { CategorySpecValue } from "./categorySpecs";
 import type { ProductMediaItem } from "./productMedia";
 
 export type PublicArtisanStorefront = {
@@ -41,6 +42,7 @@ export type PublicProduct = {
   image_urls: string[];
   product_media: ProductMediaItem[];
   product_attributes?: ProductAttribute[];
+  category_spec_values?: CategorySpecValue[];
   is_active: boolean;
   lead_time_days: number | null;
   made_to_order_options: ProductOptionGroup[];

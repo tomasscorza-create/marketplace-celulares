@@ -15,6 +15,11 @@ import {
   type AdminCategoryFormField,
 } from "../features/admin/components/AdminCategoryFormSection";
 import { AdminCategoryListSection } from "../features/admin/components/AdminCategoryListSection";
+import { AdminCategorySpecTemplateSection } from "../features/admin/components/AdminCategorySpecTemplateSection";
+import {
+  useCategorySpecTemplate,
+  useSaveCategorySpecTemplateMutation,
+} from "../features/categorySpecs/categorySpecsQueries";
 import type { AdminCategory, AdminCategoryInput } from "../types/admin";
 
 const initialCategoryForm: AdminCategoryInput = {
@@ -114,6 +119,9 @@ export function AdminCategoriesPage() {
   const createCategoryMutation = useCreateAdminCategory();
   const updateCategoryMutation = useUpdateAdminCategory();
   const isSaving = createCategoryMutation.isPending || updateCategoryMutation.isPending;
+
+  const specTemplateQuery = useCategorySpecTemplate(editingCategoryId);
+  const saveSpecTemplateMutation = useSaveCategorySpecTemplateMutation();
 
   // Mensaje de error visible en el form: prioriza error de save, luego de carga.
   const errorMessage = saveErrorMessage ?? loadErrorMessage;
@@ -259,30 +267,48 @@ export function AdminCategoriesPage() {
       title="Gestion de categorias"
     >
       <div className="grid items-start gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-        <form
-          onSubmit={(event) => {
-            void handleSubmit(event);
-          }}
-        >
-          <AdminCategoryFormSection
-            categoryForm={categoryForm}
-            editingCategoryId={editingCategoryId}
-            errorMessage={errorMessage}
-            fieldErrors={fieldErrors}
-            isSaving={isSaving}
-            onCancel={resetForm}
-            onFieldBlur={handleFieldBlur}
-            onNameChange={updateCategoryName}
-            onRegenerateSku={regenerateSku}
-            onToggleActive={(value) => {
-              setCategoryForm((currentValue) => ({
-                ...currentValue,
-                is_active: value,
-              }));
+        <div className="grid gap-6">
+          <form
+            onSubmit={(event) => {
+              void handleSubmit(event);
             }}
-            statusMessage={statusMessage}
-          />
-        </form>
+          >
+            <AdminCategoryFormSection
+              categoryForm={categoryForm}
+              editingCategoryId={editingCategoryId}
+              errorMessage={errorMessage}
+              fieldErrors={fieldErrors}
+              isSaving={isSaving}
+              onCancel={resetForm}
+              onFieldBlur={handleFieldBlur}
+              onNameChange={updateCategoryName}
+              onRegenerateSku={regenerateSku}
+              onToggleActive={(value) => {
+                setCategoryForm((currentValue) => ({
+                  ...currentValue,
+                  is_active: value,
+                }));
+              }}
+              statusMessage={statusMessage}
+            />
+          </form>
+
+          {editingCategoryId ? (
+            <AdminCategorySpecTemplateSection
+              categoryId={editingCategoryId}
+              categoryName={categoryForm.name || "esta categoria"}
+              isLoading={specTemplateQuery.isLoading}
+              isSaving={saveSpecTemplateMutation.isPending}
+              onSave={async (fieldLabels) => {
+                await saveSpecTemplateMutation.mutateAsync({
+                  categoryId: editingCategoryId,
+                  fields: fieldLabels.map((field_label) => ({ field_label })),
+                });
+              }}
+              template={specTemplateQuery.data ?? []}
+            />
+          ) : null}
+        </div>
 
         <AdminCategoryListSection
           categories={filteredCategories}

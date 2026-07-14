@@ -1,5 +1,6 @@
 import type { ImageCropAspect, ImageCropSettings } from "../../lib/compressImage";
 import type { ProductAttribute } from "../../types/productAttributes";
+import type { CategorySpecValue } from "../../types/categorySpecs";
 import type { ProductOptionGroup } from "../../types/productAvailability";
 import type { ProductImageDraft } from "./imageEditorTypes";
 
@@ -40,6 +41,7 @@ export type PersistedProductDraftState = {
   lead_time_days: number | null;
   made_to_order_options: ProductOptionGroup[];
   product_attributes: ProductAttribute[];
+  category_spec_values: CategorySpecValue[];
   price: number;
   stock_quantity: number | null;
   title: string;

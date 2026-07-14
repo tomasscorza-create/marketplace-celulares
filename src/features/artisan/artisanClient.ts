@@ -9,6 +9,7 @@ import type { UserProfile } from "../../types/auth";
 import type { PaginationParams } from "../../types/pagination";
 import type { FulfillmentStatus } from "../../types/commerce";
 import { sanitizeProductAttributes } from "../../types/productAttributes";
+import { sanitizeCategorySpecValues } from "../../types/categorySpecs";
 import {
   getProductImageMediaItems,
   type ProductMediaItem,
@@ -322,6 +323,7 @@ export async function getArtisanProductStats(artisanId: string) {
 export async function createArtisanProduct(artisanId: string, input: ArtisanProductInput) {
   const client = getSupabaseClient();
   const productAttributes = sanitizeProductAttributes(input.product_attributes);
+  const categorySpecValues = sanitizeCategorySpecValues(input.category_spec_values);
   const imagePayload = getPrimaryProductImagePayload(input);
   const basePayload = {
     artisan_id: artisanId,
@@ -344,6 +346,7 @@ export async function createArtisanProduct(artisanId: string, input: ArtisanProd
     .insert({
       ...basePayload,
       product_attributes: productAttributes,
+      category_spec_values: categorySpecValues,
     })
     .select(productSelection)
     .single<ArtisanProduct>();
@@ -354,6 +357,7 @@ export async function createArtisanProduct(artisanId: string, input: ArtisanProd
 export async function updateArtisanProduct(productId: string, input: ArtisanProductInput) {
   const client = getSupabaseClient();
   const productAttributes = sanitizeProductAttributes(input.product_attributes);
+  const categorySpecValues = sanitizeCategorySpecValues(input.category_spec_values);
   const imagePayload = getPrimaryProductImagePayload(input);
   const basePayload = {
     category_id: input.category_id,
@@ -375,6 +379,7 @@ export async function updateArtisanProduct(productId: string, input: ArtisanProd
     .update({
       ...basePayload,
       product_attributes: productAttributes,
+      category_spec_values: categorySpecValues,
     })
     .eq("id", productId)
     .select(productSelection)

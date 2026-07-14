@@ -15,6 +15,7 @@ import {
   useUpdateArtisanProduct,
 } from "../features/artisan/artisanQueries";
 import { getErrorMessage } from "../lib/errors";
+import { useCategorySpecTemplate } from "../features/categorySpecs/categorySpecsQueries";
 import { ArtisanProductFormConnector } from "../features/artisan/components/ArtisanProductFormConnector";
 import { ArtisanProductListSection } from "../features/artisan/components/ArtisanProductListSection";
 import { ArtisanProductsAdminHeader } from "../features/artisan/components/ArtisanProductsAdminHeader";
@@ -34,16 +35,15 @@ import {
   initialProductForm,
 } from "../features/artisan/artisanProductsPageUtils";
 import {
-  cleanupDraftUrls, createDefaultCrop, createExistingImageDraft, hydratePersistedDraftImages,
+  cleanupDraftUrls, createDefaultCrop, createExistingImageDraft,
   type PersistedProductDraftImage,
-  type PersistedProductDraftState,
-  serializeProductImageDrafts,
 } from "../features/artisan/productDraftUtils";
+import { useArtisanProductDraftPersistence } from "../features/artisan/useArtisanProductDraftPersistence";
 import { useArtisanProductSubmit } from "../features/artisan/useArtisanProductSubmit";
 import { useArtisanProductModel3D } from "../features/artisan/useArtisanProductModel3D";
 import { useManagementProductPagination } from "../features/artisan/useManagementProductPagination";
 import { useAuth } from "../features/auth/useAuth";
-import { loadProductDraft, removeProductDraft, saveProductDraft } from "../lib/browser/productDraftStorage";
+import { removeProductDraft } from "../lib/browser/productDraftStorage";
 import { getCropFrameDimensions, getCropLayout, loadImage } from "../lib/compressImage";
 export function ArtisanProductsPage() {
   const { artisanId } = useParams();
@@ -111,6 +111,11 @@ export function ArtisanProductsPage() {
 
   const categoriesQuery = useArtisanCategories();
   const categories = useMemo(() => categoriesQuery.data ?? [], [categoriesQuery.data]);
+  const categorySpecTemplateQuery = useCategorySpecTemplate(productForm.category_id || null);
+  const categorySpecTemplate = useMemo(
+    () => categorySpecTemplateQuery.data ?? [],
+    [categorySpecTemplateQuery.data],
+  );
   const learningProfileQuery = useArtisanProductLearningProfile(
     targetArtisanId ?? undefined,
     categories,
@@ -181,187 +186,25 @@ export function ArtisanProductsPage() {
     };
   }, []);
 
-  useEffect(() => {
-    cleanupDraftUrls(productImagesRef.current);
-    setProductImages([]);
-    serializedDraftImagesCacheRef.current = {
-      drafts: null,
-      persisted: [],
-    };
-    setEditingProductId(null);
-    setStatusMessage(null);
-    setSaveErrorMessage(null);
-    setHasDraft(false);
-    setIsDraftReady(false);
-    setDraftPersistenceState("idle");
-    setProductForm(initialProductForm);
-    setHasAppliedLearningDefaults(false);
-
-    let isCancelled = false;
-
-    const loadDraft = async () => {
-      try {
-        const draft = await loadProductDraft<Partial<PersistedProductDraftState>>(draftKey);
-
-        if (isCancelled || !draft) {
-          return;
-        }
-
-        const hasContent =
-          draft.title?.trim() ||
-          draft.description?.trim() ||
-          Number(draft.price) > 0 ||
-          (draft.imageDrafts?.length ?? 0) > 0;
-
-        if (!hasContent) {
-          return;
-        }
-
-        const hydratedImages = draft.imageDrafts?.length
-          ? await hydratePersistedDraftImages(draft.imageDrafts)
-          : [];
-
-        if (isCancelled) {
-          cleanupDraftUrls(hydratedImages);
-          return;
-        }
-
-        setHasDraft(true);
-        setDraftPersistenceState("saved");
-            setEditingProductId(draft.editingProductId ?? null);
-        setProductForm((prev) => ({
-          ...prev,
-          availability_mode: draft.availability_mode ?? prev.availability_mode,
-          category_id: draft.category_id ?? prev.category_id,
-          title: draft.title ?? prev.title,
-          description: draft.description ?? prev.description,
-          price: draft.price ?? prev.price,
-          is_active: draft.is_active ?? prev.is_active,
-          stock_quantity: draft.stock_quantity ?? prev.stock_quantity,
-          lead_time_days: draft.lead_time_days ?? prev.lead_time_days,
-          made_to_order_options: draft.made_to_order_options ?? prev.made_to_order_options,
-          product_attributes: draft.product_attributes ?? prev.product_attributes,
-        }));
-        setProductImages(hydratedImages);
-      } catch {
-        if (!isCancelled) {
-          setDraftPersistenceState("error");
-          setSaveErrorMessage(
-            "No pudimos restaurar el borrador del producto. Revisá IndexedDB del navegador.",
-          );
-        }
-      } finally {
-        if (!isCancelled) {
-          setIsDraftReady(true);
-        }
-      }
-    };
-
-    void loadDraft();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [draftKey]);
-
-  useEffect(() => {
-    if (!isDraftReady) {
-      return;
-    }
-
-    const saveRequestId = ++draftSaveRequestIdRef.current;
-
-    const hasContent =
-      productForm.title.trim().length > 0 ||
-      productForm.description.trim().length > 0 ||
-      Number(productForm.price) > 0 ||
-      productForm.product_attributes.length > 0 ||
-      productImages.length > 0;
-
-    if (!hasContent) {
-      void removeProductDraft(draftKey);
-      setHasDraft(false);
-      setDraftPersistenceState("idle");
-      return;
-    }
-
-    let isCancelled = false;
-
-    const persistDraft = async () => {
-      try {
-        if (!isCancelled) {
-          setDraftPersistenceState("saving");
-        }
-
-        const imageDrafts =
-          serializedDraftImagesCacheRef.current.drafts === productImages
-            ? serializedDraftImagesCacheRef.current.persisted
-            : await serializeProductImageDrafts(productImages);
-
-        if (serializedDraftImagesCacheRef.current.drafts !== productImages) {
-          serializedDraftImagesCacheRef.current = {
-            drafts: productImages,
-            persisted: imageDrafts,
-          };
-        }
-
-        if (isCancelled || saveRequestId !== draftSaveRequestIdRef.current) {
-          return;
-        }
-
-        await saveProductDraft(draftKey, {
-          availability_mode: productForm.availability_mode,
-          category_id: productForm.category_id,
-          description: productForm.description,
-          editingProductId,
-          imageDrafts,
-          is_active: productForm.is_active,
-          lead_time_days: productForm.lead_time_days,
-          made_to_order_options: productForm.made_to_order_options,
-          product_attributes: productForm.product_attributes,
-          price: productForm.price,
-          stock_quantity: productForm.stock_quantity,
-          title: productForm.title,
-        } satisfies PersistedProductDraftState);
-
-        if (!isCancelled && saveRequestId === draftSaveRequestIdRef.current) {
-          setHasDraft(true);
-          setDraftPersistenceState("saved");
-        }
-      } catch {
-        if (!isCancelled && saveRequestId === draftSaveRequestIdRef.current) {
-          setDraftPersistenceState("error");
-          setSaveErrorMessage((currentValue) =>
-            currentValue ?? "No pudimos guardar el borrador del producto en este navegador.",
-          );
-        }
-      }
-    };
-
-    const saveTimer = window.setTimeout(() => {
-      void persistDraft();
-    }, 800);
-
-    return () => {
-      isCancelled = true;
-      window.clearTimeout(saveTimer);
-    };
-  }, [
+  useArtisanProductDraftPersistence({
     draftKey,
-    productForm.availability_mode,
-    productForm.title,
-    productForm.description,
-    productForm.price,
-    productForm.category_id,
-    productForm.is_active,
-    productForm.stock_quantity,
-    productForm.lead_time_days,
-    productForm.made_to_order_options,
-    productForm.product_attributes,
-    productImages,
+    draftSaveRequestIdRef,
     editingProductId,
     isDraftReady,
-  ]);
+    productForm,
+    productImages,
+    productImagesRef,
+    serializedDraftImagesCacheRef,
+    setDraftPersistenceState,
+    setEditingProductId,
+    setHasAppliedLearningDefaults,
+    setHasDraft,
+    setIsDraftReady,
+    setProductForm,
+    setProductImages,
+    setSaveErrorMessage,
+    setStatusMessage,
+  });
 
   useEffect(() => {
     if (!showProductForm || !editingProductId) {
@@ -773,6 +616,7 @@ export function ArtisanProductsPage() {
       image_urls: existingImages,
       product_media: product.product_media,
       product_attributes: product.product_attributes ?? [],
+      category_spec_values: product.category_spec_values ?? [],
       is_active: product.is_active,
       lead_time_days: product.lead_time_days,
       made_to_order_options: product.made_to_order_options,
@@ -908,6 +752,7 @@ export function ArtisanProductsPage() {
           <div ref={productFormRef} className="scroll-mt-28">
           <ArtisanProductFormConnector
             categories={categories}
+            categorySpecTemplate={categorySpecTemplate}
             isCreateFocused={isCreateFocus}
             draftPersistenceState={draftPersistenceState}
             editingProductId={editingProductId}

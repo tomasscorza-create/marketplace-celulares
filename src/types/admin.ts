@@ -202,6 +202,17 @@ export type AdminCategoryInput = {
   slug: string;
 };
 
+export type AdminCategorySpecTemplateField = {
+  id: string;
+  category_id: string;
+  field_label: string;
+  sort_order: number;
+};
+
+export type AdminCategorySpecTemplateInput = {
+  field_label: string;
+}[];
+
 export type AdminArtisanProfile = {
   created_at: string;
   email: string;

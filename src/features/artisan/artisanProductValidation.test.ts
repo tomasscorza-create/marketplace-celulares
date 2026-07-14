@@ -23,6 +23,7 @@ function createProduct(overrides: Partial<ArtisanProductInput> = {}): ArtisanPro
   return {
     availability_mode: "stock",
     category_id: "category-1",
+    category_spec_values: [{ label: " RAM ", value: " 8GB " }],
     description: "Funda reforzada",
     image_urls: [],
     is_active: true,
@@ -47,6 +48,7 @@ describe("validateArtisanProductDraft", () => {
     expect(result).toEqual({
       errorMessage: null,
       sanitizedAttributes: [{ key: "color", value: "negro" }],
+      sanitizedCategorySpecValues: [{ label: "RAM", value: "8GB" }],
     });
   });
 

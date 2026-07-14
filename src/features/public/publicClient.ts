@@ -27,7 +27,7 @@ const storefrontSelection =
   "id, full_name, store_name, store_description, profile_image_url, storefront_theme_color, created_at";
 const categorySelection = "id, name, slug";
 const productSelection =
-  "id, artisan_id, category_id, title, description, price, image_url, image_urls, product_media, product_attributes, is_active, availability_mode, stock_quantity, lead_time_days, made_to_order_options, created_at, categories(name)";
+  "id, artisan_id, category_id, title, description, price, image_url, image_urls, product_media, product_attributes, category_spec_values, is_active, availability_mode, stock_quantity, lead_time_days, made_to_order_options, created_at, categories(name)";
 const hydratedCatalogProductsCache = new Map<string, PublicProduct>();
 const hydratedCatalogStorefrontsCache = new Map<string, PublicArtisanStorefront>();
 const hydratedCatalogStorefrontsRequestsCache = new Map<string, Promise<void>>();

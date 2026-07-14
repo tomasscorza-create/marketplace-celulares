@@ -7,7 +7,7 @@
 ## Alcance y fuente de verdad
 
 - Fuente canónica del esquema: `supabase/migrations/`, aplicada por nombre en orden ascendente.
-- Última migración inspeccionada: `20260713120000_remove_product_batches.sql`.
+- Última migración inspeccionada: `20260713160000_save_category_spec_template_rpc.sql`.
 - Consumidores inspeccionados: `src/` y `supabase/functions/`.
 - `supabase/sql/` es referencia histórica y no participa de esta auditoría.
 
@@ -24,6 +24,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `cart_items`
 - `carts`
 - `categories`
+- `category_spec_templates`
 - `internal_notification_signatures`
 - `internal_notifications`
 - `order_events`
@@ -45,6 +46,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `carts`
 - `catalog_activity_events`
 - `categories`
+- `category_spec_templates`
 - `internal_notification_signatures`
 - `internal_notifications`
 - `order_events`
@@ -70,6 +72,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `get_public_catalog_storefront_groups_v6`
 - `get_public_catalog_storefront_suggestions_v2`
 - `record_catalog_activity_event_v1`
+- `save_category_spec_template`
 - `update_order_item_fulfillment_status`
 
 ## Funciones SQL del esquema final
@@ -88,6 +91,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `is_admin`
 - `is_public_artisan_visible`
 - `record_catalog_activity_event_v1`
+- `save_category_spec_template`
 - `update_order_item_fulfillment_status`
 
 ## RPC usadas pero ausentes

@@ -25,6 +25,7 @@ export const initialProductForm: ArtisanProductInput = {
   image_urls: [],
   product_media: [],
   product_attributes: [],
+  category_spec_values: [],
   is_active: true,
   lead_time_days: null,
   made_to_order_options: [],
