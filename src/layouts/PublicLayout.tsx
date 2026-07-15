@@ -1,11 +1,12 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { NavLink, Outlet, ScrollRestoration } from "react-router-dom";
+import { NavLink, Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 
 import { SiteBrand } from "../components/SiteBrand";
 import { isOnlinePurchaseEnabled, marketplaceConfig } from "../config/marketplace";
 import { AuthStatus } from "../features/auth/AuthStatus";
 import { useAuth } from "../features/auth/useAuth";
 import { useCatalogWarmup } from "../features/public/useCatalogWarmup";
+import type { PublicLayoutOutletContext } from "./publicLayoutContext";
 
 const WhatsAppButton = lazy(async () => ({
   default: (await import("../components/WhatsAppButton")).WhatsAppButton,
@@ -16,8 +17,17 @@ const BuyerCartShortcut = lazy(async () => ({
 
 export function PublicLayout() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [floatingWhatsAppMessage, setFloatingWhatsAppMessage] = useState<string | null>(null);
   const { role, user } = useAuth();
+  const location = useLocation();
   useCatalogWarmup();
+  const outletContext: PublicLayoutOutletContext = { setFloatingWhatsAppMessage };
+
+  // El detalle de producto ya muestra su propio boton de WhatsApp con el
+  // mensaje del producto cuando el canal de venta es WhatsApp; el flotante
+  // generico se oculta ahi para no duplicar el CTA.
+  const hidesFloatingWhatsApp =
+    !isOnlinePurchaseEnabled && /^\/producto\/[^/]+\/?$/.test(location.pathname);
 
   const accountFooterLink = (() => {
     if (!user) {
@@ -114,22 +124,27 @@ export function PublicLayout() {
         id="main-content"
         tabIndex={-1}
       >
-        <Outlet />
+        <Outlet context={outletContext} />
       </main>
 
-      <div
-        className="fixed z-40"
-        style={{
-          bottom: "calc(env(safe-area-inset-bottom, 0px) + 1.25rem)",
-          right: "calc(env(safe-area-inset-right, 0px) + 1rem)",
-        }}
-      >
-        <Suspense fallback={null}>
-          <WhatsAppButton
-            message={`Hola, me interesa saber mas sobre ${marketplaceConfig.appName}.`}
-          />
-        </Suspense>
-      </div>
+      {hidesFloatingWhatsApp ? null : (
+        <div
+          className="fixed z-40"
+          style={{
+            bottom: "calc(env(safe-area-inset-bottom, 0px) + 1.25rem)",
+            right: "calc(env(safe-area-inset-right, 0px) + 1rem)",
+          }}
+        >
+          <Suspense fallback={null}>
+            <WhatsAppButton
+              message={
+                floatingWhatsAppMessage ??
+                `Hola, me interesa saber mas sobre ${marketplaceConfig.appName}.`
+              }
+            />
+          </Suspense>
+        </div>
+      )}
 
       <footer className="relative z-10 mt-10 border-t border-stone-200/50 bg-white/40 backdrop-blur-xl">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">

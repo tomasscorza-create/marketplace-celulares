@@ -23,6 +23,7 @@ import {
   consumePendingProductDetailReturn,
   restorePendingProductDetailScroll,
 } from "../lib/browser/productDetailOrigin";
+import { useFloatingWhatsAppMessage } from "../layouts/publicLayoutContext";
 import type { PublicCatalogSortOrder } from "../types/public";
 import { CatalogExplorePagination } from "../features/public/components/CatalogExplorePagination";
 import { CatalogProductFeedCard } from "../features/public/components/CatalogProductFeedCard";
@@ -152,6 +153,10 @@ export function CatalogPage() {
     selectedExplorePage,
     selectedSortOrder,
   });
+
+  useFloatingWhatsAppMessage(
+    selectedCategory ? `Hola, quiero consultar sobre ${selectedCategory.name} en Nyzca.` : null,
+  );
 
   const hasActiveFilters =
     Boolean(selectedCategory || querySearch.trim()) || selectedSortOrder !== "newest";

@@ -9,6 +9,7 @@ import {
   usePublicStorefront,
   usePublicStorefrontsPage,
 } from "../features/public/publicQueries";
+import { useFloatingWhatsAppMessage } from "../layouts/publicLayoutContext";
 import { PublicStorefrontCard } from "../features/public/components/PublicStorefrontCard";
 import {
   consumePendingProductDetailReturn,
@@ -64,6 +65,9 @@ export function ArtisanProfilePage() {
 
   const heroColor = "#7F6BFF";
   const storeTitle = storefront?.store_name || storefront?.full_name || "Tienda independiente";
+  useFloatingWhatsAppMessage(
+    storefront ? `Hola! Vi la tienda ${storeTitle} en Nyzca y quiero hacer una consulta.` : null,
+  );
   const description =
     storefront?.store_description ||
     "Descubri una seleccion de piezas hechas con identidad propia, materiales nobles y trabajo local.";
