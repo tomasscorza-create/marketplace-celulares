@@ -92,8 +92,18 @@ export type AnalyticsQualitySummary = {
   sharedRateLimit: boolean;
 };
 
+export type AnalyticsMaintenanceSummary = {
+  durationMs: number;
+  isOverdue: boolean;
+  lastRunAt: string | null;
+  lastStatus: "failed" | "missing" | "running" | "success";
+  lastSuccessAt: string | null;
+  schedule: string;
+};
+
 export type AdminAnalyticsOverview = {
   accountRegistrations: AnalyticsRegistrationPoint[];
+  analyticsMaintenance: AnalyticsMaintenanceSummary;
   anonymousQuality: AnalyticsQualitySummary;
   anonymousPageViews: number;
   anonymousVisits: number;

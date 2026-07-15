@@ -104,6 +104,11 @@ migraciones, configuración, Git o servicios remotos.
   es efímero, no puede incorporarse a informes ni usarse como identificador de
   visitante. Los picos horarios excluidos deben mantenerse fuera del resumen
   principal y mostrarse sólo como señal agregada de calidad.
+- La retención de analítica se ejecuta diariamente a las 03:17 UTC mediante
+  `run_internal_analytics_maintenance()`: 365 días para eventos/sesiones y 730
+  para agregados/calidad. Cada ejecución debe quedar auditada y el panel alerta
+  tras 36 horas sin éxito. La función de limpieza nunca puede ampliarse a
+  perfiles, productos, pedidos, pagos o inventario.
 
 ## 3. Mapa de arquitectura
 

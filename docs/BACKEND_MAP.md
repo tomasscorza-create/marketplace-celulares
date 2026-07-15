@@ -7,7 +7,7 @@
 ## Alcance y fuente de verdad
 
 - Fuente canónica del esquema: `supabase/migrations/`, aplicada por nombre en orden ascendente.
-- Última migración inspeccionada: `20260715210000_analytics_anonymous_quality.sql`.
+- Última migración inspeccionada: `20260715220000_analytics_retention_schedule.sql`.
 - Consumidores inspeccionados: `src/` y `supabase/functions/`.
 - `supabase/sql/` es referencia histórica y no participa de esta auditoría.
 
@@ -46,6 +46,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `analytics_consents`
 - `analytics_delivery_receipts`
 - `analytics_events`
+- `analytics_maintenance_runs`
 - `analytics_rate_limits`
 - `analytics_sessions`
 - `artisan_storefronts`
@@ -77,6 +78,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `apply_paid_order_inventory`
 - `claim_analytics_rate_limit`
 - `count_products_by_category_spec_labels`
+- `get_admin_analytics_maintenance_status`
 - `get_admin_analytics_overview`
 - `get_admin_analytics_quality`
 - `get_admin_analytics_user_history`
@@ -102,6 +104,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `cleanup_internal_analytics`
 - `count_products_by_category_spec_labels`
 - `current_user_role`
+- `get_admin_analytics_maintenance_status`
 - `get_admin_analytics_overview`
 - `get_admin_analytics_quality`
 - `get_admin_analytics_user_history`
@@ -118,6 +121,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `record_anonymous_analytics_v2`
 - `record_catalog_activity_event_v1`
 - `record_consented_analytics_v2`
+- `run_internal_analytics_maintenance`
 - `save_analytics_consent`
 - `save_category_spec_template`
 - `update_order_item_fulfillment_status`

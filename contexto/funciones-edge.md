@@ -33,6 +33,9 @@ Las funciones se agrupan en dos ramas principales:
 - **Calidad anónima**: `collect-analytics` comprueba origen, rutas y bots antes
   de escribir. El límite compartido usa `ANALYTICS_RATE_LIMIT_SECRET` para
   producir un HMAC diario de la IP; la IP original nunca se envía a Postgres.
+- **Mantenimiento independiente**: la retención no depende de una función Edge
+  ni del frontend. `pg_cron` invoca una función SQL acotada y el panel sólo lee
+  su estado agregado.
 
 ## Dependencias y límites externos
 

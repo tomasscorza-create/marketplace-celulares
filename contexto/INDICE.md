@@ -30,6 +30,7 @@ Este documento mantiene el registro de las fichas de dominio generadas para docu
 | `analitica-fase-3.md` | Calidad y operación de analítica | Reintentos limitados, entrega `keepalive` e idempotencia sin identidad anónima persistente. | `analyticsDelivery.ts`, `analyticsClient.ts`, `collect-analytics`, migración de Fase 3 | `desplegado en producción` |
 | `analitica-fase-4.md` | Calidad y operación de analítica | Sesiones de 30 minutos, tiempo visible, cierre de pestaña y distribución de duraciones. | `analyticsActivityClock.ts`, `AnalyticsProvider.tsx`, `collect-analytics`, migración de Fase 4 | `desplegado en producción` |
 | `analitica-fase-5.md` | Calidad y operación de analítica | Orígenes y rutas válidas, bots ignorados, rate limit compartido y exclusión de picos anónimos. | `requestQuality.ts`, `collect-analytics`, migración de Fase 5 | `en validación` |
+| `analitica-fase-6.md` | Calidad y operación de analítica | Retención diaria, registro de ejecuciones y alerta administrativa por mantenimiento vencido. | Migración de Fase 6, `analyticsMaintenance.ts`, `AdminAnalyticsPage.tsx` | `en validación` |
 | `coordinacion-de-agentes.md` | Coordinación | Tablero de propiedad temporal de archivos para trabajo simultáneo entre agentes. | Estado Git y declaraciones de agentes | `activo` |
 
 ## Mantenimiento

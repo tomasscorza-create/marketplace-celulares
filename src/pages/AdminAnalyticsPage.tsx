@@ -11,6 +11,7 @@ import {
   calculateSignupConversionRate,
   formatSignupConversionRate,
 } from "../features/analytics/adminAnalyticsMetrics";
+import { getAnalyticsMaintenanceMessage } from "../features/analytics/analyticsMaintenance";
 import type {
   AnalyticsCountItem,
   AnalyticsRecentUser,
@@ -296,6 +297,32 @@ export function AdminAnalyticsPage() {
                   <p className="text-2xl font-bold">{formatCount(overview.anonymousQuality.excludedEvents)}</p>
                   <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
                     eventos excluidos en {formatCount(overview.anonymousQuality.flaggedBuckets)} picos
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section
+              className={[
+                "rounded-3xl border p-5 shadow-sm",
+                overview.analyticsMaintenance.isOverdue
+                  ? "border-red-200 bg-red-50 text-red-950"
+                  : "border-emerald-200 bg-emerald-50 text-emerald-950",
+              ].join(" ")}
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h2 className="font-semibold">Retención automática</h2>
+                  <p className="mt-1 text-sm">
+                    {getAnalyticsMaintenanceMessage(overview.analyticsMaintenance)}
+                  </p>
+                </div>
+                <div className="text-right text-sm">
+                  <p className="font-semibold">Diaria a las 03:17 UTC</p>
+                  <p className="mt-1 opacity-75">
+                    Último éxito: {overview.analyticsMaintenance.lastSuccessAt
+                      ? formatDate(overview.analyticsMaintenance.lastSuccessAt)
+                      : "sin confirmar"}
                   </p>
                 </div>
               </div>

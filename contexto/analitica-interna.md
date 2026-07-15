@@ -104,12 +104,12 @@ leen como admin. Las escrituras de actividad pasan por la función Edge con
 
 ## Retención
 
-`cleanup_internal_analytics()` elimina eventos y sesiones con más de 365 días y
-agregados anónimos con más de 730 días. También elimina recibos de entrega
-vencidos; las RPC de captura hacen esa limpieza oportunistamente para que los
-recibos no crezcan mientras todavía no exista un cron. La limpieza general no
-se programa automáticamente desde el frontend: producción debe invocarla con un
-cron seguro o mantenimiento backend.
+`run_internal_analytics_maintenance()` elimina eventos y sesiones con más de
+365 días, y agregados anónimos/calidad horaria con más de 730 días. También
+elimina recibos y rate limits vencidos. `pg_cron` la ejecuta diariamente a las
+03:17 UTC y registra estado, duración y cantidades en
+`analytics_maintenance_runs`. El panel alerta después de 36 horas sin éxito.
+`cleanup_internal_analytics()` conserva compatibilidad y delega en ese flujo.
 
 ## Validación
 
@@ -129,4 +129,4 @@ Además, servir `collect-analytics` localmente y comprobar:
 4. Revocar detiene la captura individual.
 5. Sólo admin ejecuta los RPC de informes.
 
-Última revisión: 2026-07-14, Fase 4.
+Última revisión: 2026-07-14, Fase 6.
