@@ -115,6 +115,9 @@ const AdminBillingPage = lazy(async () => ({
 const AdminCategoriesPage = lazy(async () => ({
   default: (await import("../pages/AdminCategoriesPage")).AdminCategoriesPage,
 }));
+const AdminGuidedHelpPage = lazy(async () => ({
+  default: (await import("../pages/AdminGuidedHelpPage")).AdminGuidedHelpPage,
+}));
 const AdminArtisansPage = lazy(async () => ({
   default: (await import("../pages/AdminArtisansPage")).AdminArtisansPage,
 }));
@@ -322,6 +325,10 @@ export const router = createBrowserRouter([
       {
         path: "categorias",
         element: withRouteLoader(<AdminCategoriesPage />),
+      },
+      {
+        path: "ayuda-guiada",
+        element: withRouteLoader(<AdminGuidedHelpPage />),
       },
       {
         path: "productos",

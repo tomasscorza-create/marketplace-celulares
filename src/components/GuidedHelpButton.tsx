@@ -1,47 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-type FaqItem = {
-  question: string;
-  answer: string;
-};
-
-const FAQ_ITEMS: FaqItem[] = [
-  {
-    question: "¿Cómo hago un pedido?",
-    answer:
-      "Entrá al producto que te interesa y tocá \"Pedir por WhatsApp\" (o el botón verde flotante). Se abre WhatsApp con un mensaje que ya incluye el producto, el precio y las opciones elegidas, listo para enviar.",
-  },
-  {
-    question: "¿Qué medios de pago aceptan?",
-    answer:
-      "Se coordina directo con el vendedor por WhatsApp al confirmar el pedido, según lo que tenga disponible.",
-  },
-  {
-    question: "¿Hacen envíos o hay que retirar?",
-    answer:
-      "Depende del vendedor: por WhatsApp coordinás si preferís retiro o envío, y te confirma el costo y los tiempos según tu zona.",
-  },
-  {
-    question: "¿Cómo sé si un producto tiene stock?",
-    answer:
-      "En la ficha del producto figura \"Unidades disponibles\" o, si es a pedido, \"Producción a pedido\". Si el botón dice \"Consultar disponibilidad\", escribinos y te confirmamos al momento.",
-  },
-  {
-    question: "¿Los productos tienen garantía?",
-    answer:
-      "Depende de cada producto y vendedor. Revisá la descripción de la publicación o preguntale directamente al vendedor por WhatsApp antes de confirmar la compra.",
-  },
-  {
-    question: "¿Puedo hacer un cambio o devolución?",
-    answer:
-      "Se resuelve directo con el vendedor que te vendió el producto, coordinando por WhatsApp.",
-  },
-  {
-    question: "¿Todos los productos son de la misma tienda?",
-    answer:
-      "No, Nyzca reúne varios vendedores independientes. Cada producto muestra a qué tienda pertenece y podés visitarla para ver el resto de su catálogo.",
-  },
-];
+import { useActiveGuidedHelpFaqs } from "../features/guidedHelp/guidedHelpQueries";
 
 function RobotIcon({ size = 22 }: { size?: number }) {
   return (
@@ -100,6 +59,8 @@ export function GuidedHelpButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [openQuestion, setOpenQuestion] = useState<number | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
+  const faqsQuery = useActiveGuidedHelpFaqs();
+  const faqs = faqsQuery.data ?? [];
 
   useEffect(() => {
     if (!isOpen) {
@@ -179,37 +140,49 @@ export function GuidedHelpButton() {
             <p className="text-base font-bold text-white">Ayuda guiada</p>
           </div>
 
-          <ul className="flex flex-col gap-1.5 overflow-y-auto px-2 pb-2.5" role="list">
-            {FAQ_ITEMS.map((item, index) => {
-              const isItemOpen = openQuestion === index;
-              return (
-                <li
-                  className="animate-fade-in-up motion-reduce:animate-none"
-                  key={item.question}
-                  style={{ animationDelay: `${index * 45}ms` }}
-                >
-                  <button
-                    aria-expanded={isItemOpen}
-                    className={[
-                      "flex w-full items-center justify-between gap-3 rounded-2xl px-3.5 py-3 text-left text-sm font-semibold text-white",
-                      "transition-colors duration-200 hover:bg-white/20",
-                      isItemOpen ? "bg-white/15" : "bg-white/10",
-                    ].join(" ")}
-                    onClick={() => setOpenQuestion(isItemOpen ? null : index)}
-                    type="button"
+          {faqsQuery.isLoading ? (
+            <p className="px-4 pb-4 text-sm text-white/85">Cargando preguntas...</p>
+          ) : faqsQuery.isError ? (
+            <p className="px-4 pb-4 text-sm text-white/85">
+              No pudimos cargar las preguntas frecuentes. Probá de nuevo en un momento.
+            </p>
+          ) : faqs.length === 0 ? (
+            <p className="px-4 pb-4 text-sm text-white/85">
+              Todavía no hay preguntas cargadas. Escribinos por WhatsApp y te ayudamos.
+            </p>
+          ) : (
+            <ul className="flex flex-col gap-1.5 overflow-y-auto px-2 pb-2.5" role="list">
+              {faqs.map((item, index) => {
+                const isItemOpen = openQuestion === index;
+                return (
+                  <li
+                    className="animate-fade-in-up motion-reduce:animate-none"
+                    key={item.id}
+                    style={{ animationDelay: `${index * 45}ms` }}
                   >
-                    {item.question}
-                    <ChevronIcon isOpen={isItemOpen} />
-                  </button>
-                  {isItemOpen ? (
-                    <p className="animate-fade-in-up px-3.5 pb-1 pt-2.5 text-[13px] leading-relaxed text-white/90 motion-reduce:animate-none">
-                      {item.answer}
-                    </p>
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
+                    <button
+                      aria-expanded={isItemOpen}
+                      className={[
+                        "flex w-full items-center justify-between gap-3 rounded-2xl px-3.5 py-3 text-left text-sm font-semibold text-white",
+                        "transition-colors duration-200 hover:bg-white/20",
+                        isItemOpen ? "bg-white/15" : "bg-white/10",
+                      ].join(" ")}
+                      onClick={() => setOpenQuestion(isItemOpen ? null : index)}
+                      type="button"
+                    >
+                      {item.question}
+                      <ChevronIcon isOpen={isItemOpen} />
+                    </button>
+                    {isItemOpen ? (
+                      <p className="animate-fade-in-up px-3.5 pb-1 pt-2.5 text-[13px] leading-relaxed text-white/90 motion-reduce:animate-none">
+                        {item.answer}
+                      </p>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       ) : null}
     </div>
