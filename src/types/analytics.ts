@@ -83,8 +83,18 @@ export type AnalyticsRecentUser = {
   userId: string;
 };
 
+export type AnalyticsQualitySummary = {
+  excludedEvents: number;
+  flaggedBuckets: number;
+  isApproximate: boolean;
+  periodDays: number;
+  routeValidation: boolean;
+  sharedRateLimit: boolean;
+};
+
 export type AdminAnalyticsOverview = {
   accountRegistrations: AnalyticsRegistrationPoint[];
+  anonymousQuality: AnalyticsQualitySummary;
   anonymousPageViews: number;
   anonymousVisits: number;
   averageActiveSeconds: number;

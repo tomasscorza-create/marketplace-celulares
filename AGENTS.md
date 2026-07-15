@@ -99,6 +99,11 @@ migraciones, configuración, Git o servicios remotos.
   intervalos de 10 segundos y al ocultar la pestaña; `pagehide` solicita el
   cierre. No calcular duración como `ended_at - started_at` porque incluiría
   tiempo oculto o suspendido.
+- La captura anónima sólo acepta orígenes y rutas productivas conocidas, ignora
+  bots comunes y usa un rate limit compartido con HMAC diario de la IP. Ese hash
+  es efímero, no puede incorporarse a informes ni usarse como identificador de
+  visitante. Los picos horarios excluidos deben mantenerse fuera del resumen
+  principal y mostrarse sólo como señal agregada de calidad.
 
 ## 3. Mapa de arquitectura
 

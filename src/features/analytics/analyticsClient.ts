@@ -12,6 +12,7 @@ const PUBLIC_VISIT_MARKER = "analytics_public_visit_v1";
 const CONSENTED_SESSION_PREFIX = "analytics_consented_session_v1";
 
 type AnalyticsIdentity = {
+  anonymousAllowed: boolean;
   consented: boolean;
   userId: string | null;
 };
@@ -28,7 +29,11 @@ type AnalyticsFunctionResponse = {
   sessionId?: string;
 };
 
-let analyticsIdentity: AnalyticsIdentity = { consented: false, userId: null };
+let analyticsIdentity: AnalyticsIdentity = {
+  anonymousAllowed: false,
+  consented: false,
+  userId: null,
+};
 let analyticsSessionGeneration = 0;
 let consentedEventQueue = Promise.resolve();
 let publicVisitInFlight: Promise<boolean> | null = null;
@@ -111,6 +116,7 @@ async function sendAnonymous(
   eventName: AnalyticsEventName | "signup_started" | "visit",
   options: TrackEventOptions,
 ) {
+  if (!analyticsIdentity.anonymousAllowed) return false;
   if (
     eventName !== "visit" &&
     eventName !== "signup_started" &&
@@ -224,7 +230,8 @@ async function trackConsentedRoute(normalizedPath: string) {
 export function configureAnalyticsIdentity(identity: AnalyticsIdentity) {
   if (
     analyticsIdentity.userId !== identity.userId ||
-    analyticsIdentity.consented !== identity.consented
+    analyticsIdentity.consented !== identity.consented ||
+    analyticsIdentity.anonymousAllowed !== identity.anonymousAllowed
   ) {
     analyticsSessionGeneration += 1;
   }
@@ -239,6 +246,7 @@ export function trackAnalyticsEvent(eventName: AnalyticsEventName, options: Trac
   if (analyticsIdentity.userId && analyticsIdentity.consented) {
     return enqueueConsented(() => sendConsented(eventName, options));
   }
+  if (!analyticsIdentity.anonymousAllowed) return Promise.resolve(false);
   return sendAnonymous(eventName, options);
 }
 
@@ -274,6 +282,7 @@ export function trackAnalyticsRoute(path: string) {
   if (analyticsIdentity.userId && analyticsIdentity.consented) {
     return enqueueConsented(() => trackConsentedRoute(normalizedPath));
   }
+  if (!analyticsIdentity.anonymousAllowed) return Promise.resolve();
   return trackAnonymousRoute(normalizedPath);
 }
 

@@ -1,6 +1,12 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 import { corsHeaders } from "../_shared/cors.ts";
+import {
+  createTemporaryIpHash,
+  isAllowedAnalyticsEventPath,
+  isAllowedAnalyticsOrigin,
+  isKnownAnalyticsBot,
+} from "./requestQuality.ts";
 
 const ANONYMOUS_EVENTS = new Set([
   "visit",
@@ -76,13 +82,6 @@ type GeoSummary = {
   region: string;
   timezone: string;
 };
-
-type RateWindow = {
-  count: number;
-  startedAt: number;
-};
-
-const rateWindows = new Map<string, RateWindow>();
 
 function getRequiredEnv(name: string) {
   const value = Deno.env.get(name);
@@ -170,23 +169,20 @@ function isPrivateAddress(ipAddress: string) {
   );
 }
 
-function isRateLimited(ipAddress: string) {
-  if (!ipAddress) return false;
+async function isRateLimited(adminClient: AdminClient, ipAddress: string) {
+  if (!ipAddress) throw new Error("Client IP unavailable for analytics rate limit.");
 
-  const now = Date.now();
-  if (rateWindows.size > 2000) {
-    for (const [key, value] of rateWindows) {
-      if (now - value.startedAt >= 60_000) rateWindows.delete(key);
-    }
-  }
-  const existing = rateWindows.get(ipAddress);
-  if (!existing || now - existing.startedAt >= 60_000) {
-    rateWindows.set(ipAddress, { count: 1, startedAt: now });
-    return false;
-  }
-
-  existing.count += 1;
-  return existing.count > 90;
+  const keyHash = await createTemporaryIpHash(
+    ipAddress,
+    getRequiredEnv("ANALYTICS_RATE_LIMIT_SECRET"),
+  );
+  const { data, error } = await adminClient.rpc("claim_analytics_rate_limit", {
+    requested_key_hash: keyHash,
+    requested_limit: 90,
+    requested_window_seconds: 60,
+  });
+  if (error || typeof data !== "boolean") throw new Error("Analytics rate limit unavailable.");
+  return !data;
 }
 
 async function resolveGeoSummary(request: Request, ipAddress: string): Promise<GeoSummary> {
@@ -262,6 +258,17 @@ async function recordAnonymous(
     );
   }
 
+  const path = normalizePath(body.path);
+  if (!isAllowedAnalyticsEventPath(eventName, path)) {
+    return analyticsResponse(
+      { error: "Unsupported analytics path." },
+      400,
+      "rejected",
+      "anonymous",
+      "unsupported_path",
+    );
+  }
+
   const geo = eventName === "visit"
     ? await resolveGeoSummary(request, ipAddress)
     : { city: "unknown", countryCode: "unknown", region: "unknown", timezone: "unknown" };
@@ -272,7 +279,7 @@ async function recordAnonymous(
     requested_event_id: eventId,
     requested_event_name: eventName,
     requested_os_family: context.osFamily,
-    requested_path: normalizePath(body.path),
+    requested_path: path,
     requested_performance_tier: context.performanceTier,
     requested_referrer_domain: context.referrerDomain,
     requested_region: geo.region,
@@ -387,6 +394,17 @@ async function recordConsented(
     );
   }
 
+  const path = normalizePath(body.path);
+  if (!isAllowedAnalyticsEventPath(eventName, path)) {
+    return analyticsResponse(
+      { error: "Unsupported analytics path." },
+      400,
+      "rejected",
+      "consented",
+      "unsupported_path",
+    );
+  }
+
   const entityType = normalizeEnum(body.entityType, ENTITY_TYPES, "") || null;
   const entityId = typeof body.entityId === "string" && UUID_PATTERN.test(body.entityId)
     ? body.entityId
@@ -410,7 +428,7 @@ async function recordConsented(
       requested_event_id: eventId,
       requested_event_name: eventName,
       requested_os_family: context.osFamily,
-      requested_path: normalizePath(body.path),
+      requested_path: path,
       requested_performance_tier: context.performanceTier,
       requested_referrer_domain: context.referrerDomain,
       requested_region: geo.region,
@@ -440,7 +458,21 @@ async function recordConsented(
 }
 
 Deno.serve(async (request) => {
-  if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  const originAllowed = isAllowedAnalyticsOrigin(
+    request.headers.get("Origin"),
+    Deno.env.get("ANALYTICS_ALLOWED_ORIGINS"),
+  );
+  if (request.method === "OPTIONS") {
+    return originAllowed
+      ? new Response("ok", { headers: corsHeaders })
+      : analyticsResponse(
+        { error: "Origin not allowed." },
+        403,
+        "rejected",
+        "unknown",
+        "origin_not_allowed",
+      );
+  }
   if (request.method !== "POST") {
     return analyticsResponse(
       { error: "Method not allowed." },
@@ -452,14 +484,13 @@ Deno.serve(async (request) => {
   }
 
   try {
-    const ipAddress = getClientIp(request);
-    if (isRateLimited(ipAddress)) {
+    if (!originAllowed) {
       return analyticsResponse(
-        { error: "Too many requests." },
-        429,
+        { error: "Origin not allowed." },
+        403,
         "rejected",
         "unknown",
-        "rate_limited",
+        "origin_not_allowed",
       );
     }
 
@@ -474,7 +505,28 @@ Deno.serve(async (request) => {
       );
     }
 
+    if (isKnownAnalyticsBot(request.headers.get("User-Agent"))) {
+      return analyticsResponse(
+        { accepted: true, ignored: true },
+        200,
+        "accepted",
+        body.mode,
+        "bot_ignored",
+      );
+    }
+
     const adminClient = createAdminClient();
+    const ipAddress = getClientIp(request);
+    if (await isRateLimited(adminClient, ipAddress)) {
+      return analyticsResponse(
+        { error: "Too many requests." },
+        429,
+        "rejected",
+        "unknown",
+        "rate_limited",
+      );
+    }
+
     const context = normalizeContext(body.context);
 
     return body.mode === "anonymous"

@@ -30,6 +30,9 @@ Las funciones se agrupan en dos ramas principales:
 - **Ciclo de sesión consentida**: `heartbeat` actualiza únicamente tiempo
   visible y `session_end` cierra la sesión en `pagehide`. Ambos requieren JWT y
   consentimiento, son idempotentes y no se guardan como eventos de negocio.
+- **Calidad anónima**: `collect-analytics` comprueba origen, rutas y bots antes
+  de escribir. El límite compartido usa `ANALYTICS_RATE_LIMIT_SECRET` para
+  producir un HMAC diario de la IP; la IP original nunca se envía a Postgres.
 
 ## Dependencias y límites externos
 

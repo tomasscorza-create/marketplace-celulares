@@ -284,6 +284,23 @@ export function AdminAnalyticsPage() {
               <MetricCard label="Tiempo activo promedio" value={formatDuration(overview.averageActiveSeconds)} hint="Sólo cuentas consentidas" />
             </div>
 
+            <section className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-amber-950 shadow-sm">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h2 className="font-semibold">Calidad del tráfico anónimo</h2>
+                  <p className="mt-1 text-sm text-amber-800">
+                    Estas métricas son aproximadas. Se validan origen y rutas, se ignoran bots conocidos y se aplica un límite compartido sin guardar la IP.
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold">{formatCount(overview.anonymousQuality.excludedEvents)}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                    eventos excluidos en {formatCount(overview.anonymousQuality.flaggedBuckets)} picos
+                  </p>
+                </div>
+              </div>
+            </section>
+
             <div className="grid gap-5 xl:grid-cols-3">
               <DistributionCard items={overview.devices} title="Tipo de dispositivo" />
               <DistributionCard items={overview.operatingSystems} title="Sistema operativo" />

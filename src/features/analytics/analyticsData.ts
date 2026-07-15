@@ -26,12 +26,22 @@ export async function saveAnalyticsConsent(accepted: boolean) {
 
 export async function getAdminAnalyticsOverview(days: number) {
   const client = getSupabaseClient();
-  return client.rpc("get_admin_analytics_overview", {
-    requested_days: days,
-  }) as unknown as Promise<{
-    data: AdminAnalyticsOverview | null;
-    error: { message: string } | null;
-  }>;
+  const [overviewResult, qualityResult] = await Promise.all([
+    client.rpc("get_admin_analytics_overview", { requested_days: days }),
+    client.rpc("get_admin_analytics_quality", { requested_days: days }),
+  ]) as unknown as [
+    { data: Omit<AdminAnalyticsOverview, "anonymousQuality"> | null; error: { message: string } | null },
+    { data: AdminAnalyticsOverview["anonymousQuality"] | null; error: { message: string } | null },
+  ];
+  const error = overviewResult.error ?? qualityResult.error;
+
+  return {
+    data:
+      !error && overviewResult.data && qualityResult.data
+        ? { ...overviewResult.data, anonymousQuality: qualityResult.data }
+        : null,
+    error,
+  };
 }
 
 export async function getAdminAnalyticsUserHistory(userId: string) {

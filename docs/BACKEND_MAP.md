@@ -7,7 +7,7 @@
 ## Alcance y fuente de verdad
 
 - Fuente canónica del esquema: `supabase/migrations/`, aplicada por nombre en orden ascendente.
-- Última migración inspeccionada: `20260715180000_analytics_session_lifecycle.sql`.
+- Última migración inspeccionada: `20260715210000_analytics_anonymous_quality.sql`.
 - Consumidores inspeccionados: `src/` y `supabase/functions/`.
 - `supabase/sql/` es referencia histórica y no participa de esta auditoría.
 
@@ -41,10 +41,12 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 ## Tablas y vistas del esquema final
 
 - `analytics_anonymous_daily`
+- `analytics_anonymous_quality_hourly`
 - `analytics_consent_history`
 - `analytics_consents`
 - `analytics_delivery_receipts`
 - `analytics_events`
+- `analytics_rate_limits`
 - `analytics_sessions`
 - `artisan_storefronts`
 - `buyer_favorites`
@@ -73,8 +75,10 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 ## RPC usadas por la aplicación
 
 - `apply_paid_order_inventory`
+- `claim_analytics_rate_limit`
 - `count_products_by_category_spec_labels`
 - `get_admin_analytics_overview`
+- `get_admin_analytics_quality`
 - `get_admin_analytics_user_history`
 - `get_catalog_activity_state_v1`
 - `get_public_buyer_profile_v1`
@@ -94,10 +98,12 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `can_read_order`
 - `can_read_order_by_id`
 - `can_read_order_item`
+- `claim_analytics_rate_limit`
 - `cleanup_internal_analytics`
 - `count_products_by_category_spec_labels`
 - `current_user_role`
 - `get_admin_analytics_overview`
+- `get_admin_analytics_quality`
 - `get_admin_analytics_user_history`
 - `get_catalog_activity_state_v1`
 - `get_public_buyer_profile_v1`

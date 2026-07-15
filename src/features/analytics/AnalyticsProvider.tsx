@@ -87,6 +87,7 @@ export function AnalyticsProvider({ children }: PropsWithChildren) {
     if (isAuthLoading || isLoading) return;
 
     configureAnalyticsIdentity({
+      anonymousAllowed: role !== "admin",
       consented: hasActiveConsent,
       userId: role === "buyer" || role === "artisan" ? user?.id ?? null : null,
     });
