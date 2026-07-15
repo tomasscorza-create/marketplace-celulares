@@ -76,6 +76,16 @@ RLS permite al usuario leer su consentimiento. Las tablas de actividad sólo se
 leen como admin. Las escrituras de actividad pasan por la función Edge con
 `service_role`; esa clave nunca llega al navegador.
 
+## Informe administrativo
+
+- Las cuentas creadas se cuentan desde `profiles.created_at`, separadas entre
+  compradores y vendedores. Es una métrica operativa exacta y no depende del
+  consentimiento de analítica ni de un evento del navegador.
+- Los inicios de registro siguen siendo agregados anónimos; la conversión contra
+  cuentas creadas es orientativa y nunca vincula ambos registros.
+- El resumen de eventos combina totales anónimos y consentidos por nombre. El
+  detalle por usuario continúa limitado a cuentas con consentimiento vigente.
+
 ## Retención
 
 `cleanup_internal_analytics()` elimina eventos y sesiones con más de 365 días y

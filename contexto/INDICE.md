@@ -24,6 +24,8 @@ Este documento mantiene el registro de las fichas de dominio generadas para docu
 | `modularidad.md` | Calidad y verificación | Límite bloqueante de tamaño y responsabilidades extraídas de módulos extensos. | `scripts/audit-large-files.mjs`, `package.json`, módulos `*Support` y conectores | `documentado` |
 | `pwa-y-cache.md` | Operación, integración y publicación | Precache mínimo, caché runtime, límites y auditoría del service worker generado. | `vite.config.ts`, `scripts/audit-pwa-precache.mjs`, `src/lib/pwa/` | `documentado` |
 | `analitica-interna.md` | Backend, privacidad y administración | Visitas agregadas, consentimiento, sesiones, clasificación de dispositivos, ubicación aproximada y panel admin. | `src/features/analytics/`, `src/pages/AdminAnalyticsPage.tsx`, `supabase/functions/collect-analytics/`, migración de analítica | `documentado` |
+| `analitica-fase-0.md` | Calidad y operación de analítica | Línea base productiva, limpieza de eventos técnicos y aislamiento de rama. | Estado Git, Supabase y métricas agregadas | `completado` |
+| `analitica-fase-1.md` | Administración y analítica | Cuentas creadas desde perfiles, conversión aproximada y resumen de eventos útiles. | `profiles`, tablas de analítica, `AdminAnalyticsPage.tsx` | `implementado localmente` |
 | `coordinacion-de-agentes.md` | Coordinación | Tablero de propiedad temporal de archivos para trabajo simultáneo entre agentes. | Estado Git y declaraciones de agentes | `activo` |
 
 ## Mantenimiento

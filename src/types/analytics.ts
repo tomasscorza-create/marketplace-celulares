@@ -39,6 +39,8 @@ export type AnalyticsEventName =
   | "checkout_start"
   | "purchase_completed";
 
+export type AnalyticsReportEventName = AnalyticsEventName | "signup_started" | "visit";
+
 export type AnalyticsConsent = {
   accepted_at: string;
   policy_version: string;
@@ -64,6 +66,13 @@ export type AnalyticsPageItem = {
   path: string;
 };
 
+export type AnalyticsRegistrationPoint = {
+  artisans: number;
+  buyers: number;
+  date: string;
+  total: number;
+};
+
 export type AnalyticsRecentUser = {
   email: string;
   events: number;
@@ -75,6 +84,7 @@ export type AnalyticsRecentUser = {
 };
 
 export type AdminAnalyticsOverview = {
+  accountRegistrations: AnalyticsRegistrationPoint[];
   anonymousPageViews: number;
   anonymousVisits: number;
   averageActiveSeconds: number;
@@ -83,12 +93,17 @@ export type AdminAnalyticsOverview = {
   consentedUsers: number;
   devices: AnalyticsCountItem[];
   locations: AnalyticsLocationItem[];
+  newArtisans: number;
+  newBuyers: number;
   operatingSystems: AnalyticsCountItem[];
   performanceTiers: AnalyticsCountItem[];
   periodDays: number;
   recentUsers: AnalyticsRecentUser[];
+  signupStarted: number;
   topEvents: AnalyticsCountItem[];
   topPages: AnalyticsPageItem[];
+  totalArtisans: number;
+  totalBuyers: number;
 };
 
 export type AdminAnalyticsUserEvent = {

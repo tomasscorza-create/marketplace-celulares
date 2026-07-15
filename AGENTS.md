@@ -79,6 +79,10 @@ migraciones, configuración, Git o servicios remotos.
   individuales. Un visitante sin consentimiento no recibe ID persistente ni se
   vincula luego con una cuenta. Sólo compradores y vendedores con consentimiento
   versionado vigente generan `analytics_sessions` y `analytics_events`.
+- Las cuentas creadas del informe admin se calculan desde `profiles.created_at`
+  y `profiles.role`, no desde eventos del navegador. `signup_started` es un
+  agregado anónimo y su comparación con cuentas creadas es sólo orientativa;
+  nunca se usa para vincular una visita con el perfil posterior.
 - La clasificación de dispositivo es general y estimada; no usar canvas,
   WebGL, fuentes, audio, identificadores publicitarios ni otras técnicas de
   fingerprinting. La IP nunca se almacena: `collect-analytics` sólo puede

@@ -1,4 +1,4 @@
-import type { AnalyticsEventName } from "../../types/analytics";
+import type { AnalyticsEventName, AnalyticsReportEventName } from "../../types/analytics";
 
 export const ANALYTICS_POLICY_VERSION = "2026-07-analytics-v1";
 export const ANALYTICS_CLASSIFIER_VERSION = "device-v1";
@@ -12,7 +12,7 @@ export const ANONYMOUS_ANALYTICS_EVENTS = new Set<AnalyticsEventName>([
   "contact_click",
 ]);
 
-export const ANALYTICS_EVENT_LABELS: Record<AnalyticsEventName, string> = {
+export const ANALYTICS_EVENT_LABELS: Record<AnalyticsReportEventName, string> = {
   artisan_view: "Vista de vendedor",
   cart_add: "Agregado al carrito",
   checkout_start: "Checkout iniciado",
@@ -24,6 +24,8 @@ export const ANALYTICS_EVENT_LABELS: Record<AnalyticsEventName, string> = {
   purchase_completed: "Compra completada",
   search: "Búsqueda",
   signup_completed: "Registro completado",
+  signup_started: "Registro iniciado",
+  visit: "Visita",
 };
 
 export const ANALYTICS_PROHIBITED_DATA = [

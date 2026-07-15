@@ -7,7 +7,15 @@ import {
   useAdminAnalyticsUserHistory,
 } from "../features/analytics/analyticsQueries";
 import { ANALYTICS_EVENT_LABELS } from "../features/analytics/analyticsContract";
-import type { AnalyticsCountItem, AnalyticsRecentUser } from "../types/analytics";
+import {
+  calculateSignupConversionRate,
+  formatSignupConversionRate,
+} from "../features/analytics/adminAnalyticsMetrics";
+import type {
+  AnalyticsCountItem,
+  AnalyticsRecentUser,
+  AnalyticsRegistrationPoint,
+} from "../types/analytics";
 
 const LABELS: Record<string, string> = {
   android: "Android",
@@ -56,7 +64,15 @@ function MetricCard({ label, value, hint }: { hint?: string; label: string; valu
   );
 }
 
-function DistributionCard({ items, title }: { items: AnalyticsCountItem[]; title: string }) {
+function DistributionCard({
+  items,
+  labels = LABELS,
+  title,
+}: {
+  items: AnalyticsCountItem[];
+  labels?: Record<string, string>;
+  title: string;
+}) {
   const max = Math.max(...items.map((item) => Number(item.count) || 0), 1);
 
   return (
@@ -67,7 +83,7 @@ function DistributionCard({ items, title }: { items: AnalyticsCountItem[]; title
         {items.map((item) => (
           <div className="grid gap-1" key={item.label}>
             <div className="flex items-center justify-between gap-3 text-sm">
-              <span className="font-medium text-stone-700">{LABELS[item.label] ?? item.label}</span>
+              <span className="font-medium text-stone-700">{labels[item.label] ?? item.label}</span>
               <span className="text-stone-500">{formatCount(item.count)}</span>
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-stone-100">
@@ -78,6 +94,38 @@ function DistributionCard({ items, title }: { items: AnalyticsCountItem[]; title
             </div>
           </div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+function RegistrationCard({ items }: { items: AnalyticsRegistrationPoint[] }) {
+  return (
+    <section className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-semibold text-ocean-600">Cuentas creadas por día</h2>
+      <p className="mt-1 text-sm text-stone-500">Fuente exacta: perfiles creados, sin relacionar visitas anónimas.</p>
+      <div className="mt-4 max-h-80 overflow-auto">
+        {items.length === 0 ? <p className="text-sm text-stone-500">No se crearon cuentas en este período.</p> : null}
+        <table className="w-full min-w-[420px] text-left text-sm">
+          <thead className="sticky top-0 bg-white text-xs uppercase tracking-wide text-stone-400">
+            <tr>
+              <th className="pb-3">Fecha</th>
+              <th className="pb-3 text-right">Compradores</th>
+              <th className="pb-3 text-right">Vendedores</th>
+              <th className="pb-3 text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-stone-100">
+            {items.map((item) => (
+              <tr key={item.date}>
+                <td className="py-3 font-medium text-stone-700">{new Intl.DateTimeFormat("es-AR").format(new Date(`${item.date}T12:00:00`))}</td>
+                <td className="py-3 text-right text-stone-500">{formatCount(item.buyers)}</td>
+                <td className="py-3 text-right text-stone-500">{formatCount(item.artisans)}</td>
+                <td className="py-3 text-right font-semibold text-ocean-600">{formatCount(item.total)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </section>
   );
@@ -120,6 +168,10 @@ export function AdminAnalyticsPage() {
   const overviewQuery = useAdminAnalyticsOverview(days, isEnabled);
   const historyQuery = useAdminAnalyticsUserHistory(selectedUserId, isEnabled);
   const overview = overviewQuery.data;
+  const accountsCreated = overview ? overview.newBuyers + overview.newArtisans : 0;
+  const signupConversionRate = overview
+    ? calculateSignupConversionRate(overview.signupStarted, accountsCreated)
+    : null;
   const selectedUser = useMemo(
     () => overview?.recentUsers.find((item) => item.userId === selectedUserId) ?? null,
     [overview?.recentUsers, selectedUserId],
@@ -160,6 +212,41 @@ export function AdminAnalyticsPage() {
 
         {overview ? (
           <>
+            <section className="grid gap-4">
+              <div>
+                <h2 className="text-xl font-semibold text-ocean-700">Cuentas y registros</h2>
+                <p className="mt-1 text-sm text-stone-500">
+                  Las cuentas provienen de perfiles reales. La conversión compara ese total con inicios anónimos y es sólo orientativa.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <MetricCard
+                  label="Cuentas nuevas"
+                  value={formatCount(accountsCreated)}
+                  hint={`${formatCount(overview.newBuyers)} compradores · ${formatCount(overview.newArtisans)} vendedores`}
+                />
+                <MetricCard
+                  label="Cuentas totales"
+                  value={formatCount(overview.totalBuyers + overview.totalArtisans)}
+                  hint={`${formatCount(overview.totalBuyers)} compradores · ${formatCount(overview.totalArtisans)} vendedores`}
+                />
+                <MetricCard label="Registros iniciados" value={formatCount(overview.signupStarted)} hint="Agregado anónimo" />
+                <MetricCard
+                  label="Conversión aproximada"
+                  value={formatSignupConversionRate(signupConversionRate)}
+                  hint="Cuentas nuevas / registros iniciados"
+                />
+              </div>
+              <div className="grid gap-5 xl:grid-cols-2">
+                <RegistrationCard items={overview.accountRegistrations} />
+                <DistributionCard
+                  items={overview.topEvents}
+                  labels={ANALYTICS_EVENT_LABELS}
+                  title="Eventos del período"
+                />
+              </div>
+            </section>
+
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <MetricCard label="Visitas anónimas" value={formatCount(overview.anonymousVisits)} hint="Sin ID persistente" />
               <MetricCard label="Sesiones consentidas" value={formatCount(overview.consentedSessions)} hint={`${formatCount(overview.consentedUsers)} usuarios`} />
