@@ -64,4 +64,22 @@ para que una pestaña oculta no infle la duración.
 - Antes de producción, exigir `supabase db push --dry-run`, listado de
   migraciones y `supabase db lint --linked` contra el proyecto confirmado.
 
+La validación de esta fase aprobó `deno check`, 16 archivos con 71 pruebas,
+`npm run preflight`, build y auditoría PWA. El `dry-run` remoto propuso sólo la
+migración de Fase 4; el lint posterior conservó únicamente la advertencia
+heredada de `requested_search_term`.
+
+## Estado productivo
+
+El 2026-07-14 se publicó el commit `461adb0` en `main`, se aplicó
+`20260715180000_analytics_session_lifecycle.sql` al proyecto confirmado
+`snlotkvstplwnoiacqyz` y se desplegó `collect-analytics` versión 3. La función
+quedó `ACTIVE`, con `verify_jwt = false` para la ruta anónima controlada, y una
+solicitud `session_end` sin usuario fue rechazada con el `401` esperado antes de
+escribir datos.
+
+El observador de Netlify confirmó que no quedaron despliegues activos y reportó
+como último build el sitio productivo `https://nyzca.com`. El enlace temporal de
+Supabase fue movido a cuarentena sin modificar `.env.local`.
+
 Última revisión: 2026-07-14.

@@ -28,7 +28,7 @@ Este documento mantiene el registro de las fichas de dominio generadas para docu
 | `analitica-fase-1.md` | Administración y analítica | Cuentas creadas desde perfiles, conversión aproximada y resumen de eventos útiles. | `profiles`, tablas de analítica, `AdminAnalyticsPage.tsx` | `desplegado en producción` |
 | `analitica-fase-2.md` | Administración y analítica | Actualización automática visible, recarga manual y conservación del último informe. | `analyticsQueries.ts`, `analyticsRefresh.ts`, `AdminAnalyticsPage.tsx` | `desplegado en producción` |
 | `analitica-fase-3.md` | Calidad y operación de analítica | Reintentos limitados, entrega `keepalive` e idempotencia sin identidad anónima persistente. | `analyticsDelivery.ts`, `analyticsClient.ts`, `collect-analytics`, migración de Fase 3 | `desplegado en producción` |
-| `analitica-fase-4.md` | Calidad y operación de analítica | Sesiones de 30 minutos, tiempo visible, cierre de pestaña y distribución de duraciones. | `analyticsActivityClock.ts`, `AnalyticsProvider.tsx`, `collect-analytics`, migración de Fase 4 | `en validación` |
+| `analitica-fase-4.md` | Calidad y operación de analítica | Sesiones de 30 minutos, tiempo visible, cierre de pestaña y distribución de duraciones. | `analyticsActivityClock.ts`, `AnalyticsProvider.tsx`, `collect-analytics`, migración de Fase 4 | `desplegado en producción` |
 | `coordinacion-de-agentes.md` | Coordinación | Tablero de propiedad temporal de archivos para trabajo simultáneo entre agentes. | Estado Git y declaraciones de agentes | `activo` |
 
 ## Mantenimiento
