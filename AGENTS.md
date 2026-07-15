@@ -83,6 +83,9 @@ migraciones, configuración, Git o servicios remotos.
   y `profiles.role`, no desde eventos del navegador. `signup_started` es un
   agregado anónimo y su comparación con cuentas creadas es sólo orientativa;
   nunca se usa para vincular una visita con el perfil posterior.
+- Las consultas del panel de analítica se actualizan cada 30 segundos sólo con
+  la pestaña visible, se revalidan al recuperar foco y conservan el último
+  resultado durante recargas. No habilitar polling en segundo plano.
 - La clasificación de dispositivo es general y estimada; no usar canvas,
   WebGL, fuentes, audio, identificadores publicitarios ni otras técnicas de
   fingerprinting. La IP nunca se almacena: `collect-analytics` sólo puede

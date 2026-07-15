@@ -26,6 +26,7 @@ Este documento mantiene el registro de las fichas de dominio generadas para docu
 | `analitica-interna.md` | Backend, privacidad y administración | Visitas agregadas, consentimiento, sesiones, clasificación de dispositivos, ubicación aproximada y panel admin. | `src/features/analytics/`, `src/pages/AdminAnalyticsPage.tsx`, `supabase/functions/collect-analytics/`, migración de analítica | `documentado` |
 | `analitica-fase-0.md` | Calidad y operación de analítica | Línea base productiva, limpieza de eventos técnicos y aislamiento de rama. | Estado Git, Supabase y métricas agregadas | `completado` |
 | `analitica-fase-1.md` | Administración y analítica | Cuentas creadas desde perfiles, conversión aproximada y resumen de eventos útiles. | `profiles`, tablas de analítica, `AdminAnalyticsPage.tsx` | `implementado localmente` |
+| `analitica-fase-2.md` | Administración y analítica | Actualización automática visible, recarga manual y conservación del último informe. | `analyticsQueries.ts`, `analyticsRefresh.ts`, `AdminAnalyticsPage.tsx` | `implementado localmente` |
 | `coordinacion-de-agentes.md` | Coordinación | Tablero de propiedad temporal de archivos para trabajo simultáneo entre agentes. | Estado Git y declaraciones de agentes | `activo` |
 
 ## Mantenimiento

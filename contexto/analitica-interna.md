@@ -85,6 +85,9 @@ leen como admin. Las escrituras de actividad pasan por la función Edge con
   cuentas creadas es orientativa y nunca vincula ambos registros.
 - El resumen de eventos combina totales anónimos y consentidos por nombre. El
   detalle por usuario continúa limitado a cuentas con consentimiento vigente.
+- El panel refresca sus consultas cada 30 segundos sólo cuando está visible,
+  vuelve a consultar al recuperar el foco y permite una actualización manual.
+  Durante una recarga conserva el último informe confirmado.
 
 ## Retención
 

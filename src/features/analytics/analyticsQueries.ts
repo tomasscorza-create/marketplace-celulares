@@ -2,6 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 
 import { queryKeys } from "../../lib/query/queryKeys";
 import { getAdminAnalyticsOverview, getAdminAnalyticsUserHistory } from "./analyticsData";
+import { getCurrentAnalyticsRefetchInterval } from "./analyticsRefresh";
+
+const KEEP_PREVIOUS_ANALYTICS_DATA = <Data>(previousData: Data | undefined) => previousData;
 
 export function useAdminAnalyticsOverview(days: number, enabled = true) {
   return useQuery({
@@ -12,8 +15,11 @@ export function useAdminAnalyticsOverview(days: number, enabled = true) {
       if (error || !data) throw new Error(error?.message ?? "No pudimos cargar la analítica.");
       return data;
     },
-    refetchOnWindowFocus: true,
-    staleTime: 30_000,
+    placeholderData: KEEP_PREVIOUS_ANALYTICS_DATA,
+    refetchInterval: getCurrentAnalyticsRefetchInterval,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: "always",
+    staleTime: 0,
   });
 }
 
@@ -26,6 +32,10 @@ export function useAdminAnalyticsUserHistory(userId: string | null, enabled = tr
       if (error) throw new Error(error.message);
       return data ?? [];
     },
-    staleTime: 30_000,
+    placeholderData: KEEP_PREVIOUS_ANALYTICS_DATA,
+    refetchInterval: getCurrentAnalyticsRefetchInterval,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: "always",
+    staleTime: 0,
   });
 }

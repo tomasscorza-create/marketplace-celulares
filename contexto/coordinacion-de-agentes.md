@@ -18,7 +18,7 @@ identidad, seguridad, Git, Supabase y preservación de cambios existentes.
 
 | Agente | Estado | Alcance | Archivos reclamados | Archivos compartidos pendientes |
 | --- | --- | --- | --- | --- |
-| Codex | Fase 1 finalizada localmente | Cuentas creadas desde `profiles`, conversión aproximada y visualización de eventos útiles en el panel admin | Archivos liberados tras el commit de Fase 1 | Migración preparada pero no aplicada; preserva el cambio ajeno de `src/layouts/PublicLayout.tsx` |
+| Codex | Fase 2 finalizada localmente | Actualización automática visible, recarga manual, última actualización y conservación de datos del panel | Archivos liberados tras el commit de Fase 2 | Preserva el cambio ajeno de `src/layouts/PublicLayout.tsx`; no requiere backend ni despliegue remoto |
 | Claude | Finalizado | Atributos de producto como señal de búsqueda interna — completado, verificado en producción (buscar "rosa" encuentra un producto con atributo color:rosa sin mostrarlo en el detalle público) y commiteado (`f5fae4b`) en `feature/category-spec-templates`. Libera sus archivos reclamados. | Ninguno (liberados) | Ninguno — worktree libre para Codex. |
 
 ## Estado del repositorio observado
@@ -115,3 +115,5 @@ en sentido inverso.
 | 2026-07-14 21:12 | Codex | Verifica la liberación de Claude, activa `codex/analytics-hardening` desde `3aa4671` y mantiene `src/layouts/PublicLayout.tsx` fuera de sus commits. Cierra la Fase 0 con un checkpoint separado antes de iniciar la Fase 1. |
 | 2026-07-14 21:16 | Codex | Inicia Fase 1 en su rama. Define `profiles.created_at` como fuente exacta de cuentas, mantiene `signup_started` anónimo y amplía el resumen de eventos sin crear vínculos anónimos. Docker no está disponible, por lo que la migración se validará con controles estáticos y `dry-run`; no se aplicará en producción en esta fase. |
 | 2026-07-14 21:18 | Codex | Finaliza Fase 1 local: 59 tests, `preflight`, build y PWA en verde. El `dry-run` contra `snlotkvstplwnoiacqyz` propone sólo `20260715120000_analytics_account_and_event_metrics.sql`; no se aplicó. `db lint --linked` conserva sólo la advertencia legada conocida. Docker sigue no disponible para `db reset` local. |
+| 2026-07-14 21:21 | Codex | Inicia Fase 2 en `codex/analytics-hardening`. Limita el polling a 30 segundos con pestaña visible, fuerza revalidación al recuperar foco, agrega actualización manual y conserva los datos anteriores durante recargas o errores. No modifica Supabase. |
+| 2026-07-14 21:23 | Codex | Finaliza Fase 2 local: 14 archivos y 61 tests, `preflight`, build y PWA en verde. No ejecutó operaciones remotas. Mantiene `src/layouts/PublicLayout.tsx` fuera del alcance y prepara un commit exclusivo de la fase. |

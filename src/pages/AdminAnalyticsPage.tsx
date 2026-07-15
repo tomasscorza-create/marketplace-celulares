@@ -172,6 +172,17 @@ export function AdminAnalyticsPage() {
   const signupConversionRate = overview
     ? calculateSignupConversionRate(overview.signupStarted, accountsCreated)
     : null;
+  const isRefreshing = overviewQuery.isFetching || (Boolean(selectedUserId) && historyQuery.isFetching);
+  const lastUpdatedLabel = overviewQuery.dataUpdatedAt > 0
+    ? formatDate(new Date(overviewQuery.dataUpdatedAt).toISOString())
+    : overview
+      ? "Mostrando datos anteriores"
+      : "Todavía sin actualizar";
+  const refreshAnalytics = () => {
+    const requests: Promise<unknown>[] = [overviewQuery.refetch()];
+    if (selectedUserId) requests.push(historyQuery.refetch());
+    void Promise.all(requests);
+  };
   const selectedUser = useMemo(
     () => overview?.recentUsers.find((item) => item.userId === selectedUserId) ?? null,
     [overview?.recentUsers, selectedUserId],
@@ -189,16 +200,30 @@ export function AdminAnalyticsPage() {
             <p className="font-semibold text-stone-800">Período del informe</p>
             <p className="text-sm text-stone-500">La IP nunca se guarda y los anónimos no tienen historial individual.</p>
           </div>
-          <select
-            className="rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700"
-            onChange={(event) => setDays(Number(event.target.value))}
-            value={days}
-          >
-            <option value={7}>Últimos 7 días</option>
-            <option value={30}>Últimos 30 días</option>
-            <option value={90}>Últimos 90 días</option>
-            <option value={365}>Último año</option>
-          </select>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <div className="mr-1 text-right text-xs text-stone-500" aria-live="polite">
+              <p>{isRefreshing ? "Actualizando…" : `Última actualización: ${lastUpdatedLabel}`}</p>
+              <p>Automática cada 30 s con la pestaña visible</p>
+            </div>
+            <button
+              className="rounded-full border border-ocean-300 bg-white px-4 py-2 text-sm font-semibold text-ocean-700 hover:bg-ocean-50 disabled:cursor-wait disabled:opacity-60"
+              disabled={isRefreshing || !isEnabled}
+              onClick={refreshAnalytics}
+              type="button"
+            >
+              {isRefreshing ? "Actualizando…" : "Actualizar ahora"}
+            </button>
+            <select
+              className="rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700"
+              onChange={(event) => setDays(Number(event.target.value))}
+              value={days}
+            >
+              <option value={7}>Últimos 7 días</option>
+              <option value={30}>Últimos 30 días</option>
+              <option value={90}>Últimos 90 días</option>
+              <option value={365}>Último año</option>
+            </select>
+          </div>
         </div>
 
         {overviewQuery.isLoading ? (
