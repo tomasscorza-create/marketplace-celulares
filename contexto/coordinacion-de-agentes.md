@@ -19,7 +19,7 @@ identidad, seguridad, Git, Supabase y preservación de cambios existentes.
 | Agente | Estado | Alcance | Archivos reclamados | Archivos compartidos pendientes |
 | --- | --- | --- | --- | --- |
 | Codex | Fase 2 finalizada localmente | Actualización automática visible, recarga manual, última actualización y conservación de datos del panel | Archivos liberados tras el commit de Fase 2 | Preserva el cambio ajeno de `src/layouts/PublicLayout.tsx`; no requiere backend ni despliegue remoto |
-| Claude | Finalizado | Atributos de producto como señal de búsqueda interna — completado, verificado en producción (buscar "rosa" encuentra un producto con atributo color:rosa sin mostrarlo en el detalle público) y commiteado (`f5fae4b`) en `feature/category-spec-templates`. Libera sus archivos reclamados. | Ninguno (liberados) | Ninguno — worktree libre para Codex. |
+| Claude | En progreso | Atributos con múltiples valores por clave (ej. color: negro/rojo/azul) en el formulario de carga de producto. Trabaja en un **git worktree propio** (`../refactorizacionMArkplace-claude`, misma rama `feature/category-spec-templates`), no en el directorio compartido — sin riesgo de pisar el checkout que use Codex ahí. | `src/features/artisan/components/ArtisanProductFormSection.tsx`, `src/features/artisan/components/ArtisanProductFormConnector.tsx` | Ninguno — sin cambios de esquema, RPC ni tipos compartidos. |
 
 ## Estado del repositorio observado
 
@@ -117,3 +117,4 @@ en sentido inverso.
 | 2026-07-14 21:18 | Codex | Finaliza Fase 1 local: 59 tests, `preflight`, build y PWA en verde. El `dry-run` contra `snlotkvstplwnoiacqyz` propone sólo `20260715120000_analytics_account_and_event_metrics.sql`; no se aplicó. `db lint --linked` conserva sólo la advertencia legada conocida. Docker sigue no disponible para `db reset` local. |
 | 2026-07-14 21:21 | Codex | Inicia Fase 2 en `codex/analytics-hardening`. Limita el polling a 30 segundos con pestaña visible, fuerza revalidación al recuperar foco, agrega actualización manual y conserva los datos anteriores durante recargas o errores. No modifica Supabase. |
 | 2026-07-14 21:23 | Codex | Finaliza Fase 2 local: 14 archivos y 61 tests, `preflight`, build y PWA en verde. No ejecutó operaciones remotas. Mantiene `src/layouts/PublicLayout.tsx` fuera del alcance y prepara un commit exclusivo de la fase. |
+| 2026-07-14 21:32 | Codex | Aplica en producción la migración de Fase 1 `20260715120000_analytics_account_and_event_metrics.sql` contra el proyecto confirmado `snlotkvstplwnoiacqyz`. El `dry-run` propuso sólo esa migración y el lint remoto conserva únicamente la advertencia heredada de `requested_search_term`. Prepara la publicación de las Fases 1 y 2 en `main`; continúa preservando `src/layouts/PublicLayout.tsx`. |

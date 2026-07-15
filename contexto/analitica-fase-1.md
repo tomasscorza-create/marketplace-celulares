@@ -51,8 +51,9 @@ No se agregan proveedores externos ni nuevos datos personales.
   `20260715120000_analytics_account_and_event_metrics.sql`.
 - `supabase db lint --linked`: conserva únicamente la advertencia preexistente
   del parámetro legado `requested_search_term`.
-- Supabase local no pudo iniciarse porque Docker Desktop no está disponible. La
-  migración no se aplicó en producción y deberá validarse localmente antes del
-  despliegue cuando Docker esté activo.
+- Supabase local no pudo iniciarse porque Docker Desktop no está disponible.
+- El 2026-07-14, el `dry-run` remoto propuso únicamente esta migración y
+  `20260715120000_analytics_account_and_event_metrics.sql` se aplicó en el
+  proyecto productivo confirmado `snlotkvstplwnoiacqyz`.
 
 Última revisión: 2026-07-14.
