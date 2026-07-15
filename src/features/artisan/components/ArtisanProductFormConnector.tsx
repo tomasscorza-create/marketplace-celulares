@@ -7,12 +7,15 @@ type FormSectionProps = ComponentProps<typeof ArtisanProductFormSection>;
 type ForwardedProps = Omit<
   FormSectionProps,
   | "onAddAttribute"
+  | "onAddAttributeValue"
   | "onAvailabilityModeChange"
   | "onCategoryChange"
   | "onDescriptionChange"
   | "onLeadTimeDaysChange"
   | "onPriceChange"
   | "onRemoveAttribute"
+  | "onRemoveAttributeGroup"
+  | "onRenameAttributeKey"
   | "onStockQuantityChange"
   | "onTitleChange"
   | "onToggleActive"
@@ -39,6 +42,12 @@ export function ArtisanProductFormConnector({
             ...current.product_attributes,
             { key: initialKey ?? "", value: "" },
           ],
+        }));
+      }}
+      onAddAttributeValue={(key, value) => {
+        setProductForm((current) => ({
+          ...current,
+          product_attributes: [...current.product_attributes, { key, value }],
         }));
       }}
       onAvailabilityModeChange={(value) => {
@@ -70,6 +79,22 @@ export function ArtisanProductFormConnector({
           ...current,
           product_attributes: current.product_attributes.filter(
             (_attribute, attributeIndex) => attributeIndex !== index,
+          ),
+        }));
+      }}
+      onRemoveAttributeGroup={(key) => {
+        setProductForm((current) => ({
+          ...current,
+          product_attributes: current.product_attributes.filter(
+            (attribute) => attribute.key !== key,
+          ),
+        }));
+      }}
+      onRenameAttributeKey={(oldKey, newKey) => {
+        setProductForm((current) => ({
+          ...current,
+          product_attributes: current.product_attributes.map((attribute) =>
+            attribute.key === oldKey ? { ...attribute, key: newKey } : attribute,
           ),
         }));
       }}
