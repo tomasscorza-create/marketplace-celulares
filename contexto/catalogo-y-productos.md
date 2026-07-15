@@ -2,50 +2,75 @@
 
 ## Propósito
 
-Regir la forma en que los productos son obtenidos, mostrados y filtrados en la tienda pública, además de las utilidades subyacentes de la gestión de productos por los vendedores.
+Documentar sólo el contrato de descubrimiento público: qué productos pueden
+aparecer, cómo se consultan y qué estado debe conservar la URL. El alta,
+inventario y medios se mantienen en sus fichas de dominio.
 
 ## Fuentes de verdad
 
-- `src/features/public/`: Lógica de carga del catálogo público (`useCatalogPageData.ts`), filtrado, utilidades visuales y componentes (ej. `CatalogProductFeedCard`).
-- `src/features/artisan/`: Gestión del lado del artesano, edición rápida, publicación y validación.
-- `src/pages/CatalogPage.tsx`: Ensambla la UI de exploración, paginación, filtros y la sección de vitrinas o *showcases*.
+- `src/pages/CatalogPage.tsx`: estado de URL y composición de la experiencia.
+- `src/features/public/useCatalogPageData.ts` y `catalogPageUtils.ts`:
+  orquestación y composición de las colecciones visibles.
+- `src/features/public/publicClient.ts` y `publicQueries.ts`: RPC, paginación y
+  caché de consultas.
+- `supabase/migrations/20260715090000_catalog_search_product_attributes.sql`:
+  definición vigente de los RPC públicos de catálogo.
+- `src/pages/ProductDetailPage.tsx`: lectura pública del producto y de su
+  snapshot de especificaciones.
 
-## Flujo o arquitectura
+## Flujo vigente
 
-El catálogo público funciona así:
+1. `CatalogPage` obtiene `q`, `categoria`, `orden` y `pagina` desde
+   `URLSearchParams`.
+2. `useCatalogPageData` resuelve categorías, feed paginado, sugerencias de
+   tiendas y, cuando corresponde, contenido personalizado.
+3. `publicClient.ts` consulta los RPC vigentes; el frontend compone vitrinas y
+   páginas sin convertir datos ocultos en productos públicos.
+4. La URL se actualiza al buscar, filtrar, ordenar o paginar, por lo que una
+   recarga o enlace compartido conserva el estado de exploración.
 
-1. `CatalogPage` usa estado alojado en la URL (vía `searchParams`) para sincronizar `q` (búsqueda), `categoria` y `orden`.
-2. Llama al hook `useCatalogPageData` que consolida búsquedas de categorías, vitrinas personalizadas y el feed paginado.
-3. El frontend divide los productos en grillas o filas para revelarlos con micro-animaciones (componente `RevealSequenceGroup`).
-4. Existen modos adaptativos: El catálogo ajusta su carga y layout respondiendo a *lazy scrolling* (solicita secciones secundarias u oscuras al interceptar un centinela).
+## Contratos duraderos
 
-## Reglas y decisiones vigentes
+- El feed público exige `products.is_active = true`, perfil con rol `artisan` y
+  `storefront_hidden_at is null`.
+- Un producto activo con `stock_quantity = 0` puede seguir apareciendo. La
+  disponibilidad se comunica en la UI y se vuelve a validar en carrito y
+  checkout cuando ese canal está habilitado.
+- «Para ti» sólo se renderiza cuando la colección personalizada contiene al
+  menos seis productos válidos.
+- Búsqueda, categoría, orden y página pertenecen a la URL; no moverlos a estado
+  exclusivamente local.
+- El detalle puede mostrar `products.category_spec_values`, que es el snapshot
+  guardado con el producto, no una lectura en vivo de la plantilla actual.
+- Promociones, carga de productos y medios 3D tienen fuentes propias:
+  [`promociones-del-catalogo.md`](promociones-del-catalogo.md),
+  [`operacion-vendedor.md`](operacion-vendedor.md) y
+  [`visor-3d-y-medios.md`](visor-3d-y-medios.md).
 
-- **Visibilidad estricta**: El catálogo público exige productos activos y vendedores con rol `artisan` no ocultos. El stock se muestra y se vuelve a validar en carrito/checkout; el RPC de catálogo vigente no excluye por sí solo un producto activo con `stock_quantity = 0`.
-- **Sección "Para ti" Condicional**: La sección personalizada ("Para ti") requiere estrictamente recolectar al menos 6 productos válidos para mostrarse. Si hay menos de 6, la sección se oculta por completo para evitar espacios vacíos en la grilla y se pasa directamente al "Explorar".
-- **Búsqueda guiada por URL**: Todos los filtros (búsqueda, página, orden) deben reflejarse en la URL (`URLSearchParams`) para mantener enlaces compartibles.
-- **Modelos 3D**: Son opcionales. Las tarjetas manejan de forma segura que un producto no tenga archivos GLB/GLTF.
-- **Grillas reactivas**: Se decide la cantidad de columnas no solo mediante media queries, sino por un estado de React evaluando el ancho de la ventana al cargar y redimensionar.
-- **Especificaciones por categoría**: El admin define, por categoría, una plantilla de campos de texto libre (tabla `category_spec_templates`, gestionada desde `AdminCategoriesPage.tsx` al editar una categoría). Al cargar o editar un producto (mismo formulario compartido por admin y vendedor), si la categoría elegida tiene plantilla, se muestra una sección para completar el valor de cada campo; se guarda como snapshot en `products.category_spec_values` (jsonb, `{label, value}[]`), desacoplado de la plantilla. Cambiar la categoría del producto descarta los valores cargados. El detalle público (`ProductDetailPage.tsx`) muestra esta tabla debajo de la descripción cuando el producto tiene valores. Cliente y hooks compartidos en `src/features/categorySpecs/`.
-- **Promociones en Explorar**: El hueco inferior derecho del showcase desktop
-  se reserva para un carrusel administrable con mensajes, imágenes, productos
-  y beneficios reclamables. Su dominio, seguridad, acciones y fase móvil se
-  documentan en `contexto/promociones-del-catalogo.md`.
+## Dependencias y límites
 
-## Dependencias y límites externos
+Los RPC y RLS son parte del contrato del catálogo. Si cambia una columna
+seleccionada, deben revisarse juntos migración, tipos y normalización del
+cliente. Las migraciones anteriores pueden describir firmas históricas y no
+reemplazan al RPC vigente.
 
-- **Consultas de Supabase**: Se depende fuertemente de funciones SQL, RPC y RLS en el backend para realizar ordenamientos y filtrados eficientes que no traigan datos masivos al cliente.
+## Validación proporcional
 
-## Validación
+- Texto o documentación: revisar enlaces y ejecutar `git diff --check`; sumar
+  `npm run audit:encoding` si corresponde.
+- Lógica localizada: ESLint sobre los archivos afectados, typecheck cuando
+  cambien tipos/imports/JSX y QA del filtro o página modificados.
+- RPC, columnas o visibilidad: test de contrato explícito si existe,
+  `npm run audit:backend` y prueba local de los casos activo, oculto, sin stock
+  y filtro por categoría. Actualmente no hay una suite específica del catálogo
+  general; no atribuirle cobertura automática.
+- Ejecutar `npm run build` sólo si cambian imports lazy, assets, configuración
+  de bundle/PWA o se prepara una publicación frontend.
 
-- Comandos: `npm run build`.
-- Manual: Navegar al catálogo, filtrar por una categoría, realizar una búsqueda textual y probar cambiar de página. Recargar para comprobar persistencia de la URL.
+## QA manual mínimo
 
-## Riesgos y errores frecuentes
+Abrir una URL con `q`, `categoria`, `orden` y `pagina`; recargar; cambiar cada
+control; verificar paginación y confirmar que un vendedor oculto o un producto
+inactivo no aparezcan.
 
-- Modificar el esquema de la tabla de productos sin sincronizar las queries de selección (`select()`) usadas en el frontend, lo cual causa que falten datos.
-- Desesperarse porque un producto recién creado no aparece en el catálogo: revisar primero `is_active`, el rol/visibilidad del vendedor y la respuesta del RPC antes de atribuir el fallo a la UI.
-
-## Mantenimiento
-
-Se debe actualizar si cambian los algoritmos de filtrado, el modelo principal de productos (como el agregado de variantes/talles) o la forma de manejar la paginación de la UI principal.
+Última revisión: 2026-07-15.

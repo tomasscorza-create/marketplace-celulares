@@ -1,30 +1,64 @@
-# Notificaciones Internas
+# Notificaciones internas
 
 ## Propósito
-Proveer un canal directo y auditable desde la administración central hacia compradores o vendedores, usualmente para solicitar firmas o acuse de recibo de nuevos términos/avisos legales.
+
+Documentar el sistema vigente de avisos administrativos a vendedores y su
+confirmación de lectura. No es un canal de promociones, chat ni firma
+electrónica certificada.
 
 ## Fuentes de verdad
-- `src/features/internalNotifications/`: Consultas (queries) y tipos asociados para el componente de notificaciones.
-- `src/pages/AdminInternalNotificationsPage.tsx`: Interfaz de generación de nuevos avisos.
-- `src/pages/ArtisanInternalNotificationsPage.tsx`: Bandeja de entrada o modal que interrumpe la navegación del usuario final.
 
-## Flujo o arquitectura
-1. El admin redacta un aviso de carácter obligatorio/crítico. Este se guarda en la tabla `internal_notifications` indicando a qué grupo va dirigido (ej. `all_artisans`).
-2. Al iniciar sesión o navegar por su panel, el usuario verifica si tiene avisos pendientes que impacten a su rol.
-3. El frontend muestra alertas (o directamente bloquea el flujo principal) exigiendo que el usuario lea la notificación y haga clic en aceptar. Esto genera una firma temporal/permanente en `internal_notification_signatures`.
+- `src/features/internalNotifications/internalNotificationsClient.ts` y
+  `internalNotificationsQueries.ts`: consultas, creación, borrado y firma.
+- `src/pages/AdminInternalNotificationsPage.tsx`: administración y conteo de
+  confirmaciones.
+- `src/pages/ArtisanInternalNotificationsPage.tsx`: bandeja del vendedor.
+- `src/types/internalNotifications.ts`: contratos del cliente.
+- `supabase/migrations/20260527000021_021_internal_notifications.sql`: tablas,
+  claves, cascadas y RLS.
 
-## Reglas y decisiones vigentes
-- **Canal Legal / Regulatorio**: Este sistema no debe usarse para enviar promociones o notificaciones efímeras (para eso existe el mail o toast messages). Es puramente regulatorio/contractual.
-- **Auditoría inmutable**: Una entrada en `signatures` con su respectivo timestamp sirve como consentimiento a nivel base de datos.
+## Flujo vigente
 
-## Dependencias y límites externos
-- Tablas SQL `internal_notifications` e `internal_notification_signatures`.
+1. Un admin crea una fila en `internal_notifications`.
+2. Todo vendedor autenticado puede leer los avisos activos. El esquema actual
+   no tiene destinatarios por grupo y no expone avisos a compradores.
+3. La UI separa pendientes y firmados y muestra accesos/contadores; no bloquea
+   por sí sola la navegación completa del vendedor.
+4. Confirmar lectura hace upsert en `internal_notification_signatures`. La clave
+   `(notification_id, user_id)` impide dos filas para el mismo aviso y usuario.
+5. El admin puede ver cuántas confirmaciones tiene cada aviso y también
+   eliminarlo.
 
-## Validación
-- Manual: Entrar con cuenta `admin`, enviar notificación. Cambiar a cuenta de vendedor y comprobar que la notificación estorba/avisa hasta ser firmada.
+## Contratos y límites
 
-## Riesgos y errores frecuentes
-- Eliminar filas de la tabla de notificaciones antiguas rompiendo la integridad referencial y corrompiendo las bases de `signatures` de los usuarios que ya habían firmado.
+- Sólo admin crea o elimina avisos; el vendedor lee activos y confirma para su
+  propio `user_id`.
+- La firma guarda nombre, email y fecha para trazabilidad interna.
+- El sistema no es inmutable: RLS permite actualizar la firma propia y
+  `ON DELETE CASCADE` elimina las firmas al borrar el aviso. No presentarlo como
+  prueba legal permanente.
+- Si el negocio necesita conservar evidencia, desactivar avisos, segmentar
+  destinatarios, soportar compradores o impedir borrados, primero hace falta una
+  nueva decisión de producto y una migración aditiva.
+- El registro inicial identificado por
+  `SYSTEM_TERMS_NOTIFICATION_ID` es contenido del sistema, no una regla general
+  de segmentación.
 
-## Mantenimiento
-Actualizar si este sistema rudimentario se integra algún día con servicios de e-Signature (ej. DocuSign o similares) o si se empieza a usar para mandar hilos de chat de soporte.
+## Validación proporcional
+
+- Componente o query: ESLint sobre el archivo, typecheck cuando corresponda y
+  QA con admin y vendedor.
+- Tabla, RLS, cascada o semántica de firma: test de contrato explícito,
+  `npm run audit:backend` y Supabase local confirmado.
+- Actualmente no hay tests automáticos específicos de notificaciones internas;
+  no afirmar cobertura porque typecheck, build o una suite ajena pasen.
+- `npm run build` sólo ante cambios de rutas lazy, imports, assets o
+  publicación.
+
+## QA manual mínimo
+
+Crear un aviso como admin, comprobar que aparece para un vendedor y no para un
+comprador, firmarlo, recargar y verificar el contador. Si se prueba borrado,
+hacerlo sólo con datos descartables y confirmar la cascada esperada.
+
+Última revisión: 2026-07-15.

@@ -2,50 +2,61 @@
 
 ## Propósito
 
-Define la arquitectura de arranque de React, la distribución de rutas y los layouts para separar la UI pública de los paneles privados (comprador, vendedor, administrador).
+Ubicar el arranque de React, los proveedores globales y las fronteras entre la
+aplicación pública y los paneles protegidos. La lista exacta de rutas vive sólo
+en el router; esta ficha describe su estructura estable.
 
-## Fuentes de verdad
+## Archivos fuente
 
-- `src/main.tsx`: Punto de entrada de la aplicación, configuración de React DOM y registro del Service Worker.
-- `src/app/router.tsx`: Define el enrutador con `react-router-dom`, asocia rutas con páginas de forma perezosa (`lazy`) y agrupa por layouts/roles.
-- `src/layouts/`: Componentes que envuelven las páginas para proveer menús y estructura general según la sección (`PublicLayout`, `ArtisanLayout`, `BuyerLayout`, `AdminLayout`).
-- `src/pages/`: Componentes de alto nivel que representan pantallas individuales.
+- `src/main.tsx`: monta la aplicación, inicializa monitoreo y registra el
+  service worker.
+- `src/app/App.tsx`: compone Query, autenticación, analítica, router y aviso de
+  actualización PWA.
+- `src/app/router.tsx`: rutas, imports lazy, límites de comercio, errores y
+  protección por rol.
+- `src/layouts/`: estructura pública y paneles `artisan`, `buyer` y `admin`.
+- `src/pages/`: pantallas de alto nivel.
 
-## Flujo o arquitectura
+## Flujo vigente
 
-El punto de entrada carga `App`, que monta el enrutador de `router.tsx`. Las rutas se agrupan en cuatro ramas principales:
+`main.tsx` monta `App`, los proveedores globales envuelven `RouterProvider` y
+el router distribuye cuatro ramas principales: pública (`/`) y paneles de
+vendedor, comprador y administración. `ProtectedRoute` resuelve configuración,
+sesión, perfil y rol antes de renderizar una rama privada. Las rutas de compra
+que dependen del comercio usan además el gate definido en el router.
 
-1. `/`: Layout público. Incluye catálogo, perfiles, login y registro.
-2. `/panel/vendedor`: Layout de artesano/vendedor. Protegido para rol `artisan`.
-3. `/panel/comprador`: Layout de comprador. Protegido para rol `buyer`.
-4. `/panel/admin`: Layout de administración. Protegido para rol `admin`.
+Las páginas y layouts se importan con `lazy`; `Suspense` muestra `RouteLoader`
+y cada rama principal declara `RouteErrorPage`. Los chunks lazy no forman parte
+automáticamente del precache; la política pertenece a `pwa-y-cache.md`.
 
-## Reglas y decisiones vigentes
+## Datos y dependencias externas
 
-- **Carga perezosa (Lazy Loading)**: Todas las páginas y layouts se cargan mediante `lazy` para optimizar el tamaño del bundle.
-- **PWA y rutas lazy**: El service worker no precachea páginas de catálogo,
-  producto ni paneles. Sus chunks se descargan al navegar y después quedan en
-  la caché runtime acotada; el contrato completo vive en `pwa-y-cache.md`.
-- **Rutas protegidas**: Los paneles privados (vendedor, comprador, admin) y ciertas subrutas (ej. `/perfil/cliente`) están resguardados por el componente `<ProtectedRoute>` que exige un rol específico (`allowedRoles`).
-- **Estado de carga**: Se usa `<Suspense>` con `<RouteLoader />` para mostrar retroalimentación mientras se descargan los fragmentos de las páginas.
-- **Manejo de errores**: Cada ruta o grupo principal define un `errorElement: <RouteErrorPage />` para capturar fallos.
+- React Router controla navegación y errores.
+- `AuthProvider` aporta sesión y rol.
+- `src/config/marketplace.ts` habilita o deshabilita superficies de comercio.
 
-## Dependencias y límites externos
+## Decisiones vigentes
 
-- **React Router DOM**: Se usa la API `createBrowserRouter`.
-- **Autenticación**: `ProtectedRoute` depende de `useAuth()` para verificar sesión y perfiles.
+- Agregar o retirar rutas en `src/app/router.tsx`; no mantener listas paralelas.
+- Toda ruta privada debe declarar su rol permitido.
+- Conservar imports lazy para páginas y layouts salvo una razón medida para
+  incorporarlos al bundle inicial.
+- Un layout estructura navegación; la lógica de dominio permanece en su
+  feature o página.
 
 ## Validación
 
-- Comandos: `npm run build` asegura que todas las dependencias de rutas resuelvan correctamente.
-- Manual: Probar la navegación pública e intentar acceder a un `/panel/*` sin sesión, que debe redirigir a `/login`.
+Clasificar primero el cambio con [AGENTS.md](../AGENTS.md). Para una ruta o
+import modificado, usar ESLint sobre los archivos afectados y typecheck cuando
+cambien JSX, tipos o imports. Ejecutar
+`src/features/auth/ProtectedRoute.test.tsx` explícitamente si cambia la
+protección. `npm run build` se reserva para cambios de lazy loading, assets,
+configuración del bundle o una publicación frontend.
 
-## Riesgos y errores frecuentes
+Probar manualmente la ruta afectada, navegación directa/recarga, un acceso sin
+permiso cuando corresponda y el fallback 404 o de error relevante.
 
-- Olvidar envolver una ruta privada con `<ProtectedRoute>`, exponiendo vistas sensibles.
-- Cargar páginas pesadas de manera síncrona en `router.tsx` aumentando el tamaño del bundle inicial.
-- Agregar todas las rutas lazy al precache y anular el beneficio de dividir el bundle.
+## Última revisión
 
-## Mantenimiento
-
-Actualizar esta ficha cuando se agreguen nuevos roles, se cambie la estrategia de enrutamiento (ej. si se pasara a un framework de archivos) o se modifiquen significativamente los layouts.
+2026-07-15. Actualizar cuando cambien proveedores globales, ramas principales,
+gates de navegación o estrategia de carga.

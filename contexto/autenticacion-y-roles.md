@@ -2,46 +2,65 @@
 
 ## Propósito
 
-Gestionar la sesión de usuarios, proveer los datos del perfil actual a toda la aplicación y resguardar el acceso a las rutas protegidas.
+Describir cómo la aplicación obtiene una sesión, carga el perfil vigente y
+decide el acceso a rutas protegidas.
 
-## Fuentes de verdad
+## Archivos fuente
 
-- `src/lib/supabase/client.ts`: Configura y expone la única instancia del cliente de Supabase. Posee defensas de entorno para evitar conexiones indebidas a producción.
-- `src/features/auth/AuthProvider.tsx`: Contexto de React que escucha los cambios de sesión y obtiene el perfil de la base de datos.
-- `src/features/auth/ProtectedRoute.tsx`: Componente envolvente que bloquea o redirige a usuarios sin sesión o sin los roles adecuados.
-- `AGENTS.md`: Reglas sobre no alterar configuraciones de remotos ni filtrar secretos.
+- `src/lib/supabase/client.ts`: única instancia compartida y guardia de entorno.
+- `src/features/auth/AuthProvider.tsx`: sesión, perfil, errores y renovación.
+- `src/features/auth/authClient.ts`: lectura del perfil actual.
+- `src/features/auth/ProtectedRoute.tsx`: decisiones de configuración, sesión,
+  perfil y rol.
+- `src/types/auth.ts`: contrato de perfiles y roles.
+- `src/features/auth/ProtectedRoute.test.tsx`: cobertura del gate de rutas.
 
-## Flujo o arquitectura
+## Flujo vigente
 
-El estado de la sesión fluye así:
+`AuthProvider` recupera la sesión inicial y escucha
+`supabase.auth.onAuthStateChange`. Cuando existe usuario, carga su fila de
+`profiles` y expone `user`, `profile`, `role`, estados de carga y
+`refreshProfile` mediante `useAuth()`.
 
-1. `AuthProvider` escucha `supabase.auth.onAuthStateChange`.
-2. Si hay usuario, dispara la carga del perfil (`getCurrentUserProfile`) para traer datos y rol del usuario desde la tabla `profiles`.
-3. Expone a través del hook `useAuth()`: `user` (datos de Auth), `profile` (datos de tabla pública) y `role` (`admin`, `artisan`, `buyer`).
-4. `ProtectedRoute` lee `useAuth()` y evalúa si coincide el rol del usuario con la lista de `allowedRoles`.
+`TOKEN_REFRESHED` actualiza en segundo plano sin reemplazar la interfaz por una
+pantalla de carga. `ProtectedRoute` distingue backend sin configurar, sesión en
+validación, usuario ausente, perfil ausente y rol no permitido. Sólo la ausencia
+de usuario redirige a `/login`; las demás negativas muestran un estado explícito.
 
-## Reglas y decisiones vigentes
+## Datos y dependencias externas
 
-- **Único Cliente Supabase**: Siempre importar de `src/lib/supabase/client.ts`. Si las variables de entorno están incompletas o erróneas, el cliente se inhabilita para prevenir errores silenciosos y derrames de credenciales.
-- **Renovación silenciosa**: Cuando el token se refresca (`TOKEN_REFRESHED`), el contexto actualiza los datos en segundo plano sin mostrar una pantalla de carga para no interrumpir la interfaz.
-- **Manejo de rutas prohibidas**: Si el usuario no está logueado, `ProtectedRoute` hace una redirección a `/login`. Si no tiene permisos o falta el perfil, muestra un error usando `<AccessMessage>`.
-- **Roles estrictos**: Solo perfiles con roles específicos pueden acceder a sus respectivos paneles. No hay mezcla de dominios.
+- Supabase Auth administra la sesión y sus tokens.
+- `public.profiles` aporta el rol de aplicación: `admin`, `artisan` o `buyer`.
+- La autorización real de datos también depende de RLS; ocultar una ruta no
+  sustituye políticas backend.
 
-## Dependencias y límites externos
+## Decisiones vigentes
 
-- **Supabase Auth**: La aplicación confía totalmente en las sesiones JWT gestionadas por Supabase.
-- **Tabla de perfiles**: La tabla pública `profiles` es donde reside verdaderamente el "rol" del usuario y los detalles de perfil.
+- Consumir `useAuth()` en React; no crear clientes ni estados de sesión
+  paralelos en componentes.
+- Importar Supabase desde `src/lib/supabase/client.ts`.
+- Mantener separados usuario Auth, perfil público y rol; uno no demuestra los
+  otros.
+- Cambios de acceso, sesión o roles son críticos. Copy o presentación aislada
+  dentro de esta feature no escala por el nombre del dominio.
 
 ## Validación
 
-- Comandos: `npm run build`.
-- Manual: Iniciar sesión con cuentas de diferentes roles y verificar que no puedan entrar en los paneles ajenos o ver rutas sin permiso.
+Para decisiones de `ProtectedRoute`:
 
-## Riesgos y errores frecuentes
+```powershell
+npm test -- src/features/auth/ProtectedRoute.test.tsx
+```
 
-- Conectar componentes directamente a `supabase.auth.getSession()` en lugar de consumir `useAuth()`, causando desincronización de estado en React.
-- No tener sincronizada la tabla `profiles` con el usuario de Auth, resultando en que la UI no sepa qué rol tiene el usuario logueado.
+Sumar ESLint dirigido y typecheck si cambian lógica, tipos o imports. Cuando
+cambie el contrato de acceso/sesión/roles, cerrar el estado integrado con
+`npm run preflight` una sola vez; usar `build` sólo si también corresponde por
+bundle o publicación, según [AGENTS.md](../AGENTS.md).
 
-## Mantenimiento
+El QA manual debe cubrir backend no configurado, visitante, perfil ausente y
+cada rol afectado. No usar producción para fabricar estados de prueba.
 
-Actualizar si cambian los tipos de rol, si se agregan nuevos proveedores de sesión (ej. Google/OAuth) o se modifican las protecciones del enrutador.
+## Última revisión
+
+2026-07-15. Actualizar al cambiar roles, proveedor de sesión, carga de perfiles
+o decisiones de acceso.

@@ -46,44 +46,60 @@ apoyo, a la derecha del visor 3D y antes de la grilla regular.
   esta primera etapa; primero queda registrado de manera real en la cuenta. La
   futura redención debe validar nuevamente estado, alcance y compra mínima en
   backend.
-- El carrusel avanza automáticamente cada 8 segundos con una transición de
-  entrada, se pausa al interactuar, no avanza con la pestaña oculta y respeta
-  `prefers-reduced-motion`. Esta regla reutiliza un único temporizador; no se
-  montan ciclos de avance paralelos.
+- El carrusel funciona como una cinta horizontal continua que se desplaza hacia
+  la izquierda a velocidad lineal. Cada campaña ocupa un ancho completo y tarda
+  8 segundos en recorrerlo hasta desaparecer por el extremo izquierdo mientras
+  la siguiente entra por el derecho. La primera campaña se repite al final de
+  la pista para cerrar el bucle sin salto visual. El simple hover no detiene la
+  cinta; se pausa mientras un control o acción recibe foco, no avanza con la
+  pestaña oculta y respeta `prefers-reduced-motion`. El intervalo existente de
+  8000 ms sincroniza los indicadores; no monta un segundo avance visual por
+  páginas.
 - El panel de flechas e indicadores permanece normalmente en reposo, con menor
   escala y opacidad. El primer clic lo activa sin cambiar de campaña; cada uso
   reinicia su temporizador y, después de 3 segundos sin interacción, vuelve al
   estado reposado.
+- El rectángulo exterior funciona como fondo estable del banner. Cada campaña
+  se presenta como una sub-card elevada, separada por 6 px en los cuatro lados,
+  con borde redondeado y sombra suave; este tratamiento no altera su contenido,
+  acción ni temporización.
+- Cada posición de la cinta agrega 3 px de espacio lateral por lado. Al quedar
+  dos posiciones contiguas, forman una separación de 6 px entre campañas que
+  deja ver el mismo fondo exterior sin modificar el ritmo del recorrido.
+- El visor que recorta la pista no dibuja un borde continuo. El borde y la
+  sombra pertenecen a cada sub-card, de modo que el espacio lateral interrumpe
+  también las líneas superiores e inferiores y evita que parezcan conectadas.
 - En esta etapa el componente usa `hidden xl:block`. No elegir una ubicación
   móvil por inferencia: debe definirse en una fase posterior.
 - Si no hay campañas públicas o el backend aún no tiene la migración, el
   componente no muestra contenido ni inventa promociones locales.
 
-## Validación
+## Validación proporcional
 
-```powershell
-npm test -- --run src/features/catalogPromotions
-npm run docs:backend-map
-npm run preflight
-npm run build
-```
+- Lógica, contrato SQL y componente:
+  `npm test -- src/features/catalogPromotions/catalogPromotionUtils.test.ts src/features/catalogPromotions/catalogPromotionMigrationContract.test.ts src/features/public/components/CatalogPromotionBanner.test.tsx`.
+- Cambio visual o de acción: ESLint sobre los archivos afectados, typecheck
+  cuando cambien tipos/imports/JSX y el QA manual indicado abajo.
+- Migración, RLS, Storage o RPC: test de contrato explícito,
+  `npm run audit:backend` y Supabase local identificado según
+  `docs/DB_SAFETY.md`. Ejecutar `npm run docs:backend-map` sólo si cambió el
+  mapa que debe regenerarse.
+- `npm run build` sólo ante cambios de imports, assets, bundle/PWA o
+  publicación frontend. Escalar a `npm run preflight` únicamente por contrato
+  compartido, tooling, impacto transversal o certificación integral.
 
-Para validar el SQL localmente, seguir `docs/DB_SAFETY.md` y ejecutar la pila
-local identificada. No aplicar la migración a remoto sin autorización.
+## Requisito de backend
 
-Estado productivo: la migración `20260715230000_catalog_promotions.sql` fue
-aplicada el 2026-07-15 al proyecto confirmado **accesorios y celulares**. El
-historial local/remoto quedó alineado, `supabase db lint --linked` no reportó
-errores nuevos y una consulta pública devolvió la campaña inicial activa. La
-única advertencia del lint sigue siendo el parámetro heredado
-`requested_search_term` de `record_catalog_activity_event_v1`, ajeno a este
-dominio.
+El esquema del dominio nace en
+`20260715230000_catalog_promotions.sql`; la migración
+`20260715231000_catalog_promotion_demo_content.sql` sólo agrega contenido
+editable. El checkout local no demuestra que ambas estén aplicadas en el
+backend objetivo: verificar `supabase migration list` sólo dentro de una tarea
+remota autorizada y con la identidad confirmada.
 
-El contenido demostrativo de la migración `20260715231000` es contenido normal
-de `catalog_promotions`: el admin puede editarlo, desactivarlo o eliminarlo
-desde el panel cuando termine el QA. La migración fue aplicada al backend
-productivo confirmado el 2026-07-15; la lectura pública devolvió tres campañas
-activas ordenadas en `0`, `10` y `20`.
+El contenido demostrativo es contenido administrable normal: el admin puede
+editarlo, desactivarlo o eliminarlo después del QA. No aplicar ni repetir
+migraciones remotas sin autorización.
 
 QA manual pendiente del dueño:
 
@@ -95,4 +111,4 @@ QA manual pendiente del dueño:
 
 ## Última revisión
 
-2026-07-15, migración productiva verificada.
+2026-07-15 contra fuentes locales. El QA visual del dueño continúa pendiente.

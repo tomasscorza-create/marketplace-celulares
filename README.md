@@ -1,75 +1,86 @@
 # Marketplace Celulares
 
-Marketplace de celulares y accesorios basado en React, Vite y Supabase. Este
-repositorio es un proyecto independiente: no debe reconectarse, sincronizarse
-ni reutilizar credenciales de marketplaces anteriores.
+Marketplace independiente de celulares y accesorios construido con React,
+TypeScript, Vite y Supabase. No debe reconectarse, sincronizarse ni reutilizar
+credenciales de marketplaces anteriores.
 
-## Punto de entrada
+Este README es el índice para personas. Antes de cambiar código, datos,
+configuración, Git o servicios remotos, leer [AGENTS.md](AGENTS.md), que define
+el contrato operativo y la validación proporcional al riesgo. La identidad del
+repo y del backend vigente vive en
+[docs/IDENTIDAD_PROYECTO.md](docs/IDENTIDAD_PROYECTO.md).
 
-Este README es la guía para personas. Antes de hacer cambios técnicos, leer
-[AGENTS.md](AGENTS.md): es el manual operativo obligatorio para sesiones de
-Codex y otros agentes de IA.
+## Inicio local
 
-| Si necesitas… | Consulta primero |
-| --- | --- |
-| Saber cuál es el repo Git y el proyecto Supabase vigentes | [docs/IDENTIDAD_PROYECTO.md](docs/IDENTIDAD_PROYECTO.md) |
-| Entender decisiones, arquitectura, seguridad o estado actual | [AGENTS.md](AGENTS.md) |
-| Trabajar con Supabase y migraciones | [docs/DB_SAFETY.md](docs/DB_SAFETY.md), [docs/BACKEND_MAP.md](docs/BACKEND_MAP.md) |
-| Configurar variables de entorno | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) |
-| Usar Supabase local con Docker | [docs/LOCAL_BACKEND.md](docs/LOCAL_BACKEND.md) |
-| Preparar checkout o Mercado Pago | [docs/CHECKOUT_MERCADOPAGO.md](docs/CHECKOUT_MERCADOPAGO.md) |
-| Revisar el flujo de catálogo/3D | [docs/PRODUCT_3D_PREVIEW.md](docs/PRODUCT_3D_PREVIEW.md) |
-| Ejecutar o ampliar pruebas automatizadas | [contexto/pruebas-automatizadas.md](contexto/pruebas-automatizadas.md) |
-| Entender analítica, consentimiento y privacidad | [contexto/analitica-interna.md](contexto/analitica-interna.md) |
-| Entender el límite de tamaño y cómo dividir módulos | [contexto/modularidad.md](contexto/modularidad.md) |
-| Entender el service worker y la política de precache | [contexto/pwa-y-cache.md](contexto/pwa-y-cache.md) |
-| Consultar planes históricos, no operativos | [docs/REFACTOR_PLAN.md](docs/REFACTOR_PLAN.md), [docs/NEW_BACKEND_PLAN.md](docs/NEW_BACKEND_PLAN.md) |
-| Encontrar contexto futuro por dominio | [contexto/](contexto/) |
-
-## Desarrollo local
+Instalá dependencias sólo si faltan o cambió el lockfile, y luego iniciá Vite:
 
 ```powershell
 npm install
 npm run dev
 ```
 
-La aplicación necesita variables locales en `.env.local`. Copiá
-`.env.example` como referencia, pero nunca subas `.env.local`, claves de
-servicio, contraseñas ni archivos temporales de Supabase.
+La aplicación usa variables locales en `.env.local`. Tomá `.env.example` como
+referencia, pero nunca subas `.env.local`, contraseñas, tokens, claves de
+servicio ni temporales de Supabase. Toda variable `VITE_` queda expuesta en el
+bundle del navegador: ese prefijo se usa únicamente para valores públicos.
 
-## Verificación antes de cambiar o publicar
+## Dónde buscar
+
+| Necesidad | Fuente principal |
+| --- | --- |
+| Identificar repo, backend y recursos prohibidos | [docs/IDENTIDAD_PROYECTO.md](docs/IDENTIDAD_PROYECTO.md) |
+| Seguridad, arquitectura y flujo de trabajo | [AGENTS.md](AGENTS.md) |
+| Supabase, migraciones y mapa del backend | [docs/DB_SAFETY.md](docs/DB_SAFETY.md), [docs/BACKEND_MAP.md](docs/BACKEND_MAP.md) |
+| Variables y entornos | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) |
+| Supabase local con Docker | [docs/LOCAL_BACKEND.md](docs/LOCAL_BACKEND.md) |
+| Checkout y Mercado Pago | [docs/CHECKOUT_MERCADOPAGO.md](docs/CHECKOUT_MERCADOPAGO.md) |
+| Catálogo y visor 3D | [docs/PRODUCT_3D_PREVIEW.md](docs/PRODUCT_3D_PREVIEW.md) |
+| Pruebas automatizadas | [contexto/pruebas-automatizadas.md](contexto/pruebas-automatizadas.md) |
+| Analítica, consentimiento y privacidad | [contexto/analitica-interna.md](contexto/analitica-interna.md) |
+| Modularidad y límite de tamaño | [contexto/modularidad.md](contexto/modularidad.md) |
+| PWA, service worker y caché | [contexto/pwa-y-cache.md](contexto/pwa-y-cache.md) |
+| Contexto específico de cada dominio | [contexto/INDICE.md](contexto/INDICE.md) |
+| Antecedentes del trabajo asistido | [docs/AI_WORKFLOW.md](docs/AI_WORKFLOW.md) |
+| Planes históricos, no operativos | [docs/REFACTOR_PLAN.md](docs/REFACTOR_PLAN.md), [docs/NEW_BACKEND_PLAN.md](docs/NEW_BACKEND_PLAN.md) |
+
+## Validación eficiente
+
+No todos los cambios requieren la suite completa. Durante la iteración se usa
+el control más pequeño capaz de detectar una regresión; los gates globales se
+reservan para cambios transversales, sensibles o listos para publicación. La
+matriz vinculante y sus excepciones están en [AGENTS.md](AGENTS.md).
+
+Comandos frecuentes:
 
 ```powershell
+# Prueba explícita o pruebas relacionadas con una fuente
+npm test -- src/ruta/archivo.test.ts
+npm exec vitest -- related src/ruta/fuente.ts --run
+
+# Controles globales, sólo cuando el riesgo los activa
 npm run preflight
 npm run build
 ```
 
-Para cambios de base de datos, revisar primero las migraciones y el protocolo
-de [AGENTS.md](AGENTS.md). Para cambios visuales, además verificar el flujo
-afectado en la aplicación.
+- `preflight` incluye lint, typecheck, la suite completa y las auditorías del
+  repositorio.
+- `build` incluye typecheck, el build de Vite y `audit:pwa`.
+- No ejecutes primero todos los subcomandos y luego el gate que ya los incluye,
+  salvo que estés aislando un fallo.
+- Un cambio sólo documental no requiere tests, typecheck ni build: se revisan
+  el diff, los enlaces y la codificación.
 
-## Pruebas automatizadas
-
-```powershell
-npm test
-npm run test:watch
-```
-
-La suite usa Vitest y React Testing Library. No necesita credenciales ni se
-conecta a Supabase remoto; `npm run preflight` la ejecuta automáticamente.
+Para desarrollo dirigido también están disponibles `npm test` y
+`npm run test:watch`. La suite no requiere credenciales ni consulta Supabase
+remoto.
 
 ## Producción
 
-El frontend se publica en Netlify y usa un proyecto Supabase de producción
-independiente. Las variables de producción se guardan en el proveedor de
-deploy, no en este repositorio.
+Netlify publica `dist/` mediante `npm run build`. Supabase es un backend
+independiente: las migraciones de `supabase/migrations/` y las funciones de
+`supabase/functions/` se despliegan de forma explícita; publicar el frontend no
+las actualiza.
 
-Las migraciones viven en `supabase/migrations/` y son la fuente de verdad del
-esquema. Las funciones Edge viven en `supabase/functions/`. Ambos recursos
-deben desplegarse explícitamente; publicar el frontend no los actualiza.
-
-## Regla principal
-
-No ejecutar comandos de conexión, migración, despliegue o borrado contra un
-proyecto remoto que no haya sido identificado y confirmado como el backend de
-este marketplace.
+Las variables de producción viven en el proveedor correspondiente, nunca en
+archivos versionados. No ejecutar conexiones, migraciones, despliegues, cambios
+de secretos ni borrados remotos sin alcance autorizado e identidad confirmada.

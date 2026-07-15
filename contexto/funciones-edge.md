@@ -1,56 +1,117 @@
 # Funciones Edge
 
-## Propósito
+## Propósito y propiedad
 
-Aislar la lógica de servidor que requiere secretos, que realiza cobros, o que necesita privilegios administrativos (`service_role`) sin exponer estas claves en el frontend.
+Esta ficha mapea las funciones Deno, sus callers y sus barreras de autorización.
+Los contratos detallados de negocio pertenecen a
+`contexto/operacion-admin.md`, `docs/CHECKOUT_MERCADOPAGO.md` y
+[analitica-interna.md](analitica-interna.md); aquí no se duplican sus flujos.
+
+Las funciones aíslan secretos y operaciones con `service_role`. Esa clave nunca
+se envía al navegador y no reemplaza la validación del caller dentro de cada
+función.
 
 ## Fuentes de verdad
 
-- `supabase/functions/`: Código fuente en Deno para cada función Edge (ej. `admin-buyer-accounts`, `mercadopago-webhook`).
+- `supabase/functions/<nombre>/index.ts`: comportamiento y autorización de
+  aplicación de cada función.
+- `supabase/functions/_shared/`: reglas reutilizadas por pagos, expiración,
+  configuración de productos y CORS.
+- `supabase/config.toml`: configuración Edge versionada, incluida la excepción
+  JWT explícita de `collect-analytics`.
+- `supabase/functions/.env.example`: nombres base de variables para un entorno
+  nuevo; los valores reales viven fuera del repo.
+- `docs/CHECKOUT_MERCADOPAGO.md`: activación, límites y secrets de checkout.
+- `contexto/analitica-interna.md`: privacidad, datos y validación de analítica.
 
-## Flujo o arquitectura
+## Inventario y autorización
 
-Las funciones se agrupan en dos ramas principales:
+| Función | Caller previsto | Barrera de aplicación | Dependencias privilegiadas |
+| --- | --- | --- | --- |
+| `admin-buyer-accounts` | Panel admin | Bearer JWT; obtiene el usuario y exige perfil admin antes de consultar datos. | Supabase `service_role` |
+| `admin-manage-artisans` | Panel admin | Bearer JWT; obtiene el usuario y exige perfil admin antes de crear, editar o eliminar vendedores. | Supabase Auth, DB, Storage y `service_role` |
+| `create-mercadopago-checkout` | Comprador autenticado | Bearer JWT; valida usuario, perfil `buyer`, carrito, opciones, stock y precios en servidor. | Supabase `service_role`, access token de Mercado Pago, URLs de aplicación/webhook |
+| `expire-pending-checkouts` | Cron u operador backend | Header `x-cron-secret` comparado con `PENDING_CHECKOUTS_CRON_SECRET`; no usa sesión de usuario. | Supabase `service_role` |
+| `mercadopago-return` | Redirección del navegador desde Mercado Pago | No confía en JWT de usuario; reconcilia contra la API del proveedor y restringe el origen de retorno. | Supabase `service_role`, access token de Mercado Pago, `APP_BASE_URL` |
+| `mercadopago-webhook` | Mercado Pago | Verifica firma HMAC `x-signature` y datos del request antes de recuperar y aplicar el pago. | Supabase `service_role`, access token y webhook secret de Mercado Pago |
+| `collect-analytics` | Navegador anónimo o cuenta consentida | Gateway con `verify_jwt = false`; valida origen, ruta, evento, bot y rate limit. El modo individual además valida Bearer JWT, rol y consentimiento vigente dentro de la función. | Supabase `service_role`, `ANALYTICS_RATE_LIMIT_SECRET`; GeoIP opcional |
 
-1. **Administración**: `admin-buyer-accounts`, `admin-manage-artisans`. Invocadas desde el panel de admin con tokens JWT. Ejecutan acciones privilegiadas.
-2. **Pagos (Checkout)**: `create-mercadopago-checkout`, `expire-pending-checkouts`, `mercadopago-return`, `mercadopago-webhook`. Manejan la creación de preferencias de pago, callbacks asíncronos y caducidad de carritos abandonados.
-3. **Analítica**: `collect-analytics` recibe métricas anónimas agregadas o eventos de cuentas consentidas. Es pública para admitir visitas sin sesión, pero valida una lista cerrada de payloads y comprueba JWT + consentimiento antes de guardar actividad individual.
+Las funciones de retorno, webhook y cron tienen callers externos que no
+equivalen a una sesión frontend. No aplicarles por analogía la regla JWT del
+panel. A la vez, una validación de aplicación no demuestra cómo está configurado
+el gateway remoto: antes de desplegar una función cuyo caller no porta JWT,
+verificar explícitamente su política de `verify_jwt` en el objetivo autorizado.
+El único override versionado actualmente en `supabase/config.toml` es el de
+`collect-analytics`.
 
-## Reglas y decisiones vigentes
+## Configuración y secrets
 
-- **Secretos por Nombre**: Las funciones requieren secrets (ej. tokens de Mercado Pago o Service Role Keys) configurados en el proyecto de Supabase. Nunca se guardan sus valores en el código fuente, solo se referencian por nombre.
-- **Despliegue Independiente**: Las funciones no se despliegan automáticamente con el frontend de Netlify; se deben desplegar con `supabase functions deploy [nombre]` hacia el proyecto Supabase activo.
-- **Autenticación en llamadas**: La app frontend invoca estas funciones mandando el token JWT del usuario logueado. Las funciones validan este token antes de operar.
-- **Excepción pública controlada**: `collect-analytics` usa `verify_jwt = false` para contar visitas sin cuenta. No confía en identidad enviada por el cliente; cuando se solicita seguimiento individual valida el JWT dentro de la función.
-- **GeoIP opcional**: `IPINFO_TOKEN` habilita ciudad/región aproximadas. La IP se usa sólo en memoria y no se persiste.
-- **Entrega idempotente**: `collect-analytics` exige un `event_id` por entrega y
-  delega la escritura a RPC transaccionales. Sus logs técnicos sólo indican
-  modo, resultado, razón y estado HTTP; no registran IP, ruta, usuario ni ID del
-  evento.
-- **Ciclo de sesión consentida**: `heartbeat` actualiza únicamente tiempo
-  visible y `session_end` cierra la sesión en `pagehide`. Ambos requieren JWT y
-  consentimiento, son idempotentes y no se guardan como eventos de negocio.
-- **Calidad anónima**: `collect-analytics` comprueba origen, rutas y bots antes
-  de escribir. El límite compartido usa `ANALYTICS_RATE_LIMIT_SECRET` para
-  producir un HMAC diario de la IP; la IP original nunca se envía a Postgres.
-- **Mantenimiento independiente**: la retención no depende de una función Edge
-  ni del frontend. `pg_cron` invoca una función SQL acotada y el panel sólo lee
-  su estado agregado.
+Los nombres de pago y Supabase se mantienen en
+`supabase/functions/.env.example` y `docs/CHECKOUT_MERCADOPAGO.md`. Para
+analítica también aplican:
 
-## Dependencias y límites externos
+- `ANALYTICS_RATE_LIMIT_SECRET`: obligatorio y privado;
+- `ANALYTICS_ALLOWED_ORIGINS`: allowlist opcional de orígenes;
+- `IPINFO_TOKEN`: proveedor geográfico opcional.
 
-- **Deno**: Entorno de ejecución en Supabase Edge.
-- **Mercado Pago**: Dependencia externa para las funciones de pago/checkout.
+No copiar valores a documentación, argumentos de comandos, variables `VITE_*`
+ni archivos versionados. `SUPABASE_SERVICE_ROLE_KEY`, tokens de proveedor,
+webhook secrets y secretos de cron son siempre backend. El código puede admitir
+nombres legacy de Mercado Pago; para nuevas configuraciones usar los nombres
+por ambiente que define la plantilla.
 
-## Validación
+## Despliegue y estado remoto
 
-- Comandos: Servir funciones localmente con `supabase functions serve` y probar invocándolas desde la UI local (asegurando tener el archivo `.env.local` adecuado y los secrets configurados para el entorno local).
+- Netlify no despliega funciones Edge, migraciones ni secrets.
+- Un cambio local en `supabase/functions/` no demuestra que la función remota
+  haya cambiado.
+- Desplegar sólo la función incluida en el alcance, después de confirmar repo,
+  project ref, secrets requeridos y política JWT.
+- Registrar por separado código local, migraciones, función desplegada, secrets
+  configurados y prueba funcional; ninguno demuestra automáticamente los demás.
+- Esta ficha no declara funciones activas, versiones remotas ni checkout
+  productivo. Esos estados son temporales y deben verificarse en una tarea
+  autorizada.
 
-## Riesgos y errores frecuentes
+## Validación proporcional
 
-- Desplegar una función a producción sin haber seteado los *secrets* necesarios en el dashboard de Supabase (ej. `supabase secrets set ...`).
-- Olvidarse de volver a desplegar la función tras realizar cambios en su código, asumiendo que el frontend lo haría solo.
+### Control común
 
-## Mantenimiento
+1. Revisar el diff y ejecutar `deno check` sobre el entrypoint y helpers Deno
+   afectados.
+2. Ejecutar `npm run audit:backend` cuando cambien tablas, RPC, Storage o sus
+   referencias.
+3. Ejecutar la prueba explícita de contrato más cercana. No asumir cobertura de
+   ESLint o typecheck global: ambas superficies excluyen o cubren de forma
+   incompleta `supabase/functions/**`.
+4. Si existe una pila local aislada, servir sólo la función afectada y probar
+   éxito, caller inválido, permisos insuficientes y fallo de dependencia. Usar
+   secrets locales de prueba en un archivo ignorado; nunca sustituir el probe
+   local por un deploy remoto.
 
-Debe actualizarse siempre que se agregue una nueva integración de un tercero (ej. un nuevo método de pago o CRM) que requiera de webhooks o secretos.
+### Cobertura conocida
+
+| Superficie | Pruebas dirigidas |
+| --- | --- |
+| Calidad de `collect-analytics` | `npm test -- supabase/functions/collect-analytics/requestQuality.test.ts` |
+| Retención vinculada a analítica | `npm test -- src/features/analytics/analyticsRetentionContract.test.ts` |
+| Expiración de checkout | `npm test -- src/test/checkoutExpiration.test.ts` |
+| Opciones server-side de producto | `npm test -- src/test/edgeProductConfig.test.ts` |
+| Paridad de envío | `npm test -- src/test/shippingRateParity.test.ts` |
+
+Estas pruebas no certifican por sí solas Auth, RLS, Storage, la API real de
+Mercado Pago, webhooks ni idempotencia extremo a extremo. Las funciones admin,
+return y webhook no tienen actualmente un test dedicado de entrypoint; para un
+cambio de conducta necesitan `deno check` y probes locales de sus ramas
+afectadas, o una prueba nueva si el contrato lo exige.
+
+`npm run preflight` se reserva para el checkpoint final de un cambio nivel 3,
+transversal o de contrato compartido. `npm run build` se suma sólo si también
+cambia o se publicará el frontend. Un cambio backend específico no ejecuta por
+defecto la suite ni el build frontend.
+
+Todo dry-run, deploy, secret o probe remoto requiere el objetivo confirmado y
+alcance autorizado según `AGENTS.md`; para pagos, seguir además
+`docs/CHECKOUT_MERCADOPAGO.md`.
+
+Última revisión contra fuentes locales: 2026-07-15.

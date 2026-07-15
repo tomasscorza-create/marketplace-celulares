@@ -2,47 +2,51 @@
 
 ## Propósito
 
-Evitar que páginas, clientes de datos y funciones Edge vuelvan a convertirse
-en módulos difíciles de revisar, probar y modificar con seguridad.
+Evitar módulos difíciles de revisar y modificar sin usar el tamaño como
+sustituto del diseño por responsabilidades.
 
 ## Archivos fuente
 
-- `scripts/audit-large-files.mjs`: mide archivos de `src/`, `supabase/` y `scripts/`.
-- `package.json`: integra `audit:large-files` dentro de `preflight`.
-- `src/features/admin/adminClientSupport.ts`: tipos, normalizadores y paginación admin.
-- `src/features/buyer/buyerContactForm.ts`: estado inicial y reglas puras del contacto.
-- `supabase/functions/create-mercadopago-checkout/checkout-support.ts`: contratos y validaciones HTTP del checkout.
-- `src/features/artisan/components/ArtisanProductsPageLayout.tsx`: composición visual de la gestión de productos.
+- `scripts/audit-large-files.mjs`: alcance, extensiones y umbral.
+- `package.json`: comando `audit:large-files` e inclusión en `preflight`.
 
 ## Datos y dependencias externas
 
-La auditoría es local, determinista y no necesita credenciales, Docker, red ni
-conexión a Supabase. Cuenta líneas físicas de TypeScript, JavaScript, CSS y SQL.
+La auditoría recorre `src/`, `supabase/` y `scripts/`; cuenta líneas de archivos
+TypeScript, JavaScript, CSS y SQL. Es local, determinista y no necesita red,
+credenciales, Docker ni Supabase.
 
 ## Decisiones vigentes
 
-- Ningún archivo auditado puede alcanzar 1000 líneas. El límite es una puerta
-  de no regresión; no reemplaza el criterio de extraer antes cuando un módulo
-  mezcla responsabilidades.
-- Los clientes públicos existentes conservan sus exports. Las extracciones
-  internas separan contratos, normalización, reglas puras y composición sin
-  obligar a reescribir consumidores.
-- Las páginas deben orquestar estado y navegación; la composición visual y las
-  reglas puras viven en componentes o módulos de dominio.
-- Las funciones Edge separan validación/configuración del flujo transaccional.
+- Todo archivo auditado debe permanecer por debajo de 1000 líneas; alcanzar el
+  umbral bloquea `audit:large-files` y `preflight`.
+- Extraer antes del límite cuando se mezclen consultas, normalización, reglas,
+  estado y composición visual.
+- Preservar exports públicos cuando una extracción sea interna.
+- Las páginas orquestan; componentes y módulos de dominio encapsulan
+  presentación y reglas. Las Edge Functions separan validación/configuración
+  del flujo transaccional.
 
 ## Validación
 
+Ejecutar el gate cuando se cree o amplíe código, scripts, CSS o SQL cerca del
+límite:
+
 ```powershell
 npm run audit:large-files
-npm run preflight
-npm run build
 ```
 
-Para inspeccionar deuda por debajo del límite sin bloquear, se puede ejecutar
-`node scripts/audit-large-files.mjs 400`.
+Para inspeccionar deuda sin bloquear:
+
+```powershell
+node scripts/audit-large-files.mjs 400
+```
+
+Este control no exige por sí solo `preflight` ni `build`. Si la extracción
+cambia código ejecutable, aplicar además el nivel correspondiente de
+[AGENTS.md](../AGENTS.md).
 
 ## Última revisión
 
-2026-07-13. Se volvió bloqueante la auditoría y se dividieron los módulos que
-superaban el máximo, preservando sus contratos externos.
+2026-07-15. Actualizar al cambiar alcance, extensiones, umbral o estrategia de
+modularización.

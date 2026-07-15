@@ -1,43 +1,75 @@
-# Operación Admin
+# Operación admin
 
 ## Propósito
 
-Proveer las vistas, flujos y utilidades para que los administradores gestionen vendedores, compradores, catálogo y controlen el contenido publicado en la plataforma.
+Documentar las capacidades administrativas reales y distinguir las operaciones
+directas bajo RLS de las que requieren una Edge Function privilegiada.
 
 ## Fuentes de verdad
 
-- `src/features/admin/`: Scripts de llamadas al servidor, lógica de dashboard, y control de productos (`adminClient.ts`, `adminDashboardUtils.ts`, `adminProductControlUtils.ts`).
-- `src/pages/Admin*.tsx`: Pantallas del panel de administración (ej. `AdminArtisansPage`, `AdminProductsPage`, `AdminSalesPage`).
-- `AGENTS.md`: Define que el administrador gestiona cuentas vendedoras y sus recursos (como imágenes en storage), por lo que sus políticas deben permitírselo.
+- `src/features/admin/adminClient.ts` y `adminQueries.ts`: lecturas,
+  mutaciones, caché y RPC del panel.
+- `src/pages/Admin*.tsx` y `src/app/router.tsx`: superficies y rutas vigentes.
+- `supabase/functions/admin-manage-artisans/`: alta, actualización y baja de
+  cuentas vendedoras mediante Auth administrativa.
+- `supabase/functions/admin-buyer-accounts/`: agregación backend disponible,
+  actualmente no invocada por el cliente.
+- Migraciones y RLS de `profiles`, `products`, `orders`, `order_items`,
+  categorías, controles de producto y Storage.
 
-## Flujo o arquitectura
+## Capacidades vigentes
 
-El usuario con rol `admin` navega a `/panel/admin`. Allí interactúa con interfaces que consumen data principalmente a través de `adminClient.ts` y Edge Functions privilegiadas:
+- **Vendedores**: listar y leer perfiles directamente; crear, actualizar o
+  eliminar cuentas mediante `admin-manage-artisans`. Los controles de
+  visibilidad y boost se guardan bajo RLS admin.
+- **Productos**: elegir un vendedor y reutilizar su flujo de gestión. Registro,
+  imágenes y modelo deben conservar `artisan_id` y carpeta Storage del vendedor
+  objetivo, aunque la acción la realice un admin.
+- **Categorías y especificaciones**: administrar categorías y sus plantillas;
+  el formulario compartido guarda en el producto un snapshot de valores.
+- **Control de catálogo**: revisar productos y guardar tags, comentarios o boost
+  en `product_admin_controls`.
+- **Ventas y facturación**: leer `orders` y `order_items`; el cambio de
+  fulfillment pasa por `update_order_item_fulfillment_status`.
+- **Compradores**: la superficie actual es de consulta. No existe acción,
+  columna ni flujo para suspender cuentas. El snapshot frontend vigente usa un
+  fallback de perfiles; no atribuirle la agregación completa de la Edge Function
+  hasta que el cliente realmente la invoque.
+- **Notificaciones**: administrar avisos dirigidos a vendedores según
+  [`notificaciones-internas.md`](notificaciones-internas.md). No son un log
+  general de auditoría.
 
-1. **Gestión de Vendedores**: Puede activar/desactivar artesanos (vía la función `admin-manage-artisans` u operaciones directas sobre la tabla `profiles`).
-2. **Gestión de Compradores**: Puede suspender cuentas (vía `admin-buyer-accounts`).
-3. **Control de Catálogo**: Las imágenes y productos se guardan asociadas al vendedor, pero el admin posee políticas RLS que le permiten leer/editar cualquier registro en `public.products` y buckets de storage.
+## Límites de seguridad
 
-## Reglas y decisiones vigentes
+- `service_role` sólo puede vivir en funciones servidoras.
+- No saltar RLS desde el navegador para evitar una Edge Function.
+- Una política admin amplia debe limitarse a `public.is_admin()` y al recurso
+  necesario.
+- Crear o editar un producto ajeno no transfiere su propiedad ni cambia la
+  carpeta de medios.
+- Leer datos en el panel no habilita una mutación inexistente.
 
-- **Independencia de contenido**: Aunque un administrador suba una imagen a un producto ajeno, la propiedad del archivo y registro debe permanecer vinculada al `artisan` (vendedor) original.
-- **Auditoría interna**: Existen notificaciones internas (`AdminInternalNotificationsPage`) para auditar procesos en la plataforma.
-- **Control de facturación y ventas**: Vistas dedicadas (`AdminBillingPage`, `AdminSalesPage`) para visualizar métricas globales del Marketplace, leyendo directamente de `orders` y `order_items`.
+## Validación proporcional
 
-## Dependencias y límites externos
+- Utilidad o componente aislado: test relacionado si existe, ESLint sobre el
+  archivo y typecheck cuando cambien tipos, imports o JSX.
+- Mutación directa/RPC: probar la operación como admin y confirmar que un rol no
+  autorizado falla.
+- Edge administrativa: prueba o probe local con sesión admin y sesión no admin;
+  verificar Auth, tabla y respuesta por separado. No desplegar para sustituir
+  una prueba local.
+- RLS, Storage o migración: contrato explícito, `npm run audit:backend` y pila
+  local confirmada.
+- Actualmente no hay una suite admin específica que cubra el panel completo; no
+  usar un build como prueba de autorización.
+- `npm run build` sólo ante cambios de bundle, rutas lazy, assets o publicación
+  frontend.
 
-- **Edge Functions Administrativas**: Se requiere de funciones Edge para evitar exponer la llave `service_role` en el cliente web, protegiendo operaciones exclusivas de admin.
+## QA manual mínimo
 
-## Validación
+Entrar como admin, recorrer la superficie afectada y repetir el intento con un
+rol vendedor o comprador. Para productos administrados, confirmar
+`artisan_id`, ruta Storage, visibilidad pública y ausencia de escrituras sobre
+otro vendedor.
 
-- Comandos: `npm run build`.
-- Manual: Iniciar sesión como `admin` y comprobar que las tablas de gestión listan registros correctamente, se pueden modificar estados de productos y que el acceso a `/panel/admin` es correcto.
-
-## Riesgos y errores frecuentes
-
-- Intentar mutar datos de otros usuarios sin que las políticas (RLS) en Supabase expliciten que el rol `admin` tiene permiso de `UPDATE/DELETE`.
-- Usar el cliente de Supabase frontend en lugar de un Edge Function cuando se requiere modificar información crítica que está bloqueada por RLS.
-
-## Mantenimiento
-
-Actualizar si el modelo de administración cambia (ej. agregar jerarquías de administradores) o se crean nuevos flujos para controlar la calidad de los productos.
+Última revisión: 2026-07-15.

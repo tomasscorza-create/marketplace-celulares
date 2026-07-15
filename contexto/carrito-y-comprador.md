@@ -1,30 +1,77 @@
-# Carrito y Comprador
+# Carrito y comprador
 
 ## Propósito
-Documentar la experiencia del usuario final, su carrito de compras y el ciclo de vida de los pedidos desde la perspectiva del cliente (comprador).
+
+Documentar el carrito autenticado, su validación y la lectura de pedidos desde
+la perspectiva del comprador, sin duplicar el flujo del proveedor de pagos.
 
 ## Fuentes de verdad
-- `src/features/buyer/`: Gestión de la sesión de carrito, métodos de cobro, e interfaz de la cuenta del comprador.
-- `src/features/orders/`: Estructuras de datos y componentes compartidos de tracking de órdenes.
-- `src/pages/Buyer*Page.tsx`: Páginas del panel de usuario (`BuyerCartPage`, `BuyerDashboardPage`, `BuyerOrderDetailPage`).
 
-## Flujo o arquitectura
-1. **Carrito activo**: Se maneja con persistencia remota en la tabla `carts` (relacionada al comprador) y `cart_items` (ítems seleccionados). El frontend sincroniza su estado local con la base de datos en tiempo real.
-2. **Historial de pedidos**: Al completarse un pago, la orden temporal (tabla `orders`) pasa a un estado pagado visible para el comprador, donde puede revisar avance de envíos, totales y los detalles desglosados (`order_items`).
-3. **Perfil y preferencias**: El comprador tiene un perfil (`buyer_preferences`, `buyer_favorites`) donde se guardan listas de deseos e historial de interacciones.
+- `src/config/marketplace.ts`: canal de venta visible.
+- `src/features/buyer/cartClient.ts` y `cartQueries.ts`: persistencia,
+  validación, caché y mutaciones optimistas.
+- `src/pages/BuyerCartPage.tsx`: recorrido del carrito y comienzo del checkout.
+- `src/features/buyer/buyerClient.ts` y `buyerQueries.ts`: cuenta e historial.
+- `src/types/commerce.ts`: contratos compartidos de carrito y órdenes.
+- `supabase/migrations/20260527000016_016_buyer_cart_checkout_alignment.sql`,
+  `supabase/migrations/20260527000017_017_cart_checkout_hardening.sql` y
+  `supabase/migrations/20260527000018_018_partial_cart_checkout.sql`: tablas,
+  RLS y alineación del checkout.
 
-## Reglas y decisiones vigentes
-- **Carrito persistente y seguro**: El carrito no se guarda exclusivamente en `localStorage`, sino que reside en la base de datos. Esto habilita el uso multi-dispositivo y asegura que el servidor valide el stock remanente justo antes del checkout.
-- **Protección de privacidad (RLS)**: Un comprador solo puede seleccionar (`SELECT`) de la tabla `orders` y `order_items` aquellas filas exactas donde él es dueño (`buyer_id = auth.uid()`).
+## Estado actual
 
-## Dependencias y límites externos
-- Depende 100% de Edge Functions (documentadas en `checkout-y-pagos.md`) para procesar e inmovilizar la mercadería del carrito durante el inicio de pago.
+`marketplaceConfig.salesChannel` está configurado en `"whatsapp"`. Mientras
+siga así, las acciones públicas de carrito y checkout permanecen ocultas o
+redirigidas aunque su código y backend continúen en el repositorio. No confundir
+implementación disponible con canal habilitado en producción.
 
-## Validación
-- Manual: Agregar items al carrito en incógnito, iniciar sesión, asegurar el merge o persistencia del carrito. Verificar que la orden se genera correctamente al comprar.
+## Flujo vigente
 
-## Riesgos y errores frecuentes
-- Asumir que los montos totales de los items del carrito calculados en la interfaz de React (cliente) son la fuente final de verdad. Los montos para cobro siempre se re-evalúan en backend por seguridad (anti Client-side tampering).
+1. Sólo una sesión con rol comprador puede crear o modificar su carrito. No hay
+   carrito anónimo ni merge de un carrito local al iniciar sesión.
+2. `carts` conserva como máximo un carrito activo por comprador y `cart_items`
+   guarda snapshots útiles para presentar cada selección.
+3. React Query carga el estado remoto y aplica actualizaciones optimistas antes
+   de reconciliar la respuesta. No existe una suscripción Supabase Realtime del
+   carrito.
+4. La validación vuelve a leer producto, tienda, precio, opciones,
+   disponibilidad, stock y preferencias de entrega; los snapshots del cliente
+   no son autoridad comercial.
+5. Cuando checkout está habilitado, la Edge Function vuelve a validar y crea la
+   orden sólo con ítems aptos. Los ítems no incluidos permanecen en el carrito.
+6. Tras un pago aprobado, el comprador consulta `orders` y `order_items` desde
+   su panel y detalle de pedido.
 
-## Mantenimiento
-Actualizar si cambia el motor o arquitectura de carritos (ej. pasar de persistencia remota a carritos 100% en sesión efímera) o si se agregan cupones de descuento globales.
+## Contratos de seguridad
+
+- El navegador nunca decide el importe final ni descuenta stock.
+- RLS limita carrito y preferencias al comprador propietario o a un admin.
+  Órdenes e ítems también son legibles por admin y por el vendedor relacionado;
+  no describir esas políticas como exclusivas del comprador.
+- El checkout no reserva inventario al crear la preferencia. El descuento
+  atómico ocurre después de confirmar el pago.
+- La integración de Mercado Pago pertenece a
+  [`checkout-y-pagos.md`](checkout-y-pagos.md).
+
+## Validación proporcional
+
+- Utilidades de presentación o cálculo del carrito:
+  `npm test -- src/features/buyer/cartPageUtils.test.ts`.
+- Cambios en `cartClient.ts`, queries o página: test relacionado si Vitest
+  encuentra cobertura, ESLint sobre los archivos afectados, typecheck y QA con
+  una cuenta comprador. Si no se encuentra un test, declararlo; no asumir que
+  la caché o RLS quedaron cubiertas.
+- Cambios de tablas/RLS/checkout: prueba explícita del contrato,
+  `npm run audit:backend` y recorrido en Supabase local o staging aislado.
+- `npm run build` sólo ante cambios de imports, assets, bundle o publicación
+  frontend.
+
+## QA manual mínimo
+
+Con `salesChannel: "checkout"` únicamente en un entorno aislado: agregar,
+incrementar, reducir y quitar un producto; cambiar una opción; provocar cambio
+de precio o falta de stock; recargar y comprobar persistencia remota; verificar
+que sólo los ítems aprobados lleguen a la orden. No usar producción para este
+recorrido sin alcance autorizado.
+
+Última revisión: 2026-07-15.

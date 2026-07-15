@@ -2,47 +2,58 @@
 
 ## Propósito
 
-Explicar cómo se construye el empaquetado de producción del frontend, qué herramientas se usan y cuáles son los límites entre el deploy de la interfaz y los despliegues de backend.
+Separar la certificación local del frontend de la publicación en Git/Netlify y
+de las operaciones independientes de Supabase.
 
-## Fuentes de verdad
+## Archivos fuente
 
-- `netlify.toml`: Configuración de *build* para el proveedor de despliegue (Netlify).
-- `vite.config.ts`: Generación del manifest, service worker y política de caché PWA.
-- `scripts/audit-pwa-precache.mjs`: Límites aplicados al precache generado.
-- `package.json`: Scripts de npm, específicamente `build`, `preflight` y los comandos `audit:*`.
-- `AGENTS.md`: Define explícitamente que el despliegue del frontend no despliega backend ni migraciones de forma automática.
+- `package.json`: composición real de `preflight`, `build` y auditorías.
+- `netlify.toml`: comando, versión de Node y directorio publicado.
+- `vite.config.ts`: bundle y generación PWA.
+- `scripts/audit-pwa-precache.mjs`: control del service worker generado.
+- `docs/IDENTIDAD_PROYECTO.md`: repo, rama de producción y proveedor vigentes.
+- `docs/DB_SAFETY.md`: protocolo especializado para cambios de backend.
 
-## Flujo o arquitectura
+## Estados que no deben confundirse
 
-1. **Frontend Build**: Localmente o en la nube, se ejecuta `npm run build` (que invoca `tsc -b` y `vite build`). Esto genera recursos estáticos minificados en la carpeta `dist/`.
-2. **Netlify**: El archivo `netlify.toml` le indica a la plataforma que el comando base es `npm run build`, que la versión de Node es la 20 y que debe publicar el contenido del directorio `dist`.
-3. **Backend Independiente**: Las migraciones de Supabase (`supabase/migrations/`) y las Edge Functions (`supabase/functions/`) no tienen relación automática con el pipeline de Netlify. Deben aplicarse a través del CLI de Supabase independientemente, contra el proyecto en producción.
-4. **PWA**: El build genera el service worker y ejecuta `audit:pwa`. La compilación falla si el precache incorpora rutas lazy/3D o supera los límites documentados en `contexto/pwa-y-cache.md`.
+| Estado | Evidencia |
+| --- | --- |
+| Código local | diff y verificaciones ejecutadas sobre el worktree actual |
+| Git remoto | rama/remoto y commits efectivamente publicados |
+| Netlify | deploy asociado al commit correcto y smoke test del sitio |
+| Supabase | migraciones, funciones y secrets verificados por separado |
 
-## Reglas y decisiones vigentes
+Un resultado verde en una fila no demuestra las demás.
 
-- **Variables de Producción**: En producción, las variables seguras (como `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`) se configuran directamente en el panel web de Netlify. Nunca se versionan en el repositorio ni se empujan `.env` globales de producción.
-- **Preflight local**: Antes de cualquier publicación o commit grande estructural, se exige correr `npm run preflight` (que agrupa lint, tipos, pruebas automatizadas, auditorías de seguridad y el límite bloqueante de tamaño de módulos).
-- **Desacople estricto**: Si se publica un cambio en Netlify que requiere una nueva vista o función SQL, la migración de Supabase debe haberse corrido y validado *antes* en el proyecto remoto.
-- **Caché PWA acotada**: Un deploy no debe incorporar al precache todos los chunks lazy. El detalle y los números de referencia viven en `contexto/pwa-y-cache.md`.
+## Flujo vigente
 
-## Dependencias y límites externos
+Netlify ejecuta `npm run build` con Node 20 y publica `dist/`. El build ya
+incluye typecheck, Vite y `audit:pwa`. Un push a la rama de producción dispara
+el deploy configurado; no aplica migraciones ni despliega Edge Functions.
 
-- **Vite & TypeScript**: Para el build y la comprobación estática.
-- **Netlify**: Entorno de alojamiento elegido.
-- **Supabase CLI**: Única herramienta válida para los despliegues del lado servidor.
+Las variables `VITE_*` usadas por el frontend son públicas en el bundle. Se
+configuran en el proveedor sólo cuando están destinadas al navegador; secretos
+de servidor pertenecen al entorno backend correspondiente.
+
+## Decisiones vigentes
+
+- La matriz de [AGENTS.md](../AGENTS.md) decide la validación durante desarrollo.
+- Para una release frontend o cambio transversal, ejecutar `npm run preflight`
+  una vez y `npm run build` una vez sobre el estado final. No anteponer lint,
+  typecheck, suite completa ni `audit:pwa`, porque esos gates ya los contienen.
+- Un cambio documental no activa tests ni build.
+- Toda publicación o mutación remota exige identidad y alcance autorizados.
+- Los cambios frontend y backend deben ser compatibles en el orden elegido; su
+  despliegue y verificación siguen siendo operaciones separadas.
 
 ## Validación
 
-- Comandos: `npm test`, `npm run audit:large-files`, `npm run preflight` y `npm run build` aseguran que la app pase las pruebas y estándares de calidad locales antes de considerar subirla. `audit:pwa` se ejecuta al final del build porque inspecciona el service worker generado en `dist/`.
-- Manual: Revisar la consola del navegador y la pestaña Network tras un deploy en staging para confirmar que las variables de entorno se inyectaron correctamente en el bundle de Vite.
+Después de un deploy frontend, comprobar el commit publicado, carga inicial,
+navegación directa de la ruta afectada, consola/red y actualización PWA cuando
+aplique. Para backend, seguir `docs/DB_SAFETY.md` y la ruta específica de
+`AGENTS.md`; no sustituirla con tests frontend.
 
-## Riesgos y errores frecuentes
+## Última revisión
 
-- Creer que al pushear código a la rama principal, el *trigger* de Netlify también actualizó las funciones Edge o aplicó las nuevas tablas. Esto causa fallos de red en el cliente que intenta leer cosas que no existen.
-- Agregar dependencias problemáticas que fallen en la compilación estricta de TypeScript (`tsc -b`). Vite build falla si el typcheck es forzado antes.
-- Ejecutar sólo `audit:pwa` sobre un `dist/` viejo y confundir ese resultado con la certificación del código actual; la puerta válida es `npm run build`.
-
-## Mantenimiento
-
-Se debe modificar si el proyecto migra a otro proveedor (ej. Vercel), cambia a un framework SSR (Server-Side Rendering), cambia la estrategia de PWA/caché o se integra automatización CI/CD con GitHub Actions para el backend.
+2026-07-15. Actualizar al cambiar scripts compuestos, proveedor, rama de
+producción, pipeline o relación entre frontend y backend.

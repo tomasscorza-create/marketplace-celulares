@@ -2,77 +2,61 @@
 
 ## Propósito
 
-Definir cómo se ejecutan y amplían las pruebas locales que protegen reglas de
-negocio y decisiones de autorización sin conectarse a servicios remotos.
+Elegir la prueba más pequeña que observe el cambio y reservar la suite completa
+para checkpoints que realmente la requieran.
 
-## Fuentes de verdad
+## Archivos fuente
 
-- `vitest.config.ts`: configuración de Vitest, alias de `src/`, entorno jsdom y setup común.
-- `src/test/setup.ts`: matchers de DOM y limpieza posterior a cada prueba.
-- `src/**/*.test.ts` y `src/**/*.test.tsx`: pruebas colocadas junto al contrato que protegen.
-- `src/test/`: pruebas transversales entre frontend y funciones Edge.
-- `package.json`: comandos `test`, `test:watch` y composición de `preflight`.
+- `vitest.config.ts`: Vitest, alias, jsdom y setup.
+- `src/test/setup.ts`: matchers DOM y limpieza común.
+- `src/**/*.test.ts` y `src/**/*.test.tsx`: pruebas junto al contrato.
+- `src/test/`: contratos transversales, incluidos módulos compartidos con Edge.
+- `package.json`: `test`, `test:watch` y composición de `preflight`.
 
-## Flujo o arquitectura
+## Arquitectura y alcance
 
-Vitest ejecuta pruebas puras y de React en jsdom. Las pruebas de componentes
-usan React Testing Library y verifican resultados visibles en lugar de detalles
-internos. Los contratos compartidos entre frontend y Edge Functions se prueban
-importando ambas implementaciones y comparando resultados deterministas.
+Vitest ejecuta reglas puras y componentes React en jsdom. React Testing Library
+valida resultados visibles. Algunos tests importan módulos compartidos con Edge;
+otros leen migraciones SQL con `readFileSync` para verificar un contrato
+estático.
 
-La suite no carga `.env.local`, no necesita usuarios reales y no crea clientes
-Supabase. Las pruebas que requieran base, RLS, Storage o proveedores de pago
-deben implementarse posteriormente en un entorno local o de staging aislado;
-nunca contra producción como parte de `npm test`.
+La suite no consulta Supabase remoto ni certifica RLS, Storage, migraciones
+aplicadas, Auth real, Mercado Pago, WebGL, service workers o layout de navegador.
+Esas superficies requieren su herramienta o entorno específico.
 
-## Reglas y decisiones vigentes
+## Selección eficiente
 
-- `npm test` ejecuta la suite una vez y debe terminar sin procesos abiertos.
-- `npm run test:watch` se reserva para desarrollo interactivo.
-- `npm run preflight` incluye tests y es la puerta completa antes de publicar.
-- Cada corrección de una regresión debe agregar un caso que falle antes del arreglo.
-- Evitar snapshots extensos y mocks que repitan la implementación.
-- Fechas, aleatoriedad y respuestas externas deben ser deterministas o inyectables.
-- No incluir claves, URLs privadas, datos personales ni conexiones remotas en fixtures.
+```powershell
+# Test conocido
+npm test -- src/ruta/archivo.test.ts
 
-## Cobertura inicial
+# Tests conectados por imports estáticos
+npm exec vitest -- related src/ruta/fuente.ts --run
 
-- Validación de alta y edición de productos con stock o bajo demanda.
-- Agrupación de carrito, demoras y cálculo/bloqueo de envío.
-- Claves, resúmenes y modificadores de configuraciones de producto.
-- Validación server-side de opciones para impedir precios manipulados.
-- Vencimiento de checkouts pendientes.
-- Transiciones y resúmenes de preparación de pedidos.
-- Paridad de tarifas de envío entre frontend y Edge Functions.
-- Decisiones de `ProtectedRoute` para configuración, sesión, perfil y rol.
+# Desarrollo interactivo
+npm run test:watch
+```
 
-## Dependencias y límites externos
-
-- Vitest es el runner y reutiliza la transformación de Vite.
-- jsdom emula las APIs básicas del navegador; no sustituye una prueba real de WebGL, PWA o layout.
-- React Testing Library valida componentes desde la perspectiva del usuario.
-- La suite actual no certifica RLS, migraciones aplicadas, Storage, Mercado Pago ni Supabase Auth real.
+- Preferir el test explícito cuando se conoce el contrato.
+- `vitest related` sólo sigue el grafo de imports. Si una prueba abre SQL u otro
+  archivo con `readFileSync`, invocarla explícitamente.
+- Si no se encuentra ninguna prueba, no declarar cobertura: localizar la más
+  cercana, crear el caso de regresión necesario o escalar la validación.
+- Un test focalizado verde no certifica todo el repositorio.
+- Toda corrección de regresión debe conservar un caso que falle sin el arreglo.
+- Evitar snapshots extensos, mocks que reimplementen producción y fixtures con
+  credenciales o datos personales.
 
 ## Validación
 
-```powershell
-npm test
-npm run preflight
-npm run build
-```
+La matriz vinculante está en [AGENTS.md](../AGENTS.md): cambio localizado usa
+pruebas relacionadas; cambio de dominio usa su suite explícita; acceso, dinero,
+stock, privacidad, tooling, integración o release activan el checkpoint crítico.
+`npm run preflight` ya ejecuta la suite completa, por lo que no debe precederse
+con `npm test` completo salvo para aislar un fallo. `build` no es un gate de
+pruebas y se ejecuta sólo por sus propios disparadores.
 
-`npm audit` debe permanecer sin vulnerabilidades conocidas después de agregar o
-actualizar herramientas de prueba.
+## Última revisión
 
-## Riesgos y errores frecuentes
-
-- Confundir una prueba de función pura con la certificación del flujo remoto completo.
-- Mockear Supabase de forma tan detallada que el test sólo compruebe el mock.
-- Dejar pruebas fuera de `preflight`, permitiendo publicar aunque fallen.
-- Probar textos o estructura incidental cuando existe una regla de negocio más estable.
-
-## Mantenimiento
-
-Actualizar esta ficha cuando cambie el runner, el setup global, los comandos,
-el alcance de integración o los servicios autorizados para pruebas. Última
-revisión: 2026-07-13.
+2026-07-15. Actualizar al cambiar runner, setup, comandos, estrategia de
+selección o alcance de integración.

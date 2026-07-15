@@ -1,46 +1,63 @@
-# Entornos y Seguridad
+# Entornos y seguridad
 
 ## Propósito
 
-Definir los contratos de variables de entorno para desarrollo y producción, y asegurar que el frontend no se conecte accidentalmente a bases de datos equivocadas o exponga secretos.
+Documentar el contrato público de configuración del frontend y las defensas
+que evitan conectar este checkout a un backend incorrecto.
 
-## Fuentes de verdad
+## Archivos fuente
 
-- `.env.example`: Plantilla base de las variables públicas esperadas por Vite.
-- `docs/ENVIRONMENT.md`: Documentación de cómo configurar las conexiones locales y remotas.
-- `scripts/audit-safety.mjs`: Script de auditoría que previene *commits* con secretos o referencias al proyecto original.
-- `src/lib/supabase/client.ts`: Contiene la lógica del "Client Guard" que requiere validación estricta de entorno.
+- `.env.example`: nombres y valores seguros de ejemplo.
+- `docs/ENVIRONMENT.md`: contrato detallado de variables.
+- `docs/IDENTIDAD_PROYECTO.md`: identidad vigente y recursos prohibidos.
+- `src/lib/supabase/client.ts`: guardia ejecutable del cliente.
+- `scripts/audit-safety.mjs`: auditorías de secretos, conexiones y branding.
+- `scripts/quarantine-local-secrets.mjs`: operación local de cuarentena.
 
-## Flujo o arquitectura
+## Flujo vigente
 
-La aplicación usa `import.meta.env` (Vite) para inyectar variables en tiempo de compilación para el frontend.
-El cliente Supabase de frontend (`src/lib/supabase/client.ts`) implementa una protección (Client Guard) que exige:
+Toda variable `VITE_*` termina en el navegador. El cliente sólo se crea cuando
+existen URL y clave pública y, además:
 
-1. Opt-in explícito (`VITE_ENABLE_REMOTE_BACKEND=true` o `VITE_ENABLE_LOCAL_BACKEND=true`).
-2. Presencia de `URL` y `ANON_KEY`.
-3. Para remoto, exige que la variable `VITE_SUPABASE_PROJECT_REF` coincida exactamente con el subdominio extraído de la `URL`. Si esto falla, aborta la inicialización de Supabase para prevenir derrames de datos.
+- local: hay opt-in local y la URL es `localhost` o `127.0.0.1:54321`;
+- remoto: hay opt-in remoto y el project ref declarado coincide con el
+  subdominio Supabase de la URL.
 
-## Reglas y decisiones vigentes
+Sin esas condiciones, `supabase` queda deshabilitado y las superficies
+protegidas muestran configuración pendiente.
 
-- **Desconexión por defecto**: Por defecto, todas las conexiones remotas están apagadas.
-- **Auditoría obligatoria**: El script `audit-safety.mjs` verifica que no se suban archivos como `.supabase-secrets.env` o valores de claves como `SUPABASE_SERVICE_ROLE_KEY`.
-- **Cero secretos en frontend**: Las llaves privadas (`service_role`) o tokens de terceros jamás van en `.env.local`; pertenecen puramente al entorno aislado de las Edge Functions.
+## Datos y dependencias externas
 
-## Dependencias y límites externos
+Netlify aporta variables públicas al build de producción. Los secrets de Edge
+Functions, pagos u otros servidores no pertenecen a `.env.local` ni usan el
+prefijo `VITE_`.
 
-- **Vite**: Maneja el prefijo `VITE_` para exponer explícitamente variables seguras al navegador.
-- **Node.js**: Para ejecutar los scripts de auditoría en local o integraciones CI.
+## Decisiones vigentes
+
+- El backend queda desconectado por defecto.
+- No copiar configuración de proyectos anteriores.
+- La guardia del navegador no protege comandos de Git, Netlify o Supabase CLI.
+- Las auditorías no reemplazan revisar el diff y no certifican el contenido
+  ignorado de `.env.local`.
+- `safety:quarantine` mueve archivos locales: no es una validación rutinaria y
+  sólo se usa de forma intencional, preservando trabajo ajeno.
 
 ## Validación
 
-- Comandos: `npm run audit:safety` (corre verificaciones de secretos, conexiones y branding), y `npm run safety:quarantine`.
-- Manual: Intentar usar la app sin variables de entorno o con un Project Ref que no coincida; el cliente de Supabase debe lanzar un error descriptivo y la app mostrar la pantalla de configuración pendiente (gracias a `ProtectedRoute`).
+Ejecutar sólo la auditoría activada por el cambio:
 
-## Riesgos y errores frecuentes
+| Cambio | Control |
+| --- | --- |
+| Configuración compartible o sospecha de credenciales | `npm run audit:secrets` |
+| URL, project ref u opt-in de backend | `npm run audit:connections` |
+| Identidad o nombres heredados | `npm run audit:branding` |
+| Investigación conjunta de las tres categorías | `npm run audit:safety` |
 
-- Crear el archivo `.env.local` y poner claves de servidor allí (como `SUPABASE_SERVICE_ROLE_KEY`). Vite no lo expondrá sin el prefijo `VITE_`, pero si se le pone el prefijo por error humano, se filtrará al público.
-- Compartir o hacer commit de las carpetas `.local-quarantine/` o `.netlify/` que contienen cachés y links locales a proyectos de Supabase/Netlify.
+Si cambia la lógica del client guard, sumar controles dirigidos y el checkpoint
+crítico definido por [AGENTS.md](../AGENTS.md). Una edición documental o de
+plantilla no requiere por sí sola la suite completa ni build.
 
-## Mantenimiento
+## Última revisión
 
-Actualizar siempre que se agreguen nuevas integraciones críticas en el cliente (como Sentry o Google Analytics) que requieran configuraciones públicas en entorno, o cuando se ajusten las políticas del Client Guard.
+2026-07-15. Actualizar cuando cambien variables públicas, guardias, auditorías o
+proveedores de configuración.

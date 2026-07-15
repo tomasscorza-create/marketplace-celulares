@@ -2,45 +2,83 @@
 
 ## Propósito
 
-Documentar la integración del proceso de compra, desde la validación del carrito hasta la resolución del pago vía Mercado Pago y la actualización del inventario y estado de la orden.
+Resumir los invariantes que conectan carrito, Mercado Pago, órdenes e
+inventario. La activación, secretos y checklist operativo tienen una única
+fuente propietaria:
+[`docs/CHECKOUT_MERCADOPAGO.md`](../docs/CHECKOUT_MERCADOPAGO.md).
 
 ## Fuentes de verdad
 
-- `docs/CHECKOUT_MERCADOPAGO.md`: Mapa detallado del estado de la implementación, secretos requeridos y arquitectura Edge.
-- `src/features/buyer/`: Scripts del cliente web (ej. `checkoutClient.ts` que llama a las funciones remotas).
-- `supabase/functions/`: Las 4 funciones responsables del ciclo de vida del pago (`create-mercadopago-checkout`, `mercadopago-return`, `mercadopago-webhook`, `expire-pending-checkouts`).
+- `src/config/marketplace.ts`: habilitación visible del canal.
+- `src/features/buyer/checkoutClient.ts`: llamada desde el navegador.
+- `supabase/functions/create-mercadopago-checkout/`,
+  `mercadopago-return/`, `mercadopago-webhook/` y
+  `expire-pending-checkouts/`: ciclo de vida remoto.
+- `supabase/functions/_shared/checkout-expiration.ts` y
+  `mercadopago-config.ts`: vencimiento y selección segura de ambiente.
+- `supabase/functions/.env.example`: nombres vigentes de variables; no copiarlos
+  a esta ficha.
+- `supabase/migrations/20260527000016_016_buyer_cart_checkout_alignment.sql`,
+  `supabase/migrations/20260527000017_017_cart_checkout_hardening.sql` y
+  `supabase/migrations/20260527000018_018_partial_cart_checkout.sql`: órdenes,
+  intentos, eventos, RLS e inventario.
 
-## Flujo o arquitectura
+## Estado actual
 
-El ciclo de vida de un pago funciona de la siguiente manera:
+El canal público sigue en `salesChannel: "whatsapp"`. El backend de checkout
+está implementado, pero el repositorio no demuestra por sí solo que funciones,
+secrets, webhook o scheduler estén desplegados y operativos en producción. No
+habilitar `"checkout"` sin completar la certificación de la fuente propietaria.
 
-1. El frontend valida el carrito activo y llama a la Edge Function `create-mercadopago-checkout`.
-2. La función congela temporalmente una orden (crea un `payment_attempt` en estado pending) e inicia una "preferencia de pago" en la API de Mercado Pago, devolviendo el enlace generado (init point).
-3. El comprador es redirigido fuera de la plataforma para pagar y luego retorna al frontend a través de la ruta procesada por la función `mercadopago-return`.
-4. De manera asíncrona, Mercado Pago dispara un evento a `mercadopago-webhook`. La función valida el origen, procesa el payload y actualiza definitivamente las tablas `orders`, consumiendo el inventario (`apply_paid_order_inventory`).
-5. Los carritos y órdenes abandonadas son limpiados o devueltos al inventario periódicamente por la función cron `expire-pending-checkouts`.
+## Flujo vigente
 
-## Reglas y decisiones vigentes
+1. `create-mercadopago-checkout` autentica al comprador y vuelve a leer
+   preferencias, carrito, productos, opciones, precios y stock.
+2. Crea `orders`, `order_items` y un `payment_attempt`; solicita la preferencia
+   a Mercado Pago y asocia temporalmente el carrito mediante
+   `converted_order_id`.
+3. Esa creación no reserva ni descuenta inventario. El stock puede cambiar
+   mientras el pago está pendiente.
+4. `mercadopago-return` reconcilia el regreso consultando al proveedor y
+   redirige a éxito, pendiente o fallo. El webhook procesa la notificación
+   asíncrona.
+5. Sólo un pago aprobado ejecuta `apply_paid_order_inventory`. La marca
+   `order_items.stock_applied_at` evita volver a descontar el mismo ítem; los
+   ítems comprados se eliminan del carrito y los no incluidos permanecen.
+6. Un checkout pendiente vence a las 24 horas. La rutina cancela intento,
+   orden e ítems pendientes y libera la referencia del carrito; no «devuelve»
+   stock porque antes no hubo una reserva.
+7. `expire-pending-checkouts` expone la rutina protegida por secret. El repo no
+   contiene un schedule de `pg_cron` para esta función; el disparador operativo
+   debe verificarse en el entorno objetivo.
 
-- **Secretos centralizados**: Las credenciales de pago (`MERCADOPAGO_ACCESS_TOKEN`, `MERCADOPAGO_WEBHOOK_SECRET`) solo residen en los secretos cifrados del proyecto Supabase en la nube. El frontend desconoce la integración de pagos subyacente.
-- **Idempotencia de webhooks**: La lógica en el webhook y la tabla `payment_webhook_events` garantizan que no se aplique dos veces el mismo pago (evitando, por ejemplo, descontar inventario doble).
-- **Prohibición de reuso**: Está estrictamente prohibido usar las credenciales de producción de un marketplace anterior o ajeno para este entorno, ya que chocarían los ID de referencia de órdenes.
+## Seguridad e idempotencia
 
-## Dependencias y límites externos
+- Precio, opciones, entrega y stock se recalculan en backend.
+- La firma del webhook se valida cuando el secret correspondiente está
+  configurado. No describir esa condición como validación de origen ni asumir
+  que está activa sin comprobar secrets y logs.
+- `payment_webhook_events` deduplica eventos con identificador externo cuando
+  está presente; la aplicación de inventario agrega su propia protección.
+- Los secrets viven en Edge Functions. Nunca usar valores de otro marketplace,
+  imprimirlos, versionarlos ni exponerlos como `VITE_*`.
+- Un deploy frontend no aplica migraciones ni despliega funciones.
 
-- **API de Mercado Pago**: Plataforma externa de cobro responsable de autorizar los pagos y enviar notificaciones.
-- **Supabase Edge Functions y pg_cron**: Intermediario seguro y ejecutor de las reglas temporales.
+## Validación proporcional
 
-## Validación
+- Vencimiento puro:
+  `npm test -- src/test/checkoutExpiration.test.ts`.
+- Presentación/cálculos del carrito:
+  `npm test -- src/features/buyer/cartPageUtils.test.ts`.
+- Edge Function o helper compartido: prueba explícita relacionada y
+  check/probe local con runtime Deno cuando esté disponible.
+- Tablas, RPC o RLS: `npm run audit:backend`, test de contrato explícito y
+  Supabase local o staging aislado. Validar creación, rechazo, expiración,
+  stock insuficiente, pago aprobado, retorno y webhook repetido.
+- No ejecutar `npm run build` ni tests frontend completos por un cambio backend
+  aislado. Escalar a `npm run preflight` sólo ante contrato compartido,
+  tooling, impacto transversal o certificación integral.
+- Ningún test unitario sustituye una integración con credenciales de prueba,
+  firma real, logs y tablas del objetivo confirmado.
 
-- Comandos: Uso de cuentas de test en Mercado Pago para emitir pagos falsos. Se requiere utilizar el CLI de Supabase o servicios como Ngrok para recibir los webhooks en el entorno de desarrollo local.
-- Manual: Crear orden con tarjeta de prueba en Mercado Pago; asegurar que la tabla `orders` pasa a estado `paid` y el inventario público del vendedor disminuye.
-
-## Riesgos y errores frecuentes
-
-- Configurar erróneamente en el panel de Mercado Pago que el webhook apunte a `localhost` en un entorno de producción, perdiendo por completo las notificaciones asíncronas.
-- Olvidarse de inyectar los secretos de cron (`PENDING_CHECKOUTS_CRON_SECRET`) al desplegar funciones o en local, rompiendo la expiración de inventario retenido (deadlock de stock).
-
-## Mantenimiento
-
-Actualizar este archivo obligatoriamente si se integran nuevas pasarelas (ej. Stripe, Mobbex, TodoPago) o si cambian los nombres de las funciones Edge responsables del flujo de la orden.
+Última revisión: 2026-07-15.

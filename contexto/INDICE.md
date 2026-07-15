@@ -1,39 +1,65 @@
-# Índice de Contexto
+# Índice de contexto
 
-Este documento mantiene el registro de las fichas de dominio generadas para documentar la arquitectura, reglas y flujos del proyecto "Marketplace Celulares".
+Este índice dirige a la fuente mínima necesaria para cada tarea. No es un inventario de estados de producción ni una bitácora.
 
-## Fichas de Dominio
+## Ruta de lectura
 
-| Ficha | Dominio | Propósito | Fuentes de verdad | Estado |
-| --- | --- | --- | --- | --- |
-| `aplicacion-y-rutas.md` | Aplicación y roles | Arranque, router, layouts, páginas y fronteras entre UI pública y paneles. | `src/main.tsx`, `src/app/`, `src/layouts/`, `src/pages/` | `documentado` |
-| `autenticacion-y-roles.md` | Aplicación y roles | Proveedor de sesión, rutas protegidas, perfiles y roles (`admin`, `artisan`, `buyer`). | `src/features/auth/`, `src/lib/supabase/client.ts`, `AGENTS.md` | `documentado` |
-| `catalogo-y-productos.md` | Aplicación y roles | Fuentes de catálogo, visibilidad, stock, imágenes y modelo 3D. | `src/features/public/`, `src/features/artisan/`, `src/pages/CatalogPage.tsx` | `documentado` |
-| `promociones-del-catalogo.md` | Catálogo y administración | Carrusel desktop, contenido administrable, imágenes, acciones y beneficios por cuenta. | `src/features/catalogPromotions/`, `CatalogPromotionBanner.tsx`, migración de promociones | `desktop implementado; móvil pendiente` |
-| `supabase-esquema-y-migraciones.md` | Backend y datos | Convenciones de migraciones, tablas, RLS, Storage, RPC y validación segura. | `supabase/migrations/`, `docs/DB_SAFETY.md`, `docs/BACKEND_MAP.md` | `documentado` |
-| `funciones-edge.md` | Backend y datos | Funciones Edge, propósitos, llamada desde frontend, autorización y secrets requeridos. | `supabase/functions/` | `documentado` |
-| `operacion-admin.md` | Backend y datos | Gestión de vendedores, categorías, productos, compradores y controles internos. | `src/features/admin/`, `src/pages/Admin*.tsx` | `documentado` |
-| `entornos-y-seguridad.md` | Operación, integración y publicación | Contratos de `.env.example`, cliente Supabase, cuarentena local, auditorías. | `.env.example`, `docs/ENVIRONMENT.md`, `scripts/audit-safety.mjs` | `documentado` |
-| `despliegue-y-verificacion.md` | Operación, integración y publicación | Build, configuración de Netlify, límites entre frontend y backend, pruebas post-deploy. | `netlify.toml`, `package.json`, `scripts/` | `documentado` |
-| `checkout-y-pagos.md` | Operación, integración y publicación | Integración de checkout y flujos de pago. | `docs/CHECKOUT_MERCADOPAGO.md`, `src/features/buyer/`, `src/features/orders/` | `documentado` |
-| `operacion-vendedor.md` | Experiencia Vendedor | Gestión de tienda, creación de productos e inventario. | `src/features/artisan/`, `src/pages/Artisan*Page.tsx` | `documentado` |
-| `carrito-y-comprador.md` | Experiencia Comprador | Carrito de compras y estado de las órdenes del lado del cliente. | `src/features/buyer/`, `src/features/orders/` | `documentado` |
-| `visor-3d-y-medios.md` | Medios y UI | Implementación lazy del renderizador Three.js y WebGL. | `docs/PRODUCT_3D_PREVIEW.md`, `src/features/public/` | `documentado` |
-| `notificaciones-internas.md` | Backend y datos | Sistema para mandar alertas auditables a los usuarios. | `src/features/internalNotifications/` | `documentado` |
-| `decisiones-de-dominio.md` | Operación e integración | Reglas críticas sobre la nomenclatura intocable de "artisan". | `docs/DOMAIN_DECISIONS.md`, `AGENTS.md` | `documentado` |
-| `pruebas-automatizadas.md` | Calidad y verificación | Runner, ubicación, alcance y reglas para pruebas unitarias y de componentes. | `vitest.config.ts`, `src/**/*.test.ts(x)`, `package.json` | `documentado` |
-| `modularidad.md` | Calidad y verificación | Límite bloqueante de tamaño y responsabilidades extraídas de módulos extensos. | `scripts/audit-large-files.mjs`, `package.json`, módulos `*Support` y conectores | `documentado` |
-| `pwa-y-cache.md` | Operación, integración y publicación | Precache mínimo, caché runtime, límites y auditoría del service worker generado. | `vite.config.ts`, `scripts/audit-pwa-precache.mjs`, `src/lib/pwa/` | `documentado` |
-| `analitica-interna.md` | Backend, privacidad y administración | Visitas agregadas, consentimiento, sesiones, clasificación de dispositivos, ubicación aproximada y panel admin. | `src/features/analytics/`, `src/pages/AdminAnalyticsPage.tsx`, `supabase/functions/collect-analytics/`, migración de analítica | `documentado` |
-| `analitica-fase-0.md` | Calidad y operación de analítica | Línea base productiva, limpieza de eventos técnicos y aislamiento de rama. | Estado Git, Supabase y métricas agregadas | `completado` |
-| `analitica-fase-1.md` | Administración y analítica | Cuentas creadas desde perfiles, conversión aproximada y resumen de eventos útiles. | `profiles`, tablas de analítica, `AdminAnalyticsPage.tsx` | `desplegado en producción` |
-| `analitica-fase-2.md` | Administración y analítica | Actualización automática visible, recarga manual y conservación del último informe. | `analyticsQueries.ts`, `analyticsRefresh.ts`, `AdminAnalyticsPage.tsx` | `desplegado en producción` |
-| `analitica-fase-3.md` | Calidad y operación de analítica | Reintentos limitados, entrega `keepalive` e idempotencia sin identidad anónima persistente. | `analyticsDelivery.ts`, `analyticsClient.ts`, `collect-analytics`, migración de Fase 3 | `desplegado en producción` |
-| `analitica-fase-4.md` | Calidad y operación de analítica | Sesiones de 30 minutos, tiempo visible, cierre de pestaña y distribución de duraciones. | `analyticsActivityClock.ts`, `AnalyticsProvider.tsx`, `collect-analytics`, migración de Fase 4 | `desplegado en producción` |
-| `analitica-fase-5.md` | Calidad y operación de analítica | Orígenes y rutas válidas, bots ignorados, rate limit compartido y exclusión de picos anónimos. | `requestQuality.ts`, `collect-analytics`, migración de Fase 5 | `desplegado en producción` |
-| `analitica-fase-6.md` | Calidad y operación de analítica | Retención diaria, registro de ejecuciones y alerta administrativa por mantenimiento vencido. | Migración de Fase 6, `analyticsMaintenance.ts`, `AdminAnalyticsPage.tsx` | `desplegado en producción` |
-| `coordinacion-de-agentes.md` | Coordinación | Tablero de propiedad temporal de archivos para trabajo simultáneo entre agentes. | Estado Git y declaraciones de agentes | `activo` |
+1. Leer `README.md` y `AGENTS.md` para identidad, límites y protocolo transversal.
+2. Elegir aquí la ficha del dominio afectado; normalmente basta una ficha y sus fuentes directas.
+3. Abrir documentación de `docs/` sólo cuando la ficha la señale como propietaria del detalle.
+4. Consultar `coordinacion-de-agentes.md` únicamente si hay trabajo simultáneo. Su contenido es efímero y nunca reemplaza `git status` ni el código actual.
 
-## Mantenimiento
+La evidencia histórica sirve para entender decisiones pasadas, no para repetir comandos, asumir despliegues vigentes ni validar una tarea actual.
 
-Este índice debe ser actualizado cada vez que se agregue una nueva ficha de contexto, se renombren fichas existentes o se modifique el estado de las mismas.
+## Aplicación y experiencia
+
+| Ficha | Responde a |
+| --- | --- |
+| [aplicacion-y-rutas.md](aplicacion-y-rutas.md) | Arranque, router, layouts, páginas y carga lazy. |
+| [autenticacion-y-roles.md](autenticacion-y-roles.md) | Sesión, perfiles, roles y rutas protegidas. |
+| [catalogo-y-productos.md](catalogo-y-productos.md) | Descubrimiento público, visibilidad, filtros y paginación. |
+| [operacion-vendedor.md](operacion-vendedor.md) | Alta y edición de productos, stock y operación del vendedor. |
+| [operacion-admin.md](operacion-admin.md) | Capacidades y límites reales del panel administrativo. |
+| [carrito-y-comprador.md](carrito-y-comprador.md) | Carrito autenticado y consultas del comprador. |
+| [promociones-del-catalogo.md](promociones-del-catalogo.md) | Promociones administrables, reclamos y ubicación visual. |
+| [visor-3d-y-medios.md](visor-3d-y-medios.md) | Medios de producto, carga manual de modelos y visor compartido. |
+| [sistema-visual.md](sistema-visual.md) | Fuentes visuales, accesibilidad y QA responsive. |
+
+## Backend, datos y servicios
+
+| Ficha | Responde a |
+| --- | --- |
+| [supabase-esquema-y-migraciones.md](supabase-esquema-y-migraciones.md) | Migraciones aditivas, RLS, Storage, RPC y validación local. |
+| [funciones-edge.md](funciones-edge.md) | Callers, autorización y dependencias de cada función Edge. |
+| [analitica-interna.md](analitica-interna.md) | Contrato vigente de privacidad, captura, informes y retención. |
+| [notificaciones-internas.md](notificaciones-internas.md) | Avisos de administración a vendedores y confirmaciones. |
+
+## Operación y calidad
+
+| Ficha | Responde a |
+| --- | --- |
+| [entornos-y-seguridad.md](entornos-y-seguridad.md) | Variables públicas, secretos, conexiones y auditorías por riesgo. |
+| [despliegue-y-verificacion.md](despliegue-y-verificacion.md) | Evidencia local, Git, Netlify y backend como estados separados. |
+| [checkout-y-pagos.md](checkout-y-pagos.md) | Estado del canal de pago, límites y activación controlada. |
+| [pruebas-automatizadas.md](pruebas-automatizadas.md) | Cómo elegir pruebas relacionadas, explícitas o completas. |
+| [modularidad.md](modularidad.md) | Límite bloqueante de tamaño y criterios de extracción. |
+| [pwa-y-cache.md](pwa-y-cache.md) | Precache, caché en runtime y auditoría del service worker. |
+| [Vocabulario técnico](../docs/DOMAIN_DECISIONS.md) | Fuente canónica para `artisan` y términos visibles; no se duplica en `contexto/`. |
+
+## Mantenimiento e historia
+
+| Ficha | Uso |
+| --- | --- |
+| [MANTENIMIENTO.md](MANTENIMIENTO.md) | Guía para crear o actualizar fichas sin duplicar contratos. |
+| [analitica-historial.md](analitica-historial.md) | Resumen histórico de las fases 0–6; no es un runbook. |
+| [coordinacion-de-agentes.md](coordinacion-de-agentes.md) | Propiedad temporal de archivos durante trabajo simultáneo. |
+
+## Reglas de mantenimiento
+
+- Una decisión tiene un solo documento propietario; las demás fichas la enlazan.
+- No guardar conteos de tests, hashes, versiones de deploy ni estados remotos como si fueran contratos duraderos.
+- Si una capacidad no está activa o no fue verificada en el entorno objetivo, describirla como pendiente o no certificada.
+- Actualizar este índice al agregar, renombrar, consolidar o retirar una ficha.
+- Para un cambio exclusivo de documentación, revisar enlaces y ejecutar sólo los controles documentales indicados en `MANTENIMIENTO.md`; no corresponde ejecutar la suite de aplicación ni construir el frontend.
+
+Última revisión: 2026-07-15.

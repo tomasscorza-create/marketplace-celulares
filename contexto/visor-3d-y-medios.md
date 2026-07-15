@@ -1,125 +1,73 @@
-# Visor 3D y Medios
+# Visor 3D y medios
 
 ## Propósito
-Definir cómo se guardan y renderizan en frontend los elementos multimedia pesados, especialmente los archivos de modelos 3D interactivos (`.glb`/`.gltf`).
+
+Definir el contrato de medios de producto y los límites de carga 3D sin
+convertir esta ficha en una copia de detalles visuales del componente.
 
 ## Fuentes de verdad
-- `docs/PRODUCT_3D_PREVIEW.md`: Reglas originales, límites de la tecnología y formato esperado de guardado JSON.
-- `src/features/public/components/ProductModel3DViewer.tsx`: Componente de React que implementa la cámara de WebGL (Three.js).
-- `src/features/public/components/CatalogProduct3DPreviewSlot.tsx`: Contenedor "fallback" que decide si inyectar 3D dinámicamente o quedarse con la foto plana.
-- `src/pages/ProductDetailPage.tsx`: Consume el mismo `ProductModel3DViewer` en el detalle de producto, integrado como un slide más dentro de la misma galería/carrusel de fotos.
 
-## Flujo o arquitectura
-La plataforma permite no sólo exhibir fotos, sino Modelos 3D interactivos.
-1. La tabla `products` guarda los metadatos de archivos en un campo JSONB llamado `product_media`.
-2. El catálogo detecta en tiempo de ejecución si el ítem tiene `type: "model_3d"`.
-3. Si lo tiene, y **sólo cuando** entra al área visible de la pantalla (viewport), se descarga la librería 3D pesada (Three.js) de forma dinámica (`lazy`) y se inicializa el modelo `.glb`.
-4. Si no tiene 3D o carga lento, se usa una imagen estática (`poster_url`) como esqueleto CSS.
+- `src/types/productMedia.ts`: tipos, detección y separación entre imágenes y
+  modelos.
+- `src/features/artisan/useArtisanProductModel3D.ts`,
+  `useArtisanProductSubmit.ts` y `artisanClient.ts`: selección, metadatos,
+  upload y ruta Storage.
+- `src/features/public/components/ProductModel3DViewer.tsx`: visor compartido y
+  carga lazy de Three.js.
+- `CatalogProduct3DPreviewSlot.tsx` y `src/pages/ProductDetailPage.tsx`:
+  integración en catálogo y galería.
+- `vite.config.ts` y `scripts/audit-pwa-precache.mjs`: chunk y política PWA.
+- `docs/PRODUCT_3D_PREVIEW.md`: antecedentes y fases futuras; el código anterior
+  es la autoridad del comportamiento actual.
 
-## Reglas y decisiones vigentes
-- **Carga Diferida Estricta**: Está prohibido empaquetar librerías de 3D en el *bundle* inicial principal de React, para no ralentizar el inicio del sitio en móviles.
-- **Sin precache 3D**: `three-vendor` tampoco forma parte del precache PWA. Se
-  descarga al abrir una experiencia 3D y recién entonces puede quedar en la
-  caché runtime de assets. `npm run build` audita esta exclusión.
-- **Fallback obligatorio**: Todo modelo 3D debe venir siempre acompañado de una imagen de pre-visualización estática (`poster_url`).
-- **Formato recomendado**: El formato estándar en los buckets de almacenamiento será `.glb` de poco peso (ideal < 3MB).
-- **Galerías de imágenes ignoran el ítem 3D**: `getProductImageMediaItems` (de
-  `src/types/productMedia.ts`) es la única forma correcta de armar una lista de
-  fotos a partir de `product_media`. Cualquier vista que construya su propia
-  galería debe filtrar con esa función en vez de usar `product_media`
-  directamente, porque la URL del modelo `.glb` no es una imagen renderizable.
-- **Badge "3D" en tarjetas con foto**: `src/features/public/components/Catalog3DBadge.tsx`
-  es un badge flotante (esquina superior derecha) que se muestra en las
-  tarjetas de catálogo que exhiben la foto de un producto (`CatalogProductFeedCard`,
-  `CatalogStorefrontProductCard`) cuando ese producto también tiene un modelo
-  3D cargado. Señala al usuario que existe una vista 3D disponible en el
-  detalle, aunque en ese lugar del catálogo se esté mostrando la foto y no el
-  visor interactivo. No se usa en `CatalogProduct3DPreviewSlot`, porque ese
-  componente ya muestra el visor 3D directamente.
-- **Un solo componente de visor para todos los sitios**: tanto el catálogo
-  (`CatalogProduct3DPreviewSlot`) como el detalle de producto
-  (`ProductDetailPage`) importan directamente `ProductModel3DViewer` sin
-  duplicar su lógica de carga, cámara o controles. Cualquier mejora al visor
-  (nuevos controles, mejor iluminación, otro loader) se hace una sola vez en
-  `ProductModel3DViewer.tsx` y se propaga a ambos lugares. Al agregar un nuevo
-  sitio que deba mostrar el modelo 3D, importar este mismo componente en vez
-  de reimplementar la carga de Three.js.
-- **El modelo 3D es un slide más de la galería, no una sección aparte**: en
-  `ProductDetailPage.tsx` el modelo 3D ocupa el último índice de la misma
-  galería que las fotos (`model3DSlideIndex = productImages.length`). Las
-  mismas flechas prev/next y la misma tira de miniaturas navegan entre fotos
-  y el modelo 3D; al llegar a ese índice, el contenedor de la imagen
-  intercambia `ProductImageCarousel` por `ProductModel3DViewer` en el mismo
-  lugar visual. La miniatura del modelo usa el `poster_url`/`thumbnail_url`
-  del propio modelo (o la primera foto como respaldo) con el
-  `Catalog3DBadge` superpuesto para distinguirla. No se modificó
-  `ProductImageCarousel.tsx` (es genérico y lo usan otras vistas
-  solo-imagen); la mezcla foto/3D vive únicamente en `ProductDetailPage.tsx`.
-- **Fondo de cuadrícula del visor**: `ProductModel3DViewer.tsx` dibuja una
-  cuadrícula lila/azul muy fina (`VIEWER_GRID_BACKGROUND_STYLE`) como capa
-  `z-0`, siempre detrás del `<canvas>` de Three.js (`z-10`) y del poster
-  (`z-[1]`). Usa una máscara radial para que el centro quede más claro/limpio
-  y el degradado se intensifique hacia los bordes. Como el renderer tiene
-  `alpha: true`, la cuadrícula solo se ve alrededor del modelo, nunca encima:
-  si se cambia el fondo del visor a futuro, mantener el z-index del canvas
-  por encima de esta capa para no tapar el objeto 3D.
-- **Parallax simple al arrastrar**: mientras el usuario arrastra el modelo
-  (`pointerdown`/`pointermove` sobre `renderer.domElement`), la cuadrícula se
-  traslada en la misma dirección a un 18% de la distancia del arrastre
-  (`GRID_PARALLAX_FACTOR`, tope `GRID_PARALLAX_MAX_PX` = 26px) mediante
-  `gridRef.current.style.transform`, sin pasar por estado de React (evita
-  re-renders en cada `pointermove`). Al soltar, vuelve al centro con una
-  transición corta. El div de la cuadrícula tiene `inset: -10%` (más grande
-  que el contenedor) precisamente para que ese desplazamiento no revele sus
-  bordes. Es intencionalmente independiente del `OrbitControls`: no lee
-  ángulos de cámara, solo la posición del puntero, para mantener el efecto
-  simple.
-- **Vibración táctil al agarrar el modelo**: en `handleGridPointerDown`, si
-  `event.pointerType === "touch"` se llama `navigator.vibrate(12)`
-  (`triggerGrabHapticFeedback`). Es un no-op silencioso si el navegador no
-  soporta la Vibration API (desktop, iOS Safari) o si el toque no es táctil
-  (mouse/trackpad), así que no hace falta feature-detection adicional en el
-  resto del componente.
-- **Calidad visual de bajo costo**: sobre las 2 luces originales
-  (`keyLight` direccional + `fillLight` hemisferio) se sumó `rimLight`, una
-  tercera direccional lila/índigo fija en la escena para separar el objeto
-  del fondo con un borde de luz al girar. El renderer usa
-  `ACESFilmicToneMapping` con `toneMappingExposure = 1.1` para un contraste
-  más "foto de producto". También hay una sombra de contacto barata bajo el
-  modelo: un plano `MeshBasicMaterial` con una textura radial generada por
-  `canvas` (`createContactShadowCanvas`), sin shadow maps de Three (no hay
-  pase de render extra, es un solo draw call transparente). Todo se libera
-  en `cleanupRenderer` (geometría, material y textura de la sombra). No se
-  agregó un environment map de reflejos a propósito: el PMREM que requiere
-  tiene un costo de render adicional real y el pedido explícito era no
-  arriesgar rendimiento.
+## Contrato de datos y carga
 
-## Dependencias y límites externos
-- **Three.js** (sin React Three Fiber; el proyecto no depende de esa librería): `GLTFLoader`, `OrbitControls` y `MeshoptDecoder` se importan dinámicamente dentro de `ProductModel3DViewer.tsx` para las luces, texturas, controles de cámara y decodificación de mallas comprimidas.
+- `products.product_media` es un array JSONB de imágenes y, opcionalmente, un
+  elemento `model_3d`. `type: "model_3d"` es la señal preferida; URLs
+  `.glb`/`.gltf` también se reconocen por compatibilidad.
+- Las galerías obtienen fotos mediante `getProductImageMediaItems`. No deben
+  pasar la URL de un modelo a `<img>`.
+- El formulario acepta manualmente `.glb` o `.gltf` de hasta 8 MB y sube el
+  archivo a `artisan-product-images/{artisanId}/models/`.
+- `poster_url` y `thumbnail_url` son opcionales. Al subir un modelo, el flujo
+  intenta usar la primera imagen recién preparada; el visor debe seguir
+  funcionando con fallback aunque no exista poster.
+- El formulario conserva un único modelo principal y
+  `getPrimaryProductModel3D` toma el primero reconocido. No generar modelos a
+  partir de fotos ni agregar múltiples visores por inferencia.
 
-## Validación
-- Automática: `npm run build` debe terminar con `PWA precache audit passed` y no listar `three-vendor` en el manifiesto de precache.
-- Manual: Subir un `.glb` pequeño desde el editor de productos y comprobar en el catálogo público que se inicializa un visualizador arrastrable.
+## Render y rendimiento
 
-## Riesgos y errores frecuentes
-- Desarmar la envoltura asíncrona (`Suspense` o import dinámico) de Three.js. Al hacerlo, todos los usuarios descargarían ~1MB extra de JS aunque los productos no tengan soporte 3D, derrumbando el score de rendimiento (Lighthouse).
-- Asumir mal el formato JSON del array de medios, lo que provoca que React rompa la vista de catálogo.
-- (Corregido 2026-07-13) `src/pages/ProductDetailPage.tsx` armaba la galería de
-  fotos del detalle de producto leyendo `product_media` sin filtrar el ítem
-  `model_3d`, por lo que la URL del `.glb` se pasaba a un `<img>` y rompía una
-  miniatura del carrusel. Ahora usa `getProductImageMediaItems`. Si se agrega
-  una vista nueva que muestre fotos de producto, repetir ese mismo filtro.
-- El bucket `artisan-product-images` no impone tamaño ni MIME type a nivel de
-  Storage; la validación de extensión (`.glb`/`.gltf`) y de 8MB en
-  `useArtisanProductModel3D.ts` es solo del lado del cliente. Pendiente de
-  endurecer si se prioriza la fase 2 de `docs/PRODUCT_3D_PREVIEW.md`.
-- (Corregido 2026-07-13) En `CatalogProduct3DPreviewSlot.tsx`, el `<canvas>`
-  de Three.js (dentro de `ProductModel3DViewer`) usa `z-10` y cubre toda la
-  tarjeta para permitir el arrastre. El contenedor con el botón "Ver detalle"
-  tenía `z-[2]`, por debajo del canvas: el botón se veía bien (el canvas es
-  transparente ahí) pero el click lo recibía el canvas, no el link. Se subió
-  ese contenedor a `z-20`. Cualquier overlay interactivo nuevo sobre el
-  visor debe ir por encima de `z-10` para no repetir este bug.
+- Catálogo y detalle reutilizan `ProductModel3DViewer`; no duplicar loader,
+  cámara o controles.
+- El detalle integra el modelo como un slide de la misma galería. Las tarjetas
+  con foto pueden usar `Catalog3DBadge` para indicar que el detalle tiene 3D.
+- Three.js, `GLTFLoader`, `OrbitControls` y `MeshoptDecoder` se importan
+  dinámicamente cuando el visor entra al viewport.
+- `three-vendor` no pertenece al bundle inicial ni al precache PWA; puede entrar
+  en la caché runtime después de usarse.
+- Si no hay modelo, falla la carga o el dispositivo usa modo liviano, el
+  catálogo debe conservar una experiencia utilizable.
 
-## Mantenimiento
-Actualizar si la dependencia a Three.js se sustituye por etiquetas nativas modernas (ej. `<model-viewer>` de Google) o si se agregan proyecciones AR nativas (Realidad Aumentada) a futuro.
+## Seguridad y límites pendientes
+
+- La extensión y el límite de 8 MB se validan sólo en el cliente.
+- El bucket actual no impone por sí mismo MIME/tamaño para modelos. Endurecer
+  Storage requiere una migración o política nueva y validación local; no asumir
+  que el formulario protege escrituras externas.
+- La carpeta siempre pertenece al vendedor objetivo, incluso cuando carga un
+  admin.
+
+## Validación proporcional
+
+- Tipo/helper o formulario: test relacionado si existe, ESLint sobre el archivo
+  y typecheck. Actualmente no hay tests 3D específicos; declararlo.
+- Visor: QA manual con modelo válido, modelo ausente, error de carga, mouse,
+  touch, teclado y modo liviano.
+- Imports de Three, chunking, runtime cache o PWA: ejecutar
+  `npm run build` una vez; ya incluye typecheck y `audit:pwa`. Confirmar que
+  `three-vendor` no aparece en precache.
+- Storage o metadatos SQL: `npm run audit:backend` y prueba en pila local
+  identificada.
+
+Última revisión: 2026-07-15.
