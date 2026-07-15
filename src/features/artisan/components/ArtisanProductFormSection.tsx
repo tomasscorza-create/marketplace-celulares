@@ -29,6 +29,7 @@ type ArtisanProductFormSectionProps = {
   isSaving: boolean;
   learningProfile: ArtisanProductLearningProfile | null;
   onAddAttribute: (initialKey?: string) => void;
+  onAddAttributeValue: (key: string, value: string) => void;
   onAvailabilityModeChange: (
     value: ArtisanProductInput["availability_mode"],
   ) => void;
@@ -42,6 +43,8 @@ type ArtisanProductFormSectionProps = {
   onPriceChange: (value: number) => void;
   onProductModel3DFileChange: (file: File | null) => void;
   onRemoveAttribute: (index: number) => void;
+  onRemoveAttributeGroup: (key: string) => void;
+  onRenameAttributeKey: (oldKey: string, newKey: string) => void;
   onRemoveImage: (index: number) => void;
   onRemoveModel3D: () => void;
   onSetPrimaryImage: (index: number) => void;
@@ -77,6 +80,7 @@ export function ArtisanProductFormSection({
   isSaving,
   learningProfile,
   onAddAttribute,
+  onAddAttributeValue,
   onAvailabilityModeChange,
   onCancel,
   onCategoryChange,
@@ -88,6 +92,8 @@ export function ArtisanProductFormSection({
   onPriceChange,
   onProductModel3DFileChange,
   onRemoveAttribute,
+  onRemoveAttributeGroup,
+  onRenameAttributeKey,
   onRemoveImage,
   onRemoveModel3D,
   onSetPrimaryImage,
@@ -108,11 +114,66 @@ export function ArtisanProductFormSection({
 }: ArtisanProductFormSectionProps) {
   const isMadeToOrder = productForm.availability_mode === "made_to_order";
   const [isStockEditorOpen, setIsStockEditorOpen] = useState(false);
+  const [attributeValueDraftByKey, setAttributeValueDraftByKey] = useState<Record<string, string>>({});
   const attributesListRef = useRef<HTMLDivElement | null>(null);
   const formTitle = editingProductId ? "Editar producto" : "Nuevo producto";
   const submitLabel = editingProductId ? "Guardar cambios" : "Crear producto";
   const showTopSummary = !isCreateFocused || Boolean(editingProductId);
   const canAddMoreAttributes = productForm.product_attributes.length < MAX_PRODUCT_ATTRIBUTES;
+  const attributeGroups = (() => {
+    const order: string[] = [];
+    const entriesByKey = new Map<string, { index: number; value: string }[]>();
+
+    productForm.product_attributes.forEach((attribute, index) => {
+      if (!entriesByKey.has(attribute.key)) {
+        entriesByKey.set(attribute.key, []);
+        order.push(attribute.key);
+      }
+
+      entriesByKey.get(attribute.key)!.push({ index, value: attribute.value });
+    });
+
+    return order.map((key) => ({ entries: entriesByKey.get(key)!, key }));
+  })();
+
+  const commitAttributeGroupValues = (key: string, rawText: string, entries: { index: number; value: string }[]) => {
+    const candidates = rawText
+      .split(/[,\n]/)
+      .map((piece) => piece.trim())
+      .filter((piece) => piece.length > 0);
+
+    if (candidates.length === 0) {
+      return;
+    }
+
+    const existingLower = new Set(
+      entries.map((entry) => entry.value.trim().toLowerCase()).filter((value) => value.length > 0),
+    );
+    let emptyEntryIndex = entries.find((entry) => entry.value.trim().length === 0)?.index ?? null;
+    let remainingSlots = MAX_PRODUCT_ATTRIBUTES - productForm.product_attributes.length;
+
+    for (const candidate of candidates) {
+      const lower = candidate.toLowerCase();
+
+      if (existingLower.has(lower)) {
+        continue;
+      }
+
+      if (emptyEntryIndex !== null) {
+        onUpdateAttribute(emptyEntryIndex, "value", candidate);
+        emptyEntryIndex = null;
+      } else {
+        if (remainingSlots <= 0) {
+          break;
+        }
+
+        onAddAttributeValue(key, candidate);
+        remainingSlots -= 1;
+      }
+
+      existingLower.add(lower);
+    }
+  };
   const selectedCategoryName =
     categories.find((category) => category.id === productForm.category_id)?.name ??
     "esta categoria";
@@ -421,7 +482,7 @@ export function ArtisanProductFormSection({
           })}
         </div>
 
-        {productForm.product_attributes.length > 0 ? (
+        {attributeGroups.length > 0 ? (
           <div
             className={[
               "grid gap-3",
@@ -431,88 +492,160 @@ export function ArtisanProductFormSection({
             ].join(" ")}
             ref={attributesListRef}
           >
-            {productForm.product_attributes.map((attribute, index) => (
-              <div
-                key={`${attribute.key}-${index}`}
-                className="grid gap-3 rounded-2xl border border-stone-200 bg-white p-3"
-              >
-                <div className="grid gap-3 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)_auto] sm:items-end">
-                  <label className="grid gap-2 text-sm font-medium text-stone-700">
-                    Atributo
-                    <input
-                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
-                      onChange={(event) => {
-                        onUpdateAttribute(index, "key", event.target.value);
+            {attributeGroups.map(({ entries, key }) => {
+              const valueSuggestions = getProductAttributeValueSuggestions(key);
+              const draftValue = attributeValueDraftByKey[key] ?? "";
+              const groupCanAddMore =
+                canAddMoreAttributes || entries.some((entry) => entry.value.trim().length === 0);
+
+              return (
+                <div
+                  key={key}
+                  className="grid gap-3 rounded-2xl border border-stone-200 bg-white p-3"
+                >
+                  <div className="grid gap-3 sm:grid-cols-[minmax(0,0.8fr)_auto] sm:items-end">
+                    <label className="grid gap-2 text-sm font-medium text-stone-700">
+                      Atributo
+                      <input
+                        className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
+                        onChange={(event) => {
+                          onRenameAttributeKey(key, event.target.value);
+                        }}
+                        placeholder="Ej. material"
+                        type="text"
+                        value={key}
+                      />
+                    </label>
+
+                    <button
+                      className="rounded-full border border-stone-200 px-4 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100"
+                      onClick={() => {
+                        onRemoveAttributeGroup(key);
                       }}
-                      placeholder="Ej. material"
-                      type="text"
-                      value={attribute.key}
-                    />
-                  </label>
+                      type="button"
+                    >
+                      Quitar atributo
+                    </button>
+                  </div>
 
-                  <label className="grid gap-2 text-sm font-medium text-stone-700">
-                    Valor
-                    <input
-                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300"
-                      onChange={(event) => {
-                        onUpdateAttribute(index, "value", event.target.value);
-                      }}
-                      placeholder="Ej. cerámica esmaltada"
-                      type="text"
-                      value={attribute.value}
-                    />
-                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {entries
+                      .filter((entry) => entry.value.trim().length > 0)
+                      .map((entry) => (
+                        <span
+                          key={entry.index}
+                          className="flex items-center gap-1 rounded-full border border-brand-100 bg-brand-50 py-1 pl-3 pr-1.5 text-xs font-medium text-brand-600"
+                        >
+                          {entry.value}
+                          <button
+                            aria-label={`Quitar ${entry.value}`}
+                            className="rounded-full px-1.5 text-sm leading-none text-brand-500 transition-colors hover:bg-white/70"
+                            onClick={() => {
+                              onRemoveAttribute(entry.index);
+                            }}
+                            type="button"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                  </div>
 
-                  <button
-                    className="rounded-full border border-stone-200 px-4 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-100"
-                    onClick={() => {
-                      onRemoveAttribute(index);
-                    }}
-                    type="button"
-                  >
-                    Quitar
-                  </button>
-                </div>
-
-                <div className="grid gap-2">
-                  {getProductAttributeValueSuggestions(attribute.key).length >
-                  0 ? (
+                  {valueSuggestions.length > 0 ? (
                     <div className="grid gap-2">
                       <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
-                        Ejemplos disponibles
+                        Ejemplos disponibles (podés elegir varios)
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {getProductAttributeValueSuggestions(attribute.key).map(
-                          (suggestion) => {
-                            const isActive =
-                              attribute.value.trim().toLowerCase() ===
-                              suggestion;
+                        {valueSuggestions.map((suggestion) => {
+                          const activeEntry = entries.find(
+                            (entry) => entry.value.trim().toLowerCase() === suggestion,
+                          );
+                          const isActive = Boolean(activeEntry);
 
-                            return (
-                              <button
-                                key={`${attribute.key}-${suggestion}-${index}`}
-                                className={[
-                                  "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
-                                  isActive
-                                    ? "border border-brand-200 bg-brand-50 text-brand-500"
+                          return (
+                            <button
+                              key={suggestion}
+                              className={[
+                                "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                                isActive
+                                  ? "border border-brand-200 bg-brand-50 text-brand-500"
+                                  : !groupCanAddMore
+                                    ? "border border-stone-200 bg-stone-100 text-stone-400"
                                     : "border border-stone-200 bg-white text-stone-600 hover:border-brand-200 hover:bg-brand-50",
-                                ].join(" ")}
-                                onClick={() => {
-                                  onUpdateAttribute(index, "value", suggestion);
-                                }}
-                                type="button"
-                              >
-                                {suggestion}
-                              </button>
-                            );
-                          },
-                        )}
+                              ].join(" ")}
+                              disabled={!isActive && !groupCanAddMore}
+                              onClick={() => {
+                                if (activeEntry) {
+                                  onRemoveAttribute(activeEntry.index);
+                                  return;
+                                }
+
+                                const emptyEntry = entries.find(
+                                  (entry) => entry.value.trim().length === 0,
+                                );
+
+                                if (emptyEntry) {
+                                  onUpdateAttribute(emptyEntry.index, "value", suggestion);
+                                } else {
+                                  onAddAttributeValue(key, suggestion);
+                                }
+                              }}
+                              type="button"
+                            >
+                              {suggestion}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   ) : null}
+
+                  <label className="grid gap-2 text-sm font-medium text-stone-700">
+                    Agregar otro valor
+                    <input
+                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-brand-300 disabled:opacity-60"
+                      disabled={!groupCanAddMore}
+                      onBlur={() => {
+                        if (draftValue.trim()) {
+                          commitAttributeGroupValues(key, draftValue, entries);
+                          setAttributeValueDraftByKey((current) => ({ ...current, [key]: "" }));
+                        }
+                      }}
+                      onChange={(event) => {
+                        setAttributeValueDraftByKey((current) => ({
+                          ...current,
+                          [key]: event.target.value,
+                        }));
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          event.preventDefault();
+                          commitAttributeGroupValues(key, draftValue, entries);
+                          setAttributeValueDraftByKey((current) => ({ ...current, [key]: "" }));
+                        }
+                      }}
+                      onPaste={(event) => {
+                        const pastedText = event.clipboardData.getData("text");
+
+                        if (/[,\n]/.test(pastedText)) {
+                          event.preventDefault();
+                          commitAttributeGroupValues(key, pastedText, entries);
+                          setAttributeValueDraftByKey((current) => ({ ...current, [key]: "" }));
+                        }
+                      }}
+                      placeholder={
+                        groupCanAddMore
+                          ? "Escribí y presioná Enter (podés pegar varios separados por coma)"
+                          : `Llegaste al máximo de ${MAX_PRODUCT_ATTRIBUTES} atributos.`
+                      }
+                      type="text"
+                      value={draftValue}
+                    />
+                  </label>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="rounded-2xl border border-dashed border-stone-300 bg-white px-4 py-5 text-sm text-stone-500">
