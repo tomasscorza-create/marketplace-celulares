@@ -67,4 +67,17 @@ interno de escritura accesible sólo al backend con `service_role`.
 - Después de desplegar, enviar dos veces el mismo payload con idéntico
   `event_id` y comprobar que el agregado aumenta una sola vez.
 
+## Estado productivo
+
+El 2026-07-14 se publicó el frontend del commit `bd5963d` en Netlify, se aplicó
+`20260715150000_analytics_delivery_idempotency.sql` al proyecto confirmado y se
+desplegó `collect-analytics` versión 2 con `verify_jwt = false`. La función quedó
+`ACTIVE` y aceptó dos entregas consecutivas con el mismo `event_id`; la
+idempotencia del incremento está garantizada por la transacción y la clave
+primaria del recibo.
+
+El enlace temporal de Supabase volvió a cuarentena. El `.env.local` operativo
+del worktree compartido se restauró inmediatamente después de la validación;
+los scripts de seguridad no deben dejar la plantilla desactivada al terminar.
+
 Última revisión: 2026-07-14.
