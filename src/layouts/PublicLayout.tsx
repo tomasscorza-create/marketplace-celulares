@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, ScrollRestoration } from "react-router-dom";
 
 import { SiteBrand } from "../components/SiteBrand";
 import { isOnlinePurchaseEnabled, marketplaceConfig } from "../config/marketplace";
@@ -62,6 +62,7 @@ export function PublicLayout() {
 
   return (
     <div className="relative min-h-dvh bg-stone-50 text-ocean-900 selection:bg-brand-300/40">
+      <ScrollRestoration />
       {/* Hyper-Premium Graphic Background */}
       <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-stone-50">
         <img src="/tech_abstract_bg.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-70 sm:opacity-90" />
