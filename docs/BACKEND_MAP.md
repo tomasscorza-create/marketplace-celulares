@@ -7,7 +7,7 @@
 ## Alcance y fuente de verdad
 
 - Fuente canónica del esquema: `supabase/migrations/`, aplicada por nombre en orden ascendente.
-- Última migración inspeccionada: `20260715231000_catalog_promotion_demo_content.sql`.
+- Última migración inspeccionada: `20260715235000_guided_help_faqs.sql`.
 - Consumidores inspeccionados: `src/` y `supabase/functions/`.
 - `supabase/sql/` es referencia histórica y no participa de esta auditoría.
 
@@ -28,6 +28,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `catalog_promotions`
 - `categories`
 - `category_spec_templates`
+- `guided_help_faqs`
 - `internal_notification_signatures`
 - `internal_notifications`
 - `order_events`
@@ -61,6 +62,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `catalog_promotions`
 - `categories`
 - `category_spec_templates`
+- `guided_help_faqs`
 - `internal_notification_signatures`
 - `internal_notifications`
 - `order_events`
