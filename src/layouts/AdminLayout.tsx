@@ -10,6 +10,7 @@ const adminLinks = [
   { to: "/panel/admin/vendedores", label: "Vendedores" },
   { to: "/panel/admin/notificaciones", label: "Notificaciones" },
   { to: "/panel/admin/categorias", label: "Categorías" },
+  { to: "/panel/admin/ayuda-guiada", label: "Ayuda guiada" },
 ];
 
 export function AdminLayout() {

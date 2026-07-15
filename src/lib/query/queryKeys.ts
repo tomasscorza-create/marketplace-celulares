@@ -47,6 +47,10 @@ export const queryKeys = {
   categorySpecs: {
     template: (categoryId: string) => ["category-specs", "template", categoryId] as const,
   },
+  guidedHelp: {
+    activeFaqs: ["guided-help", "active-faqs"] as const,
+    adminFaqs: ["guided-help", "admin-faqs"] as const,
+  },
   siteContent: {
     items: (contentKeys: string[]) => ["site-content", [...contentKeys].sort()] as const,
   },
