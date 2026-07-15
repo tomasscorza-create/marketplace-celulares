@@ -56,4 +56,21 @@ el backend. El panel recibe únicamente sumas agregadas mediante una RPC admin.
   contenga la IP.
 - Ejecutar `deno check`, `npm run preflight`, build, dry-run y lint remoto.
 
+La validación aprobó las cinco pruebas específicas de calidad, `deno check`,
+19 archivos con 83 pruebas totales, `preflight`, build y PWA. El dry-run remoto
+propuso únicamente las migraciones de Fases 5 y 6, y el lint posterior mantuvo
+sólo la advertencia heredada de `requested_search_term`.
+
+## Estado productivo
+
+El 2026-07-14 se aplicó
+`20260715210000_analytics_anonymous_quality.sql`, se configuró el secret
+`ANALYTICS_RATE_LIMIT_SECRET` con un valor aleatorio no versionado y se desplegó
+`collect-analytics` versión 5 en `snlotkvstplwnoiacqyz`.
+
+Las pruebas remotas sin escritura confirmaron: origen falso `403`, bot conocido
+`200` con `ignored: true` y ruta inventada `400`. El frontend del commit
+`fc84e1b` quedó publicado en `main` y Netlify terminó el despliegue de
+`https://nyzca.com`.
+
 Última revisión: 2026-07-14.

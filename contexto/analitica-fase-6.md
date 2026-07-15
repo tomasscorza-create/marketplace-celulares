@@ -60,4 +60,19 @@ existe una limpieza exitosa reciente.
   que la ejecución inicial queda en estado `success`.
 - Ejecutar `npm run preflight` y `npm run build`.
 
+La validación aprobó siete pruebas específicas de mantenimiento, incluida la
+lista exacta de tablas que pueden borrarse. La suite completa quedó en 19
+archivos y 83 pruebas, con `preflight`, build, PWA, dry-run y lint remoto verdes.
+
+## Estado productivo
+
+El 2026-07-14 se aplicó
+`20260715220000_analytics_retention_schedule.sql` al proyecto confirmado. La
+migración creó un único job diario y ejecutó una limpieza inicial; una respuesta
+distinta de `success` habría abortado y revertido toda la migración.
+
+La migración figura sincronizada en local/remoto y el panel productivo recibe
+el estado agregado de mantenimiento. El enlace temporal de Supabase volvió a
+cuarentena sin modificar `.env.local`.
+
 Última revisión: 2026-07-14.
