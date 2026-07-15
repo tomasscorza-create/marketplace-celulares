@@ -1,9 +1,115 @@
 import { useEffect, useRef, useState } from "react";
 import { marketplaceConfig } from "../config/marketplace";
+
 type WhatsAppButtonProps = {
   message: string;
   className?: string;
 };
+
+export type WhatsAppContact = {
+  name: string;
+  phone: string;
+};
+
+type WhatsAppContactMenuProps = {
+  contacts: readonly WhatsAppContact[];
+  message: string;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+  /** Altura de cada opcion; "lg" iguala al boton flotante y al CTA completo, "md" al compacto. */
+  size?: "lg" | "md";
+  /** Iguala el ancho del boton que abrio el menu (los CTA de producto son w-full). */
+  fullWidth?: boolean;
+  className?: string;
+};
+
+// Menu pequeño para elegir a que contacto de WhatsApp escribirle. Se usa
+// tanto en el flotante generico como en el boton de pedido de producto.
+export function WhatsAppContactMenu({
+  contacts,
+  message,
+  isOpen,
+  onOpenChange,
+  size = "lg",
+  fullWidth = false,
+  className,
+}: WhatsAppContactMenuProps) {
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        onOpenChange(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onOpenChange(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onOpenChange]);
+
+  if (!isOpen || contacts.length === 0) {
+    return null;
+  }
+
+  const itemHeightClass = size === "lg" ? "h-14" : "h-11";
+  const itemTextClass = size === "lg" ? "text-[15px]" : "text-sm";
+  const itemIconSize = size === "lg" ? 20 : 16;
+
+  return (
+    <div
+      className={[
+        "absolute z-50 flex flex-col gap-1.5 rounded-3xl border border-white/15 p-2",
+        "bg-gradient-to-br from-[#2be370] via-whatsapp to-[#0f9b48]",
+        "shadow-elev-3 ring-1 ring-black/5",
+        "animate-wa-menu-pop",
+        fullWidth ? "w-full" : "w-max min-w-[14rem]",
+        className ?? "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      ref={menuRef}
+      role="menu"
+    >
+      {contacts.map((contact, index) => (
+        <a
+          className={[
+            "group/waitem flex items-center gap-3 rounded-2xl bg-white/10 px-4 font-bold text-white",
+            "transition-all duration-200 hover:bg-white/25 hover:shadow-elev-1 active:scale-[0.97]",
+            "animate-fade-in-up motion-reduce:animate-none",
+            itemHeightClass,
+            itemTextClass,
+          ].join(" ")}
+          href={buildWhatsAppUrlForPhone(contact.phone, message)}
+          key={contact.phone}
+          onClick={() => onOpenChange(false)}
+          rel="noopener noreferrer"
+          role="menuitem"
+          style={{ animationDelay: `${index * 70}ms` }}
+          target="_blank"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform duration-200 group-hover/waitem:scale-110">
+            <WhatsAppIcon size={itemIconSize} />
+          </span>
+          {contact.name}
+        </a>
+      ))}
+    </div>
+  );
+}
 
 export function buildWhatsAppUrl(message: string): string {
   return buildWhatsAppUrlForPhone(marketplaceConfig.whatsappPhone, message);
@@ -41,78 +147,59 @@ export function WhatsAppIcon({ size = 22 }: { size?: number }) {
 }
 
 export function WhatsAppButton({ message, className }: WhatsAppButtonProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const isTouchRef = useRef(false);
-  const collapseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const contacts = marketplaceConfig.whatsappContacts.filter((contact) => contact.phone.trim());
 
-  useEffect(() => {
-    return () => {
-      if (collapseTimerRef.current) {
-        clearTimeout(collapseTimerRef.current);
-      }
-    };
-  }, []);
-
-  const href = marketplaceConfig.whatsappPhone.trim() ? buildWhatsAppUrl(message) : undefined;
-
-  const scheduleCollapse = () => {
-    if (collapseTimerRef.current) {
-      clearTimeout(collapseTimerRef.current);
-    }
-    collapseTimerRef.current = setTimeout(() => {
-      setIsExpanded(false);
-    }, 5000);
-  };
-
-  const handlePointerDown = (event: React.PointerEvent) => {
-    isTouchRef.current = event.pointerType === "touch";
-  };
-
-  const handleClick = (event: React.MouseEvent) => {
-    // Mobile: primer tap expande, segundo tap navega.
-    if (isTouchRef.current && !isExpanded) {
-      event.preventDefault();
-      setIsExpanded(true);
-      scheduleCollapse();
-    }
-  };
+  if (contacts.length === 0) {
+    return null;
+  }
 
   return (
-    <a
-      aria-label="Consultar por WhatsApp"
-      className={[
-        "group/wa flex h-14 cursor-pointer items-center overflow-hidden rounded-full",
-        "bg-stone-800 text-white shadow-elev-2",
-        "transition-[background-color,box-shadow] duration-300",
-        "hover:bg-whatsapp hover:shadow-elev-whatsapp",
-        isExpanded ? "bg-whatsapp shadow-elev-whatsapp" : "",
-        className ?? "",
-      ]
-        .filter(Boolean)
-        .join(" ")}
-      href={href}
-      onClick={handleClick}
-      onPointerDown={handlePointerDown}
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      {/* Icono siempre visible, tamano fijo. */}
-      <span className="flex h-14 w-14 shrink-0 items-center justify-center">
-        <WhatsAppIcon size={22} />
-      </span>
-
-      {/* El texto se desliza hacia la derecha en hover o expandido. */}
-      <span
+    <div className="relative">
+      <button
+        aria-expanded={isMenuOpen}
+        aria-haspopup="menu"
+        aria-label="Consultar por WhatsApp"
         className={[
-          "overflow-hidden whitespace-nowrap text-sm font-semibold",
-          "transition-[max-width,padding-right] duration-300",
-          isExpanded
-            ? "max-w-[10rem] pr-5"
-            : "max-w-0 pr-0 group-hover/wa:max-w-[10rem] group-hover/wa:pr-5",
-        ].join(" ")}
+          "group/wa flex h-12 cursor-pointer items-center overflow-hidden rounded-full sm:h-14",
+          "bg-stone-800 text-white shadow-elev-2",
+          "transition-[background-color,box-shadow] duration-300",
+          "hover:bg-whatsapp hover:shadow-elev-whatsapp",
+          isMenuOpen ? "bg-whatsapp shadow-elev-whatsapp" : "",
+          className ?? "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        onClick={() => setIsMenuOpen((open) => !open)}
+        type="button"
       >
-        Consultar por WhatsApp
-      </span>
-    </a>
+        {/* Icono siempre visible, tamano fijo (cuadrado, igual al alto del boton para mantener el circulo). */}
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center sm:h-14 sm:w-14">
+          <WhatsAppIcon size={22} />
+        </span>
+
+        {/* El texto se desliza hacia la derecha en hover o con el menu abierto. El margen negativo solo se aplica expandido, para no romper el circulo cuando esta colapsado. */}
+        <span
+          className={[
+            "overflow-hidden whitespace-nowrap text-sm font-semibold",
+            "transition-[max-width,padding-right,margin-left] duration-300",
+            isMenuOpen
+              ? "-ml-2 max-w-[12rem] pr-4"
+              : "ml-0 max-w-0 pr-0 group-hover/wa:-ml-2 group-hover/wa:max-w-[12rem] group-hover/wa:pr-4",
+          ].join(" ")}
+        >
+          Consultar por WhatsApp
+        </span>
+      </button>
+
+      <WhatsAppContactMenu
+        className="bottom-full right-0 mb-3 origin-bottom-right"
+        contacts={contacts}
+        isOpen={isMenuOpen}
+        message={message}
+        onOpenChange={setIsMenuOpen}
+        size="lg"
+      />
+    </div>
   );
 }
