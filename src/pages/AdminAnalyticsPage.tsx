@@ -7,9 +7,22 @@ import {
   useAdminAnalyticsUserHistory,
 } from "../features/analytics/analyticsQueries";
 import { ANALYTICS_EVENT_LABELS } from "../features/analytics/analyticsContract";
-import type { AnalyticsCountItem, AnalyticsRecentUser } from "../types/analytics";
+import {
+  calculateSignupConversionRate,
+  formatSignupConversionRate,
+} from "../features/analytics/adminAnalyticsMetrics";
+import { getAnalyticsMaintenanceMessage } from "../features/analytics/analyticsMaintenance";
+import type {
+  AnalyticsCountItem,
+  AnalyticsRecentUser,
+  AnalyticsRegistrationPoint,
+} from "../types/analytics";
 
 const LABELS: Record<string, string> = {
+  "15_to_59": "15 a 59 segundos",
+  "1_to_2": "1 a 2 minutos",
+  "3_to_9": "3 a 9 minutos",
+  "10_plus": "10 minutos o más",
   android: "Android",
   chromeos: "ChromeOS",
   computer: "Computadoras",
@@ -23,6 +36,7 @@ const LABELS: Record<string, string> = {
   mobile: "Celulares",
   other: "Otros",
   tablet: "Tablets",
+  under_15: "Menos de 15 segundos",
   unknown: "Sin datos suficientes",
   windows: "Windows",
 };
@@ -56,7 +70,15 @@ function MetricCard({ label, value, hint }: { hint?: string; label: string; valu
   );
 }
 
-function DistributionCard({ items, title }: { items: AnalyticsCountItem[]; title: string }) {
+function DistributionCard({
+  items,
+  labels = LABELS,
+  title,
+}: {
+  items: AnalyticsCountItem[];
+  labels?: Record<string, string>;
+  title: string;
+}) {
   const max = Math.max(...items.map((item) => Number(item.count) || 0), 1);
 
   return (
@@ -67,7 +89,7 @@ function DistributionCard({ items, title }: { items: AnalyticsCountItem[]; title
         {items.map((item) => (
           <div className="grid gap-1" key={item.label}>
             <div className="flex items-center justify-between gap-3 text-sm">
-              <span className="font-medium text-stone-700">{LABELS[item.label] ?? item.label}</span>
+              <span className="font-medium text-stone-700">{labels[item.label] ?? item.label}</span>
               <span className="text-stone-500">{formatCount(item.count)}</span>
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-stone-100">
@@ -78,6 +100,38 @@ function DistributionCard({ items, title }: { items: AnalyticsCountItem[]; title
             </div>
           </div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+function RegistrationCard({ items }: { items: AnalyticsRegistrationPoint[] }) {
+  return (
+    <section className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-semibold text-ocean-600">Cuentas creadas por día</h2>
+      <p className="mt-1 text-sm text-stone-500">Fuente exacta: perfiles creados, sin relacionar visitas anónimas.</p>
+      <div className="mt-4 max-h-80 overflow-auto">
+        {items.length === 0 ? <p className="text-sm text-stone-500">No se crearon cuentas en este período.</p> : null}
+        <table className="w-full min-w-[420px] text-left text-sm">
+          <thead className="sticky top-0 bg-white text-xs uppercase tracking-wide text-stone-400">
+            <tr>
+              <th className="pb-3">Fecha</th>
+              <th className="pb-3 text-right">Compradores</th>
+              <th className="pb-3 text-right">Vendedores</th>
+              <th className="pb-3 text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-stone-100">
+            {items.map((item) => (
+              <tr key={item.date}>
+                <td className="py-3 font-medium text-stone-700">{new Intl.DateTimeFormat("es-AR").format(new Date(`${item.date}T12:00:00`))}</td>
+                <td className="py-3 text-right text-stone-500">{formatCount(item.buyers)}</td>
+                <td className="py-3 text-right text-stone-500">{formatCount(item.artisans)}</td>
+                <td className="py-3 text-right font-semibold text-ocean-600">{formatCount(item.total)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </section>
   );
@@ -120,6 +174,21 @@ export function AdminAnalyticsPage() {
   const overviewQuery = useAdminAnalyticsOverview(days, isEnabled);
   const historyQuery = useAdminAnalyticsUserHistory(selectedUserId, isEnabled);
   const overview = overviewQuery.data;
+  const accountsCreated = overview ? overview.newBuyers + overview.newArtisans : 0;
+  const signupConversionRate = overview
+    ? calculateSignupConversionRate(overview.signupStarted, accountsCreated)
+    : null;
+  const isRefreshing = overviewQuery.isFetching || (Boolean(selectedUserId) && historyQuery.isFetching);
+  const lastUpdatedLabel = overviewQuery.dataUpdatedAt > 0
+    ? formatDate(new Date(overviewQuery.dataUpdatedAt).toISOString())
+    : overview
+      ? "Mostrando datos anteriores"
+      : "Todavía sin actualizar";
+  const refreshAnalytics = () => {
+    const requests: Promise<unknown>[] = [overviewQuery.refetch()];
+    if (selectedUserId) requests.push(historyQuery.refetch());
+    void Promise.all(requests);
+  };
   const selectedUser = useMemo(
     () => overview?.recentUsers.find((item) => item.userId === selectedUserId) ?? null,
     [overview?.recentUsers, selectedUserId],
@@ -137,16 +206,30 @@ export function AdminAnalyticsPage() {
             <p className="font-semibold text-stone-800">Período del informe</p>
             <p className="text-sm text-stone-500">La IP nunca se guarda y los anónimos no tienen historial individual.</p>
           </div>
-          <select
-            className="rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700"
-            onChange={(event) => setDays(Number(event.target.value))}
-            value={days}
-          >
-            <option value={7}>Últimos 7 días</option>
-            <option value={30}>Últimos 30 días</option>
-            <option value={90}>Últimos 90 días</option>
-            <option value={365}>Último año</option>
-          </select>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <div className="mr-1 text-right text-xs text-stone-500" aria-live="polite">
+              <p>{isRefreshing ? "Actualizando…" : `Última actualización: ${lastUpdatedLabel}`}</p>
+              <p>Automática cada 30 s con la pestaña visible</p>
+            </div>
+            <button
+              className="rounded-full border border-ocean-300 bg-white px-4 py-2 text-sm font-semibold text-ocean-700 hover:bg-ocean-50 disabled:cursor-wait disabled:opacity-60"
+              disabled={isRefreshing || !isEnabled}
+              onClick={refreshAnalytics}
+              type="button"
+            >
+              {isRefreshing ? "Actualizando…" : "Actualizar ahora"}
+            </button>
+            <select
+              className="rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700"
+              onChange={(event) => setDays(Number(event.target.value))}
+              value={days}
+            >
+              <option value={7}>Últimos 7 días</option>
+              <option value={30}>Últimos 30 días</option>
+              <option value={90}>Últimos 90 días</option>
+              <option value={365}>Último año</option>
+            </select>
+          </div>
         </div>
 
         {overviewQuery.isLoading ? (
@@ -160,6 +243,41 @@ export function AdminAnalyticsPage() {
 
         {overview ? (
           <>
+            <section className="grid gap-4">
+              <div>
+                <h2 className="text-xl font-semibold text-ocean-700">Cuentas y registros</h2>
+                <p className="mt-1 text-sm text-stone-500">
+                  Las cuentas provienen de perfiles reales. La conversión compara ese total con inicios anónimos y es sólo orientativa.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <MetricCard
+                  label="Cuentas nuevas"
+                  value={formatCount(accountsCreated)}
+                  hint={`${formatCount(overview.newBuyers)} compradores · ${formatCount(overview.newArtisans)} vendedores`}
+                />
+                <MetricCard
+                  label="Cuentas totales"
+                  value={formatCount(overview.totalBuyers + overview.totalArtisans)}
+                  hint={`${formatCount(overview.totalBuyers)} compradores · ${formatCount(overview.totalArtisans)} vendedores`}
+                />
+                <MetricCard label="Registros iniciados" value={formatCount(overview.signupStarted)} hint="Agregado anónimo" />
+                <MetricCard
+                  label="Conversión aproximada"
+                  value={formatSignupConversionRate(signupConversionRate)}
+                  hint="Cuentas nuevas / registros iniciados"
+                />
+              </div>
+              <div className="grid gap-5 xl:grid-cols-2">
+                <RegistrationCard items={overview.accountRegistrations} />
+                <DistributionCard
+                  items={overview.topEvents}
+                  labels={ANALYTICS_EVENT_LABELS}
+                  title="Eventos del período"
+                />
+              </div>
+            </section>
+
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <MetricCard label="Visitas anónimas" value={formatCount(overview.anonymousVisits)} hint="Sin ID persistente" />
               <MetricCard label="Sesiones consentidas" value={formatCount(overview.consentedSessions)} hint={`${formatCount(overview.consentedUsers)} usuarios`} />
@@ -167,11 +285,59 @@ export function AdminAnalyticsPage() {
               <MetricCard label="Tiempo activo promedio" value={formatDuration(overview.averageActiveSeconds)} hint="Sólo cuentas consentidas" />
             </div>
 
+            <section className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-amber-950 shadow-sm">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h2 className="font-semibold">Calidad del tráfico anónimo</h2>
+                  <p className="mt-1 text-sm text-amber-800">
+                    Estas métricas son aproximadas. Se validan origen y rutas, se ignoran bots conocidos y se aplica un límite compartido sin guardar la IP.
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold">{formatCount(overview.anonymousQuality.excludedEvents)}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                    eventos excluidos en {formatCount(overview.anonymousQuality.flaggedBuckets)} picos
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section
+              className={[
+                "rounded-3xl border p-5 shadow-sm",
+                overview.analyticsMaintenance.isOverdue
+                  ? "border-red-200 bg-red-50 text-red-950"
+                  : "border-emerald-200 bg-emerald-50 text-emerald-950",
+              ].join(" ")}
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h2 className="font-semibold">Retención automática</h2>
+                  <p className="mt-1 text-sm">
+                    {getAnalyticsMaintenanceMessage(overview.analyticsMaintenance)}
+                  </p>
+                </div>
+                <div className="text-right text-sm">
+                  <p className="font-semibold">Diaria a las 03:17 UTC</p>
+                  <p className="mt-1 opacity-75">
+                    Último éxito: {overview.analyticsMaintenance.lastSuccessAt
+                      ? formatDate(overview.analyticsMaintenance.lastSuccessAt)
+                      : "sin confirmar"}
+                  </p>
+                </div>
+              </div>
+            </section>
+
             <div className="grid gap-5 xl:grid-cols-3">
               <DistributionCard items={overview.devices} title="Tipo de dispositivo" />
               <DistributionCard items={overview.operatingSystems} title="Sistema operativo" />
               <DistributionCard items={overview.performanceTiers} title="Gama estimada" />
             </div>
+
+            <DistributionCard
+              items={overview.sessionDurationBuckets}
+              title="Duración de sesiones consentidas"
+            />
 
             <div className="grid gap-5 xl:grid-cols-2">
               <section className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">

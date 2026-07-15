@@ -1,6 +1,12 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 import { corsHeaders } from "../_shared/cors.ts";
+import {
+  createTemporaryIpHash,
+  isAllowedAnalyticsEventPath,
+  isAllowedAnalyticsOrigin,
+  isKnownAnalyticsBot,
+} from "./requestQuality.ts";
 
 const ANONYMOUS_EVENTS = new Set([
   "visit",
@@ -62,6 +68,7 @@ type AnalyticsBody = {
   context?: AnalyticsContext;
   entityId?: string | null;
   entityType?: string | null;
+  eventId?: string;
   eventName?: string;
   mode?: "anonymous" | "consented";
   path?: string;
@@ -76,24 +83,38 @@ type GeoSummary = {
   timezone: string;
 };
 
-type RateWindow = {
-  count: number;
-  startedAt: number;
-};
-
-const rateWindows = new Map<string, RateWindow>();
-
 function getRequiredEnv(name: string) {
   const value = Deno.env.get(name);
   if (!value) throw new Error(`Missing required environment variable: ${name}`);
   return value;
 }
 
+function createAdminClient() {
+  return createClient(
+    getRequiredEnv("SUPABASE_URL"),
+    getRequiredEnv("SUPABASE_SERVICE_ROLE_KEY"),
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  );
+}
+
+type AdminClient = ReturnType<typeof createAdminClient>;
+
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     headers: { ...corsHeaders, "Content-Type": "application/json" },
     status,
   });
+}
+
+function analyticsResponse(
+  body: unknown,
+  status: number,
+  outcome: "accepted" | "failed" | "rejected",
+  mode: AnalyticsBody["mode"] | "unknown",
+  reason: string,
+) {
+  console.info(JSON.stringify({ component: "collect-analytics", mode, outcome, reason, status }));
+  return jsonResponse(body, status);
 }
 
 function normalizeEnum(value: unknown, allowed: Set<string>, fallback: string) {
@@ -148,23 +169,20 @@ function isPrivateAddress(ipAddress: string) {
   );
 }
 
-function isRateLimited(ipAddress: string) {
-  if (!ipAddress) return false;
+async function isRateLimited(adminClient: AdminClient, ipAddress: string) {
+  if (!ipAddress) throw new Error("Client IP unavailable for analytics rate limit.");
 
-  const now = Date.now();
-  if (rateWindows.size > 2000) {
-    for (const [key, value] of rateWindows) {
-      if (now - value.startedAt >= 60_000) rateWindows.delete(key);
-    }
-  }
-  const existing = rateWindows.get(ipAddress);
-  if (!existing || now - existing.startedAt >= 60_000) {
-    rateWindows.set(ipAddress, { count: 1, startedAt: now });
-    return false;
-  }
-
-  existing.count += 1;
-  return existing.count > 90;
+  const keyHash = await createTemporaryIpHash(
+    ipAddress,
+    getRequiredEnv("ANALYTICS_RATE_LIMIT_SECRET"),
+  );
+  const { data, error } = await adminClient.rpc("claim_analytics_rate_limit", {
+    requested_key_hash: keyHash,
+    requested_limit: 90,
+    requested_window_seconds: 60,
+  });
+  if (error || typeof data !== "boolean") throw new Error("Analytics rate limit unavailable.");
+  return !data;
 }
 
 async function resolveGeoSummary(request: Request, ipAddress: string): Promise<GeoSummary> {
@@ -210,36 +228,77 @@ async function resolveGeoSummary(request: Request, ipAddress: string): Promise<G
 }
 
 async function recordAnonymous(
-  adminClient: ReturnType<typeof createClient>,
+  adminClient: AdminClient,
   request: Request,
   body: AnalyticsBody,
   context: ReturnType<typeof normalizeContext>,
   ipAddress: string,
 ) {
+  const eventId = typeof body.eventId === "string" && UUID_PATTERN.test(body.eventId)
+    ? body.eventId
+    : null;
+  if (!eventId) {
+    return analyticsResponse(
+      { error: "A valid analytics event ID is required." },
+      400,
+      "rejected",
+      "anonymous",
+      "invalid_event_id",
+    );
+  }
+
   const eventName = normalizeEnum(body.eventName, ANONYMOUS_EVENTS, "");
-  if (!eventName) return jsonResponse({ error: "Unsupported analytics event." }, 400);
+  if (!eventName) {
+    return analyticsResponse(
+      { error: "Unsupported analytics event." },
+      400,
+      "rejected",
+      "anonymous",
+      "unsupported_event",
+    );
+  }
+
+  const path = normalizePath(body.path);
+  if (!isAllowedAnalyticsEventPath(eventName, path)) {
+    return analyticsResponse(
+      { error: "Unsupported analytics path." },
+      400,
+      "rejected",
+      "anonymous",
+      "unsupported_path",
+    );
+  }
 
   const geo = eventName === "visit"
     ? await resolveGeoSummary(request, ipAddress)
     : { city: "unknown", countryCode: "unknown", region: "unknown", timezone: "unknown" };
-  const { error } = await adminClient.rpc("record_anonymous_analytics", {
+  const { error } = await adminClient.rpc("record_anonymous_analytics_v2", {
     requested_city: geo.city,
     requested_country_code: geo.countryCode,
     requested_device_type: context.deviceType,
+    requested_event_id: eventId,
     requested_event_name: eventName,
     requested_os_family: context.osFamily,
-    requested_path: normalizePath(body.path),
+    requested_path: path,
     requested_performance_tier: context.performanceTier,
     requested_referrer_domain: context.referrerDomain,
     requested_region: geo.region,
   });
 
-  if (error) return jsonResponse({ error: "Analytics storage is not ready." }, 503);
-  return jsonResponse({ accepted: true });
+  if (error) {
+    return analyticsResponse(
+      { error: "Analytics storage is not ready." },
+      503,
+      "failed",
+      "anonymous",
+      "storage_error",
+    );
+  }
+  return analyticsResponse({ accepted: true }, 200, "accepted", "anonymous", "stored");
 }
 
 async function getAuthenticatedUser(
-  adminClient: ReturnType<typeof createClient>,
+  adminClient: AdminClient,
   authorizationHeader: string | null,
 ) {
   const token = authorizationHeader?.replace(/^Bearer\s+/i, "").trim();
@@ -249,18 +308,45 @@ async function getAuthenticatedUser(
 }
 
 async function recordConsented(
-  adminClient: ReturnType<typeof createClient>,
+  adminClient: AdminClient,
   request: Request,
   body: AnalyticsBody,
   context: ReturnType<typeof normalizeContext>,
   ipAddress: string,
 ) {
+  const eventId = typeof body.eventId === "string" && UUID_PATTERN.test(body.eventId)
+    ? body.eventId
+    : null;
+  if (!eventId) {
+    return analyticsResponse(
+      { error: "A valid analytics event ID is required." },
+      400,
+      "rejected",
+      "consented",
+      "invalid_event_id",
+    );
+  }
+
   const user = await getAuthenticatedUser(adminClient, request.headers.get("Authorization"));
-  if (!user) return jsonResponse({ error: "Authentication required." }, 401);
+  if (!user) {
+    return analyticsResponse(
+      { error: "Authentication required." },
+      401,
+      "rejected",
+      "consented",
+      "authentication_required",
+    );
+  }
 
   const policyVersion = normalizeText(body.policyVersion, "", 40);
   if (!POLICY_VERSION_PATTERN.test(policyVersion)) {
-    return jsonResponse({ error: "A valid policy version is required." }, 400);
+    return analyticsResponse(
+      { error: "A valid policy version is required." },
+      400,
+      "rejected",
+      "consented",
+      "invalid_policy_version",
+    );
   }
 
   const [{ data: consent }, { data: profile }] = await Promise.all([
@@ -283,117 +369,176 @@ async function recordConsented(
     !profile ||
     !["buyer", "artisan"].includes(profile.role)
   ) {
-    return jsonResponse({ error: "Active analytics consent required." }, 403);
+    return analyticsResponse(
+      { error: "Active analytics consent required." },
+      403,
+      "rejected",
+      "consented",
+      "consent_required",
+    );
   }
 
   const requestedSessionId = typeof body.sessionId === "string" && UUID_PATTERN.test(body.sessionId)
     ? body.sessionId
     : null;
-  let sessionId = requestedSessionId;
-  let activeSeconds = 0;
-
-  if (sessionId) {
-    const { data: existingSession } = await adminClient
-      .from("analytics_sessions")
-      .select("id, active_seconds")
-      .eq("id", sessionId)
-      .eq("user_id", user.id)
-      .maybeSingle<{ active_seconds: number; id: string }>();
-    if (existingSession) {
-      activeSeconds = existingSession.active_seconds;
-    } else {
-      sessionId = null;
-    }
+  const eventName = body.eventName === "heartbeat" || body.eventName === "session_end"
+    ? body.eventName
+    : normalizeEnum(body.eventName, CONSENTED_EVENTS, "");
+  if (!eventName) {
+    return analyticsResponse(
+      { error: "Unsupported analytics event." },
+      400,
+      "rejected",
+      "consented",
+      "unsupported_event",
+    );
   }
 
-  if (!sessionId) {
-    const geo = await resolveGeoSummary(request, ipAddress);
-    const { data: createdSession, error: sessionError } = await adminClient
-      .from("analytics_sessions")
-      .insert({
-        browser_family: context.browserFamily,
-        city: geo.city,
-        classification_confidence: context.classificationConfidence,
-        classifier_version: context.classifierVersion,
-        connection_type: context.connectionType,
-        country_code: geo.countryCode,
-        device_type: context.deviceType,
-        landing_path: normalizePath(body.path),
-        os_family: context.osFamily,
-        performance_tier: context.performanceTier,
-        referrer_domain: context.referrerDomain,
-        region: geo.region,
-        screen_size: context.screenSize,
-        timezone: geo.timezone,
-        user_id: user.id,
-      })
-      .select("id")
-      .single<{ id: string }>();
-
-    if (sessionError || !createdSession) {
-      return jsonResponse({ error: "Could not start analytics session." }, 503);
-    }
-    sessionId = createdSession.id;
+  const path = normalizePath(body.path);
+  if (!isAllowedAnalyticsEventPath(eventName, path)) {
+    return analyticsResponse(
+      { error: "Unsupported analytics path." },
+      400,
+      "rejected",
+      "consented",
+      "unsupported_path",
+    );
   }
-
-  const secondsToAdd = Math.min(Math.max(Math.floor(Number(body.activeSeconds) || 0), 0), 60);
-  await adminClient
-    .from("analytics_sessions")
-    .update({
-      active_seconds: Math.min(activeSeconds + secondsToAdd, 31_536_000),
-      last_seen_at: new Date().toISOString(),
-    })
-    .eq("id", sessionId)
-    .eq("user_id", user.id);
-
-  if (body.eventName === "heartbeat") {
-    return jsonResponse({ accepted: true, sessionId });
-  }
-
-  const eventName = normalizeEnum(body.eventName, CONSENTED_EVENTS, "");
-  if (!eventName) return jsonResponse({ error: "Unsupported analytics event." }, 400);
 
   const entityType = normalizeEnum(body.entityType, ENTITY_TYPES, "") || null;
   const entityId = typeof body.entityId === "string" && UUID_PATTERN.test(body.entityId)
     ? body.entityId
     : null;
-  const { error: eventError } = await adminClient.from("analytics_events").insert({
-    entity_id: entityId,
-    entity_type: entityType,
-    event_name: eventName,
-    path: normalizePath(body.path),
-    session_id: sessionId,
-    user_id: user.id,
-  });
+  const geo = requestedSessionId
+    ? { city: "unknown", countryCode: "unknown", region: "unknown", timezone: "unknown" }
+    : await resolveGeoSummary(request, ipAddress);
+  const { data: sessionId, error: storageError } = await adminClient.rpc(
+    "record_consented_analytics_v2",
+    {
+      requested_active_seconds: Math.floor(Number(body.activeSeconds) || 0),
+      requested_browser_family: context.browserFamily,
+      requested_city: geo.city,
+      requested_classification_confidence: context.classificationConfidence,
+      requested_classifier_version: context.classifierVersion,
+      requested_connection_type: context.connectionType,
+      requested_country_code: geo.countryCode,
+      requested_device_type: context.deviceType,
+      requested_entity_id: entityId,
+      requested_entity_type: entityType,
+      requested_event_id: eventId,
+      requested_event_name: eventName,
+      requested_os_family: context.osFamily,
+      requested_path: path,
+      requested_performance_tier: context.performanceTier,
+      requested_referrer_domain: context.referrerDomain,
+      requested_region: geo.region,
+      requested_screen_size: context.screenSize,
+      requested_session_id: requestedSessionId,
+      requested_timezone: geo.timezone,
+      requested_user_id: user.id,
+    },
+  );
 
-  if (eventError) return jsonResponse({ error: "Could not store analytics event." }, 503);
-  return jsonResponse({ accepted: true, sessionId });
+  if (storageError || typeof sessionId !== "string") {
+    return analyticsResponse(
+      { error: "Could not store analytics event." },
+      503,
+      "failed",
+      "consented",
+      "storage_error",
+    );
+  }
+  return analyticsResponse(
+    { accepted: true, sessionId },
+    200,
+    "accepted",
+    "consented",
+    "stored",
+  );
 }
 
 Deno.serve(async (request) => {
-  if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
-  if (request.method !== "POST") return jsonResponse({ error: "Method not allowed." }, 405);
+  const originAllowed = isAllowedAnalyticsOrigin(
+    request.headers.get("Origin"),
+    Deno.env.get("ANALYTICS_ALLOWED_ORIGINS"),
+  );
+  if (request.method === "OPTIONS") {
+    return originAllowed
+      ? new Response("ok", { headers: corsHeaders })
+      : analyticsResponse(
+        { error: "Origin not allowed." },
+        403,
+        "rejected",
+        "unknown",
+        "origin_not_allowed",
+      );
+  }
+  if (request.method !== "POST") {
+    return analyticsResponse(
+      { error: "Method not allowed." },
+      405,
+      "rejected",
+      "unknown",
+      "method_not_allowed",
+    );
+  }
 
   try {
-    const ipAddress = getClientIp(request);
-    if (isRateLimited(ipAddress)) return jsonResponse({ error: "Too many requests." }, 429);
+    if (!originAllowed) {
+      return analyticsResponse(
+        { error: "Origin not allowed." },
+        403,
+        "rejected",
+        "unknown",
+        "origin_not_allowed",
+      );
+    }
 
     const body = (await request.json().catch(() => null)) as AnalyticsBody | null;
     if (!body || (body.mode !== "anonymous" && body.mode !== "consented")) {
-      return jsonResponse({ error: "Invalid analytics payload." }, 400);
+      return analyticsResponse(
+        { error: "Invalid analytics payload." },
+        400,
+        "rejected",
+        "unknown",
+        "invalid_payload",
+      );
     }
 
-    const adminClient = createClient(
-      getRequiredEnv("SUPABASE_URL"),
-      getRequiredEnv("SUPABASE_SERVICE_ROLE_KEY"),
-      { auth: { autoRefreshToken: false, persistSession: false } },
-    );
+    if (isKnownAnalyticsBot(request.headers.get("User-Agent"))) {
+      return analyticsResponse(
+        { accepted: true, ignored: true },
+        200,
+        "accepted",
+        body.mode,
+        "bot_ignored",
+      );
+    }
+
+    const adminClient = createAdminClient();
+    const ipAddress = getClientIp(request);
+    if (await isRateLimited(adminClient, ipAddress)) {
+      return analyticsResponse(
+        { error: "Too many requests." },
+        429,
+        "rejected",
+        "unknown",
+        "rate_limited",
+      );
+    }
+
     const context = normalizeContext(body.context);
 
     return body.mode === "anonymous"
       ? await recordAnonymous(adminClient, request, body, context, ipAddress)
       : await recordConsented(adminClient, request, body, context, ipAddress);
   } catch {
-    return jsonResponse({ error: "Unexpected analytics collection error." }, 500);
+    return analyticsResponse(
+      { error: "Unexpected analytics collection error." },
+      500,
+      "failed",
+      "unknown",
+      "unexpected_error",
+    );
   }
 });

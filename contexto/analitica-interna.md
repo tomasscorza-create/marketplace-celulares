@@ -12,7 +12,9 @@ señales de fingerprinting.
 - `src/pages/AdminAnalyticsPage.tsx`: informe protegido del administrador.
 - `src/pages/PrivacyPage.tsx`: explicación y revocación del consentimiento.
 - `supabase/functions/collect-analytics/index.ts`: validación e ingreso de eventos.
-- `supabase/migrations/20260714190000_internal_analytics.sql`: tablas, RLS y RPC.
+- `supabase/migrations/20260714190000_internal_analytics.sql`: tablas y RLS base.
+- `supabase/migrations/20260715180000_analytics_session_lifecycle.sql`: ciclo de
+  vida vigente de sesiones y distribución de duraciones.
 
 ## Modelo de privacidad
 
@@ -76,11 +78,38 @@ RLS permite al usuario leer su consentimiento. Las tablas de actividad sólo se
 leen como admin. Las escrituras de actividad pasan por la función Edge con
 `service_role`; esa clave nunca llega al navegador.
 
+## Informe administrativo
+
+- Las cuentas creadas se cuentan desde `profiles.created_at`, separadas entre
+  compradores y vendedores. Es una métrica operativa exacta y no depende del
+  consentimiento de analítica ni de un evento del navegador.
+- Los inicios de registro siguen siendo agregados anónimos; la conversión contra
+  cuentas creadas es orientativa y nunca vincula ambos registros.
+- El resumen de eventos combina totales anónimos y consentidos por nombre. El
+  detalle por usuario continúa limitado a cuentas con consentimiento vigente.
+- El panel refresca sus consultas cada 30 segundos sólo cuando está visible,
+  vuelve a consultar al recuperar el foco y permite una actualización manual.
+  Durante una recarga conserva el último informe confirmado.
+- La entrega usa reintentos limitados y un `event_id` por evento lógico. Los
+  recibos anónimos expiran a las 48 horas y no contienen ruta, IP, dispositivo,
+  sesión ni usuario; sirven únicamente para impedir duplicados.
+- La marca temporal de visita se guarda después de la confirmación del backend.
+  Sólo las cuentas consentidas mantienen una cola transitoria en memoria.
+- Una sesión consentida vence tras 30 minutos sin actividad. El tiempo activo se
+  acumula sólo mientras la pestaña está visible, se entrega cada 10 segundos y
+  se actualiza al ocultarla. Al abandonar la página se solicita el cierre con
+  `keepalive`; una suspensión aislada nunca suma más de 60 segundos.
+- El panel muestra duración media y rangos de duración basados en segundos
+  activos, no en tiempo de calendario entre inicio y fin.
+
 ## Retención
 
-`cleanup_internal_analytics()` elimina eventos y sesiones con más de 365 días y
-agregados anónimos con más de 730 días. No se programa automáticamente desde el
-frontend: producción debe invocarla con un cron seguro o mantenimiento backend.
+`run_internal_analytics_maintenance()` elimina eventos y sesiones con más de
+365 días, y agregados anónimos/calidad horaria con más de 730 días. También
+elimina recibos y rate limits vencidos. `pg_cron` la ejecuta diariamente a las
+03:17 UTC y registra estado, duración y cantidades en
+`analytics_maintenance_runs`. El panel alerta después de 36 horas sin éxito.
+`cleanup_internal_analytics()` conserva compatibilidad y delega en ese flujo.
 
 ## Validación
 
@@ -100,4 +129,4 @@ Además, servir `collect-analytics` localmente y comprobar:
 4. Revocar detiene la captura individual.
 5. Sólo admin ejecuta los RPC de informes.
 
-Última revisión: 2026-07-14.
+Última revisión: 2026-07-14, Fase 6.

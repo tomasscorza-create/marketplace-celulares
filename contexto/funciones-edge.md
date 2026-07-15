@@ -23,6 +23,19 @@ Las funciones se agrupan en dos ramas principales:
 - **Autenticación en llamadas**: La app frontend invoca estas funciones mandando el token JWT del usuario logueado. Las funciones validan este token antes de operar.
 - **Excepción pública controlada**: `collect-analytics` usa `verify_jwt = false` para contar visitas sin cuenta. No confía en identidad enviada por el cliente; cuando se solicita seguimiento individual valida el JWT dentro de la función.
 - **GeoIP opcional**: `IPINFO_TOKEN` habilita ciudad/región aproximadas. La IP se usa sólo en memoria y no se persiste.
+- **Entrega idempotente**: `collect-analytics` exige un `event_id` por entrega y
+  delega la escritura a RPC transaccionales. Sus logs técnicos sólo indican
+  modo, resultado, razón y estado HTTP; no registran IP, ruta, usuario ni ID del
+  evento.
+- **Ciclo de sesión consentida**: `heartbeat` actualiza únicamente tiempo
+  visible y `session_end` cierra la sesión en `pagehide`. Ambos requieren JWT y
+  consentimiento, son idempotentes y no se guardan como eventos de negocio.
+- **Calidad anónima**: `collect-analytics` comprueba origen, rutas y bots antes
+  de escribir. El límite compartido usa `ANALYTICS_RATE_LIMIT_SECRET` para
+  producir un HMAC diario de la IP; la IP original nunca se envía a Postgres.
+- **Mantenimiento independiente**: la retención no depende de una función Edge
+  ni del frontend. `pg_cron` invoca una función SQL acotada y el panel sólo lee
+  su estado agregado.
 
 ## Dependencias y límites externos
 

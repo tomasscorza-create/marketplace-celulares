@@ -24,6 +24,13 @@ Este documento mantiene el registro de las fichas de dominio generadas para docu
 | `modularidad.md` | Calidad y verificación | Límite bloqueante de tamaño y responsabilidades extraídas de módulos extensos. | `scripts/audit-large-files.mjs`, `package.json`, módulos `*Support` y conectores | `documentado` |
 | `pwa-y-cache.md` | Operación, integración y publicación | Precache mínimo, caché runtime, límites y auditoría del service worker generado. | `vite.config.ts`, `scripts/audit-pwa-precache.mjs`, `src/lib/pwa/` | `documentado` |
 | `analitica-interna.md` | Backend, privacidad y administración | Visitas agregadas, consentimiento, sesiones, clasificación de dispositivos, ubicación aproximada y panel admin. | `src/features/analytics/`, `src/pages/AdminAnalyticsPage.tsx`, `supabase/functions/collect-analytics/`, migración de analítica | `documentado` |
+| `analitica-fase-0.md` | Calidad y operación de analítica | Línea base productiva, limpieza de eventos técnicos y aislamiento de rama. | Estado Git, Supabase y métricas agregadas | `completado` |
+| `analitica-fase-1.md` | Administración y analítica | Cuentas creadas desde perfiles, conversión aproximada y resumen de eventos útiles. | `profiles`, tablas de analítica, `AdminAnalyticsPage.tsx` | `desplegado en producción` |
+| `analitica-fase-2.md` | Administración y analítica | Actualización automática visible, recarga manual y conservación del último informe. | `analyticsQueries.ts`, `analyticsRefresh.ts`, `AdminAnalyticsPage.tsx` | `desplegado en producción` |
+| `analitica-fase-3.md` | Calidad y operación de analítica | Reintentos limitados, entrega `keepalive` e idempotencia sin identidad anónima persistente. | `analyticsDelivery.ts`, `analyticsClient.ts`, `collect-analytics`, migración de Fase 3 | `desplegado en producción` |
+| `analitica-fase-4.md` | Calidad y operación de analítica | Sesiones de 30 minutos, tiempo visible, cierre de pestaña y distribución de duraciones. | `analyticsActivityClock.ts`, `AnalyticsProvider.tsx`, `collect-analytics`, migración de Fase 4 | `desplegado en producción` |
+| `analitica-fase-5.md` | Calidad y operación de analítica | Orígenes y rutas válidas, bots ignorados, rate limit compartido y exclusión de picos anónimos. | `requestQuality.ts`, `collect-analytics`, migración de Fase 5 | `en validación` |
+| `analitica-fase-6.md` | Calidad y operación de analítica | Retención diaria, registro de ejecuciones y alerta administrativa por mantenimiento vencido. | Migración de Fase 6, `analyticsMaintenance.ts`, `AdminAnalyticsPage.tsx` | `en validación` |
 | `coordinacion-de-agentes.md` | Coordinación | Tablero de propiedad temporal de archivos para trabajo simultáneo entre agentes. | Estado Git y declaraciones de agentes | `activo` |
 
 ## Mantenimiento

@@ -7,11 +7,13 @@ import { useAuth } from "../auth/useAuth";
 import type { AnalyticsConsent } from "../../types/analytics";
 import {
   configureAnalyticsIdentity,
+  endAnalyticsSession,
   resetAnalyticsSessionForUser,
   trackAnalyticsEvent,
   trackAnalyticsHeartbeat,
   trackAnalyticsRoute,
 } from "./analyticsClient";
+import { createAnalyticsActivityClock } from "./analyticsActivityClock";
 import { ANALYTICS_POLICY_VERSION } from "./analyticsContract";
 import { getAnalyticsConsent, saveAnalyticsConsent } from "./analyticsData";
 import { clearCatalogActivityState } from "../../lib/browser/catalogActivity";
@@ -85,6 +87,7 @@ export function AnalyticsProvider({ children }: PropsWithChildren) {
     if (isAuthLoading || isLoading) return;
 
     configureAnalyticsIdentity({
+      anonymousAllowed: role !== "admin",
       consented: hasActiveConsent,
       userId: role === "buyer" || role === "artisan" ? user?.id ?? null : null,
     });
@@ -104,11 +107,40 @@ export function AnalyticsProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     if (!hasActiveConsent || !user) return;
 
-    const intervalId = window.setInterval(() => {
-      if (document.visibilityState === "visible") void trackAnalyticsHeartbeat(30);
-    }, 30_000);
+    const clock = createAnalyticsActivityClock();
+    const now = () => performance.now();
+    if (document.visibilityState === "visible") clock.resume(now());
 
-    return () => window.clearInterval(intervalId);
+    const flushPendingTime = () => {
+      const activeSeconds = clock.takePendingSeconds(now());
+      if (activeSeconds > 0) void trackAnalyticsHeartbeat(activeSeconds);
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        clock.resume(now());
+        return;
+      }
+
+      clock.pause(now());
+      flushPendingTime();
+    };
+    const handlePageHide = () => {
+      clock.pause(now());
+      const activeSeconds = clock.takePendingSeconds(now());
+      void endAnalyticsSession(activeSeconds);
+    };
+    const intervalId = window.setInterval(() => {
+      if (document.visibilityState === "visible") flushPendingTime();
+    }, 10_000);
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handlePageHide);
+
+    return () => {
+      window.clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handlePageHide);
+    };
   }, [hasActiveConsent, user]);
 
   useEffect(() => {

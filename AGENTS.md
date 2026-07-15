@@ -79,10 +79,36 @@ migraciones, configuración, Git o servicios remotos.
   individuales. Un visitante sin consentimiento no recibe ID persistente ni se
   vincula luego con una cuenta. Sólo compradores y vendedores con consentimiento
   versionado vigente generan `analytics_sessions` y `analytics_events`.
+- Las cuentas creadas del informe admin se calculan desde `profiles.created_at`
+  y `profiles.role`, no desde eventos del navegador. `signup_started` es un
+  agregado anónimo y su comparación con cuentas creadas es sólo orientativa;
+  nunca se usa para vincular una visita con el perfil posterior.
+- Las consultas del panel de analítica se actualizan cada 30 segundos sólo con
+  la pestaña visible, se revalidan al recuperar foco y conservan el último
+  resultado durante recargas. No habilitar polling en segundo plano.
 - La clasificación de dispositivo es general y estimada; no usar canvas,
   WebGL, fuentes, audio, identificadores publicitarios ni otras técnicas de
   fingerprinting. La IP nunca se almacena: `collect-analytics` sólo puede
   procesarla en memoria para rate limit y ciudad/región aproximadas.
+- Los reintentos de analítica reutilizan un `event_id` por entrega. Los recibos
+  anónimos son efímeros, no contienen usuario, sesión, ruta, IP ni datos de
+  dispositivo y nunca deben ampliarse hasta convertirse en una identidad de
+  visitante.
+- Las sesiones consentidas vencen después de 30 minutos sin actividad. El
+  tiempo activo cuenta sólo mientras la página está visible, se entrega en
+  intervalos de 10 segundos y al ocultar la pestaña; `pagehide` solicita el
+  cierre. No calcular duración como `ended_at - started_at` porque incluiría
+  tiempo oculto o suspendido.
+- La captura anónima sólo acepta orígenes y rutas productivas conocidas, ignora
+  bots comunes y usa un rate limit compartido con HMAC diario de la IP. Ese hash
+  es efímero, no puede incorporarse a informes ni usarse como identificador de
+  visitante. Los picos horarios excluidos deben mantenerse fuera del resumen
+  principal y mostrarse sólo como señal agregada de calidad.
+- La retención de analítica se ejecuta diariamente a las 03:17 UTC mediante
+  `run_internal_analytics_maintenance()`: 365 días para eventos/sesiones y 730
+  para agregados/calidad. Cada ejecución debe quedar auditada y el panel alerta
+  tras 36 horas sin éxito. La función de limpieza nunca puede ampliarse a
+  perfiles, productos, pedidos, pagos o inventario.
 
 ## 3. Mapa de arquitectura
 

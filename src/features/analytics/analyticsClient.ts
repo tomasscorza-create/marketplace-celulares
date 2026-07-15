@@ -1,16 +1,18 @@
 import type { AnalyticsEventName } from "../../types/analytics";
 
-import { supabase } from "../../lib/supabase/client";
+import { getSupabasePublicConfig, supabase } from "../../lib/supabase/client";
 import {
   ANALYTICS_POLICY_VERSION,
   ANONYMOUS_ANALYTICS_EVENTS,
 } from "./analyticsContract";
+import { deliverAnalyticsEvent } from "./analyticsDelivery";
 import { getAnalyticsDeviceContext } from "./deviceClassifier";
 
 const PUBLIC_VISIT_MARKER = "analytics_public_visit_v1";
 const CONSENTED_SESSION_PREFIX = "analytics_consented_session_v1";
 
 type AnalyticsIdentity = {
+  anonymousAllowed: boolean;
   consented: boolean;
   userId: string | null;
 };
@@ -27,8 +29,14 @@ type AnalyticsFunctionResponse = {
   sessionId?: string;
 };
 
-let analyticsIdentity: AnalyticsIdentity = { consented: false, userId: null };
-let eventQueue = Promise.resolve();
+let analyticsIdentity: AnalyticsIdentity = {
+  anonymousAllowed: false,
+  consented: false,
+  userId: null,
+};
+let analyticsSessionGeneration = 0;
+let consentedEventQueue = Promise.resolve();
+let publicVisitInFlight: Promise<boolean> | null = null;
 
 function safeSessionStorageGet(key: string) {
   try {
@@ -46,6 +54,14 @@ function safeSessionStorageSet(key: string, value: string) {
   }
 }
 
+function safeSessionStorageRemove(key: string) {
+  try {
+    sessionStorage.removeItem(key);
+  } catch {
+    // Analytics must never interrupt the user experience.
+  }
+}
+
 function getSessionKey(userId: string) {
   return `${CONSENTED_SESSION_PREFIX}:${userId}`;
 }
@@ -56,30 +72,78 @@ function normalizePath(path: string | undefined) {
 }
 
 async function invokeCollector(body: Record<string, unknown>) {
-  if (!supabase) return null;
-  const { data, error } = await supabase.functions.invoke<AnalyticsFunctionResponse>(
-    "collect-analytics",
-    { body },
-  );
-  return error ? null : data;
+  const config = getSupabasePublicConfig();
+  const client = supabase;
+  if (!client || !config) return null;
+
+  return deliverAnalyticsEvent<AnalyticsFunctionResponse>(async (eventId) => {
+    const { data: authData } = await client.auth.getSession();
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 5_000);
+
+    try {
+      const response = await fetch(`${config.url}/functions/v1/collect-analytics`, {
+        body: JSON.stringify({ ...body, eventId }),
+        headers: {
+          apikey: config.anonKey,
+          Authorization: `Bearer ${authData.session?.access_token ?? config.anonKey}`,
+          "Content-Type": "application/json",
+        },
+        keepalive: true,
+        method: "POST",
+        signal: controller.signal,
+      });
+      const data = (await response.json().catch(() => null)) as AnalyticsFunctionResponse | null;
+      const accepted = response.ok && data?.accepted === true;
+
+      return {
+        accepted,
+        retryable:
+          !accepted &&
+          (response.status === 408 ||
+            response.status === 425 ||
+            response.status === 429 ||
+            response.status >= 500),
+        value: data,
+      };
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
+  });
 }
 
-async function sendAnonymous(eventName: AnalyticsEventName | "visit", options: TrackEventOptions) {
-  if (eventName !== "visit" && !ANONYMOUS_ANALYTICS_EVENTS.has(eventName)) return;
-  await invokeCollector({
+async function sendAnonymous(
+  eventName: AnalyticsEventName | "signup_started" | "visit",
+  options: TrackEventOptions,
+) {
+  if (!analyticsIdentity.anonymousAllowed) return false;
+  if (
+    eventName !== "visit" &&
+    eventName !== "signup_started" &&
+    !ANONYMOUS_ANALYTICS_EVENTS.has(eventName)
+  ) {
+    return false;
+  }
+  const delivery = await invokeCollector({
     context: getAnalyticsDeviceContext(),
     eventName,
     mode: "anonymous",
     path: normalizePath(options.path),
   });
+  return delivery?.outcome === "accepted";
 }
 
-async function sendConsented(eventName: AnalyticsEventName | "heartbeat", options: TrackEventOptions) {
+async function sendConsented(
+  eventName: AnalyticsEventName | "heartbeat" | "session_end",
+  options: TrackEventOptions,
+  requestedSessionId?: string | null,
+) {
   const userId = analyticsIdentity.userId;
   if (!userId || !analyticsIdentity.consented) return;
 
+  const sessionGeneration = analyticsSessionGeneration;
   const sessionKey = getSessionKey(userId);
-  const response = await invokeCollector({
+  const delivery = await invokeCollector({
     activeSeconds: options.activeSeconds,
     context: getAnalyticsDeviceContext(),
     entityId: options.entityId ?? null,
@@ -88,18 +152,89 @@ async function sendConsented(eventName: AnalyticsEventName | "heartbeat", option
     mode: "consented",
     path: normalizePath(options.path),
     policyVersion: ANALYTICS_POLICY_VERSION,
-    sessionId: safeSessionStorageGet(sessionKey),
+    sessionId: requestedSessionId === undefined
+      ? safeSessionStorageGet(sessionKey)
+      : requestedSessionId,
   });
+  const response = delivery?.outcome === "accepted" ? delivery.value : null;
 
-  if (response?.sessionId) safeSessionStorageSet(sessionKey, response.sessionId);
+  if (
+    response?.sessionId &&
+    eventName !== "session_end" &&
+    sessionGeneration === analyticsSessionGeneration
+  ) {
+    safeSessionStorageSet(sessionKey, response.sessionId);
+  }
 }
 
-function enqueue(task: () => Promise<void>) {
-  eventQueue = eventQueue.then(task, task);
-  return eventQueue;
+function enqueueConsented(task: () => Promise<void>) {
+  const sessionGeneration = analyticsSessionGeneration;
+  const guardedTask = () =>
+    sessionGeneration === analyticsSessionGeneration ? task() : Promise.resolve();
+  consentedEventQueue = consentedEventQueue.then(guardedTask, guardedTask);
+  return consentedEventQueue;
+}
+
+function ensurePublicVisit(path: string) {
+  if (safeSessionStorageGet(PUBLIC_VISIT_MARKER)) return Promise.resolve(true);
+  if (publicVisitInFlight) return publicVisitInFlight;
+
+  publicVisitInFlight = sendAnonymous("visit", { path })
+    .then((accepted) => {
+      if (accepted) safeSessionStorageSet(PUBLIC_VISIT_MARKER, "counted");
+      return accepted;
+    })
+    .finally(() => {
+      publicVisitInFlight = null;
+    });
+  return publicVisitInFlight;
+}
+
+async function trackAnonymousRoute(normalizedPath: string) {
+  await ensurePublicVisit(normalizedPath);
+  await sendAnonymous("page_view", { path: normalizedPath });
+
+  const productMatch = /^\/producto\/([0-9a-f-]{36})$/i.exec(normalizedPath);
+  if (productMatch) await sendAnonymous("product_view", { path: normalizedPath });
+
+  const artisanMatch = /^\/vendedor\/([0-9a-f-]{36})$/i.exec(normalizedPath);
+  if (artisanMatch) await sendAnonymous("artisan_view", { path: normalizedPath });
+
+  if (/^\/registro(?:\/|$)/.test(normalizedPath)) {
+    await sendAnonymous("signup_started", { path: normalizedPath });
+  }
+}
+
+async function trackConsentedRoute(normalizedPath: string) {
+  await sendConsented("page_view", { path: normalizedPath });
+
+  const productMatch = /^\/producto\/([0-9a-f-]{36})$/i.exec(normalizedPath);
+  if (productMatch) {
+    await sendConsented("product_view", {
+      entityId: productMatch[1],
+      entityType: "product",
+      path: normalizedPath,
+    });
+  }
+
+  const artisanMatch = /^\/vendedor\/([0-9a-f-]{36})$/i.exec(normalizedPath);
+  if (artisanMatch) {
+    await sendConsented("artisan_view", {
+      entityId: artisanMatch[1],
+      entityType: "artisan",
+      path: normalizedPath,
+    });
+  }
 }
 
 export function configureAnalyticsIdentity(identity: AnalyticsIdentity) {
+  if (
+    analyticsIdentity.userId !== identity.userId ||
+    analyticsIdentity.consented !== identity.consented ||
+    analyticsIdentity.anonymousAllowed !== identity.anonymousAllowed
+  ) {
+    analyticsSessionGeneration += 1;
+  }
   analyticsIdentity = identity;
 }
 
@@ -108,18 +243,16 @@ export function isAnalyticsTrackingAllowed() {
 }
 
 export function trackAnalyticsEvent(eventName: AnalyticsEventName, options: TrackEventOptions = {}) {
-  return enqueue(async () => {
-    if (analyticsIdentity.userId && analyticsIdentity.consented) {
-      await sendConsented(eventName, options);
-      return;
-    }
-    await sendAnonymous(eventName, options);
-  });
+  if (analyticsIdentity.userId && analyticsIdentity.consented) {
+    return enqueueConsented(() => sendConsented(eventName, options));
+  }
+  if (!analyticsIdentity.anonymousAllowed) return Promise.resolve(false);
+  return sendAnonymous(eventName, options);
 }
 
 export function trackAnalyticsHeartbeat(activeSeconds: number) {
   if (!analyticsIdentity.userId || !analyticsIdentity.consented) return Promise.resolve();
-  return enqueue(() =>
+  return enqueueConsented(() =>
     sendConsented("heartbeat", {
       activeSeconds,
       path: window.location.pathname,
@@ -127,61 +260,33 @@ export function trackAnalyticsHeartbeat(activeSeconds: number) {
   );
 }
 
+export function endAnalyticsSession(activeSeconds: number) {
+  const userId = analyticsIdentity.userId;
+  if (!userId || !analyticsIdentity.consented) return Promise.resolve();
+
+  const sessionKey = getSessionKey(userId);
+  const sessionId = safeSessionStorageGet(sessionKey);
+  analyticsSessionGeneration += 1;
+  safeSessionStorageRemove(sessionKey);
+
+  if (!sessionId && activeSeconds <= 0) return Promise.resolve();
+  return sendConsented(
+    "session_end",
+    { activeSeconds, path: window.location.pathname },
+    sessionId,
+  );
+}
+
 export function trackAnalyticsRoute(path: string) {
-  return enqueue(async () => {
-    const normalizedPath = normalizePath(path);
-
-    if (!analyticsIdentity.userId || !analyticsIdentity.consented) {
-      if (!safeSessionStorageGet(PUBLIC_VISIT_MARKER)) {
-        safeSessionStorageSet(PUBLIC_VISIT_MARKER, "counted");
-        await sendAnonymous("visit", { path: normalizedPath });
-      }
-      await sendAnonymous("page_view", { path: normalizedPath });
-    } else {
-      await sendConsented("page_view", { path: normalizedPath });
-    }
-
-    const productMatch = /^\/producto\/([0-9a-f-]{36})$/i.exec(normalizedPath);
-    if (productMatch) {
-      if (analyticsIdentity.userId && analyticsIdentity.consented) {
-        await sendConsented("product_view", {
-          entityId: productMatch[1],
-          entityType: "product",
-          path: normalizedPath,
-        });
-      } else {
-        await sendAnonymous("product_view", { path: normalizedPath });
-      }
-    }
-
-    const artisanMatch = /^\/vendedor\/([0-9a-f-]{36})$/i.exec(normalizedPath);
-    if (artisanMatch) {
-      if (analyticsIdentity.userId && analyticsIdentity.consented) {
-        await sendConsented("artisan_view", {
-          entityId: artisanMatch[1],
-          entityType: "artisan",
-          path: normalizedPath,
-        });
-      } else {
-        await sendAnonymous("artisan_view", { path: normalizedPath });
-      }
-    }
-
-    if (/^\/registro(?:\/|$)/.test(normalizedPath) && !analyticsIdentity.consented) {
-      await invokeCollector({
-        context: getAnalyticsDeviceContext(),
-        eventName: "signup_started",
-        mode: "anonymous",
-        path: normalizedPath,
-      });
-    }
-  });
+  const normalizedPath = normalizePath(path);
+  if (analyticsIdentity.userId && analyticsIdentity.consented) {
+    return enqueueConsented(() => trackConsentedRoute(normalizedPath));
+  }
+  if (!analyticsIdentity.anonymousAllowed) return Promise.resolve();
+  return trackAnonymousRoute(normalizedPath);
 }
 
 export function resetAnalyticsSessionForUser(userId: string) {
-  try {
-    sessionStorage.removeItem(getSessionKey(userId));
-  } catch {
-    // No-op when storage is unavailable.
-  }
+  analyticsSessionGeneration += 1;
+  safeSessionStorageRemove(getSessionKey(userId));
 }
