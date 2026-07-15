@@ -9,6 +9,7 @@ import { getPrimaryProductModel3D } from "../../../types/productMedia";
 import { splitCatalogShowcaseItems } from "../catalogPageUtils";
 import { CatalogProduct3DPreviewSlot } from "./CatalogProduct3DPreviewSlot";
 import { CatalogProductFeedCard } from "./CatalogProductFeedCard";
+import { CatalogPromotionBanner } from "./CatalogPromotionBanner";
 
 type CatalogProductShowcaseProps = {
   featuredExtraAction?: {
@@ -113,23 +114,27 @@ export function CatalogProductShowcase({
       </div>
 
       {supportingItems.length > 0 ? (
-        <RevealSequenceGroup
-          className={supportingGridClassName}
-          rootMargin={eagerRevealRootMargin}
-          threshold={0.1}
-        >
-          {supportingItems.map((item, index) => (
-            <RevealSequenceItem className="min-w-0" index={index} key={item.product.id} stepMs={74}>
-              {/* Las primeras 2 supporting cards son above-the-fold en desktop */}
-              <CatalogProductFeedCard
-                isLiteMode={isLiteMode}
-                item={item}
-                layout="default"
-                priority={!isLiteMode && index < 2}
-              />
-            </RevealSequenceItem>
-          ))}
-        </RevealSequenceGroup>
+        <div className="grid min-w-0 content-start gap-3.5 sm:gap-4">
+          <RevealSequenceGroup
+            className={supportingGridClassName}
+            rootMargin={eagerRevealRootMargin}
+            threshold={0.1}
+          >
+            {supportingItems.map((item, index) => (
+              <RevealSequenceItem className="min-w-0" index={index} key={item.product.id} stepMs={74}>
+                {/* Las primeras 2 supporting cards son above-the-fold en desktop */}
+                <CatalogProductFeedCard
+                  isLiteMode={isLiteMode}
+                  item={item}
+                  layout="default"
+                  priority={!isLiteMode && index < 2}
+                />
+              </RevealSequenceItem>
+            ))}
+          </RevealSequenceGroup>
+
+          <CatalogPromotionBanner />
+        </div>
       ) : null}
     </div>
   );

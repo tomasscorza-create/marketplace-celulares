@@ -106,6 +106,9 @@ const AdminDashboardPage = lazy(async () => ({
 const AdminAnalyticsPage = lazy(async () => ({
   default: (await import("../pages/AdminAnalyticsPage")).AdminAnalyticsPage,
 }));
+const AdminCatalogPromotionsPage = lazy(async () => ({
+  default: (await import("../pages/AdminCatalogPromotionsPage")).AdminCatalogPromotionsPage,
+}));
 const AdminSalesPage = lazy(async () => ({
   default: (await import("../pages/AdminSalesPage")).AdminSalesPage,
 }));
@@ -310,6 +313,10 @@ export const router = createBrowserRouter([
       {
         path: "analitica",
         element: withRouteLoader(<AdminAnalyticsPage />),
+      },
+      {
+        path: "promociones-catalogo",
+        element: withRouteLoader(<AdminCatalogPromotionsPage />),
       },
       {
         path: "ventas",

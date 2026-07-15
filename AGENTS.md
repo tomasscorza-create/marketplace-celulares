@@ -63,6 +63,13 @@ migraciones, configuración, Git o servicios remotos.
   Cambiar la categoría de un producto descarta los valores cargados; no se
   intenta migrar valores entre plantillas distintas. Ver
   `contexto/catalogo-y-productos.md`.
+- El catálogo puede mostrar promociones administrables mediante
+  `catalog_promotions`: mensajes, imágenes, productos y beneficios
+  reclamables. La primera ubicación vive sólo en desktop, en la celda inferior
+  derecha del showcase de `Explorar`; móvil queda pendiente de una decisión
+  visual explícita. Los reclamos se guardan una vez por perfil con snapshot
+  económico y no implican todavía aplicar el beneficio al checkout. Ver
+  `contexto/promociones-del-catalogo.md`.
 - Las funciones Edge administrativas son parte del backend operativo. Las
   funciones de checkout/pagos requieren secretos de pago propios antes de ser
   habilitadas o desplegadas para producción.

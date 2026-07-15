@@ -7,7 +7,7 @@
 ## Alcance y fuente de verdad
 
 - Fuente canónica del esquema: `supabase/migrations/`, aplicada por nombre en orden ascendente.
-- Última migración inspeccionada: `20260715220000_analytics_retention_schedule.sql`.
+- Última migración inspeccionada: `20260715231000_catalog_promotion_demo_content.sql`.
 - Consumidores inspeccionados: `src/` y `supabase/functions/`.
 - `supabase/sql/` es referencia histórica y no participa de esta auditoría.
 
@@ -24,6 +24,8 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `buyer_preferences`
 - `cart_items`
 - `carts`
+- `catalog_promotion_claims`
+- `catalog_promotions`
 - `categories`
 - `category_spec_templates`
 - `internal_notification_signatures`
@@ -55,6 +57,8 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `cart_items`
 - `carts`
 - `catalog_activity_events`
+- `catalog_promotion_claims`
+- `catalog_promotions`
 - `categories`
 - `category_spec_templates`
 - `internal_notification_signatures`
@@ -77,6 +81,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 
 - `apply_paid_order_inventory`
 - `claim_analytics_rate_limit`
+- `claim_catalog_promotion`
 - `count_products_by_category_spec_labels`
 - `get_admin_analytics_maintenance_status`
 - `get_admin_analytics_overview`
@@ -101,6 +106,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `can_read_order_by_id`
 - `can_read_order_item`
 - `claim_analytics_rate_limit`
+- `claim_catalog_promotion`
 - `cleanup_internal_analytics`
 - `count_products_by_category_spec_labels`
 - `current_user_role`
@@ -124,6 +130,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `run_internal_analytics_maintenance`
 - `save_analytics_consent`
 - `save_category_spec_template`
+- `set_catalog_promotion_updated_at`
 - `update_order_item_fulfillment_status`
 
 ## RPC usadas pero ausentes

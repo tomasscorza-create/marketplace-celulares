@@ -1,5 +1,6 @@
 export const queryKeys = {
   admin: {
+    catalogPromotions: ["admin", "catalog-promotions"] as const,
     analyticsOverview: (days: number) => ["admin", "analytics-overview", days] as const,
     analyticsUserHistory: (userId: string) => ["admin", "analytics-user-history", userId] as const,
     categories: ["admin", "categories"] as const,
@@ -50,6 +51,8 @@ export const queryKeys = {
     items: (contentKeys: string[]) => ["site-content", [...contentKeys].sort()] as const,
   },
   public: {
+    catalogPromotions: (userId: string | null) =>
+      ["public", "catalog-promotions", userId ?? "anonymous"] as const,
     artisanProducts: (artisanId: string) => ["public", "artisan-products", artisanId] as const,
     categories: ["public", "categories"] as const,
     product: (productId: string) => ["public", "product", productId] as const,

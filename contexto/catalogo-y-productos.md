@@ -27,6 +27,10 @@ El catálogo público funciona así:
 - **Modelos 3D**: Son opcionales. Las tarjetas manejan de forma segura que un producto no tenga archivos GLB/GLTF.
 - **Grillas reactivas**: Se decide la cantidad de columnas no solo mediante media queries, sino por un estado de React evaluando el ancho de la ventana al cargar y redimensionar.
 - **Especificaciones por categoría**: El admin define, por categoría, una plantilla de campos de texto libre (tabla `category_spec_templates`, gestionada desde `AdminCategoriesPage.tsx` al editar una categoría). Al cargar o editar un producto (mismo formulario compartido por admin y vendedor), si la categoría elegida tiene plantilla, se muestra una sección para completar el valor de cada campo; se guarda como snapshot en `products.category_spec_values` (jsonb, `{label, value}[]`), desacoplado de la plantilla. Cambiar la categoría del producto descarta los valores cargados. El detalle público (`ProductDetailPage.tsx`) muestra esta tabla debajo de la descripción cuando el producto tiene valores. Cliente y hooks compartidos en `src/features/categorySpecs/`.
+- **Promociones en Explorar**: El hueco inferior derecho del showcase desktop
+  se reserva para un carrusel administrable con mensajes, imágenes, productos
+  y beneficios reclamables. Su dominio, seguridad, acciones y fase móvil se
+  documentan en `contexto/promociones-del-catalogo.md`.
 
 ## Dependencias y límites externos
 
