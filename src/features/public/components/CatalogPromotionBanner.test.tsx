@@ -92,7 +92,7 @@ describe("CatalogPromotionBanner controls", () => {
 
     fireEvent.click(activationLayer);
     expect(controls).toHaveClass("scale-100", "opacity-100");
-    expect(screen.getByText("Primera")).toBeInTheDocument();
+    expect(screen.getAllByText("Primera")[0]).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(2999);
@@ -103,6 +103,24 @@ describe("CatalogPromotionBanner controls", () => {
       vi.advanceTimersByTime(1);
     });
     expect(controls).toHaveClass("scale-90", "opacity-35");
-    expect(screen.getByText("Primera")).toBeInTheDocument();
+    expect(screen.getAllByText("Primera")[0]).toBeInTheDocument();
+  });
+
+  it("presenta cada promoción como una sub-card sobre el fondo exterior", () => {
+    render(<CatalogPromotionBanner />);
+
+    const banner = screen.getByLabelText("Promociones del catálogo");
+    const viewport = banner.querySelector(".catalog-promotion-viewport");
+    const track = banner.querySelector<HTMLElement>(".catalog-promotion-track");
+    const slots = banner.querySelectorAll(".catalog-promotion-slot");
+
+    expect(banner).toHaveClass("from-white", "via-slate-200", "to-slate-300");
+    expect(viewport).toHaveClass("inset-1.5", "overflow-hidden", "rounded-xl");
+    expect(track).toHaveStyle({ width: "300%" });
+    expect(track?.style.getPropertyValue("--catalog-promotion-loop-duration")).toBe("16000ms");
+    expect(slots).toHaveLength(3);
+    expect(slots[0]).toHaveClass("px-[3px]");
+    expect(viewport).not.toHaveClass("border");
+    expect(slots[0].querySelector("article")).toHaveClass("border", "border-white/45");
   });
 });
