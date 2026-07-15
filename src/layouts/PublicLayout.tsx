@@ -11,6 +11,9 @@ import type { PublicLayoutOutletContext } from "./publicLayoutContext";
 const WhatsAppButton = lazy(async () => ({
   default: (await import("../components/WhatsAppButton")).WhatsAppButton,
 }));
+const GuidedHelpButton = lazy(async () => ({
+  default: (await import("../components/GuidedHelpButton")).GuidedHelpButton,
+}));
 const BuyerCartShortcut = lazy(async () => ({
   default: (await import("../features/buyer/components/BuyerCartShortcut")).BuyerCartShortcut,
 }));
@@ -127,14 +130,18 @@ export function PublicLayout() {
         <Outlet context={outletContext} />
       </main>
 
-      {hidesFloatingWhatsApp ? null : (
-        <div
-          className="fixed z-40"
-          style={{
-            bottom: "calc(env(safe-area-inset-bottom, 0px) + 1.25rem)",
-            right: "calc(env(safe-area-inset-right, 0px) + 1rem)",
-          }}
-        >
+      <div
+        className="fixed z-40 flex flex-col items-end gap-3"
+        style={{
+          bottom: "calc(env(safe-area-inset-bottom, 0px) + 1.25rem)",
+          right: "calc(env(safe-area-inset-right, 0px) + 1rem)",
+        }}
+      >
+        <Suspense fallback={null}>
+          <GuidedHelpButton />
+        </Suspense>
+
+        {hidesFloatingWhatsApp ? null : (
           <Suspense fallback={null}>
             <WhatsAppButton
               message={
@@ -143,8 +150,8 @@ export function PublicLayout() {
               }
             />
           </Suspense>
-        </div>
-      )}
+        )}
+      </div>
 
       <footer className="relative z-10 mt-10 border-t border-stone-200/50 bg-white/40 backdrop-blur-xl">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
