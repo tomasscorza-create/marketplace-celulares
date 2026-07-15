@@ -90,6 +90,10 @@ migraciones, configuración, Git o servicios remotos.
   WebGL, fuentes, audio, identificadores publicitarios ni otras técnicas de
   fingerprinting. La IP nunca se almacena: `collect-analytics` sólo puede
   procesarla en memoria para rate limit y ciudad/región aproximadas.
+- Los reintentos de analítica reutilizan un `event_id` por entrega. Los recibos
+  anónimos son efímeros, no contienen usuario, sesión, ruta, IP ni datos de
+  dispositivo y nunca deben ampliarse hasta convertirse en una identidad de
+  visitante.
 
 ## 3. Mapa de arquitectura
 

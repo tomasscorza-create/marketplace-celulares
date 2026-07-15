@@ -88,12 +88,20 @@ leen como admin. Las escrituras de actividad pasan por la función Edge con
 - El panel refresca sus consultas cada 30 segundos sólo cuando está visible,
   vuelve a consultar al recuperar el foco y permite una actualización manual.
   Durante una recarga conserva el último informe confirmado.
+- La entrega usa reintentos limitados y un `event_id` por evento lógico. Los
+  recibos anónimos expiran a las 48 horas y no contienen ruta, IP, dispositivo,
+  sesión ni usuario; sirven únicamente para impedir duplicados.
+- La marca temporal de visita se guarda después de la confirmación del backend.
+  Sólo las cuentas consentidas mantienen una cola transitoria en memoria.
 
 ## Retención
 
 `cleanup_internal_analytics()` elimina eventos y sesiones con más de 365 días y
-agregados anónimos con más de 730 días. No se programa automáticamente desde el
-frontend: producción debe invocarla con un cron seguro o mantenimiento backend.
+agregados anónimos con más de 730 días. También elimina recibos de entrega
+vencidos; las RPC de captura hacen esa limpieza oportunistamente para que los
+recibos no crezcan mientras todavía no exista un cron. La limpieza general no
+se programa automáticamente desde el frontend: producción debe invocarla con un
+cron seguro o mantenimiento backend.
 
 ## Validación
 

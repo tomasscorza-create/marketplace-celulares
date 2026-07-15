@@ -23,6 +23,10 @@ Las funciones se agrupan en dos ramas principales:
 - **Autenticación en llamadas**: La app frontend invoca estas funciones mandando el token JWT del usuario logueado. Las funciones validan este token antes de operar.
 - **Excepción pública controlada**: `collect-analytics` usa `verify_jwt = false` para contar visitas sin cuenta. No confía en identidad enviada por el cliente; cuando se solicita seguimiento individual valida el JWT dentro de la función.
 - **GeoIP opcional**: `IPINFO_TOKEN` habilita ciudad/región aproximadas. La IP se usa sólo en memoria y no se persiste.
+- **Entrega idempotente**: `collect-analytics` exige un `event_id` por entrega y
+  delega la escritura a RPC transaccionales. Sus logs técnicos sólo indican
+  modo, resultado, razón y estado HTTP; no registran IP, ruta, usuario ni ID del
+  evento.
 
 ## Dependencias y límites externos
 

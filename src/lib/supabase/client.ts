@@ -34,6 +34,15 @@ const hasLocalBackendEnv = Boolean(
 
 export const hasSupabaseEnv = hasRemoteBackendEnv || hasLocalBackendEnv;
 
+export function getSupabasePublicConfig() {
+  if (!hasSupabaseEnv || !supabaseUrl || !supabaseAnonKey) return null;
+
+  return {
+    anonKey: supabaseAnonKey,
+    url: supabaseUrl.replace(/\/$/, ""),
+  };
+}
+
 export const supabase = hasSupabaseEnv
   ? createClient(supabaseUrl!, supabaseAnonKey!, {
       auth: {

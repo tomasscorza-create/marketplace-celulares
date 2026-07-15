@@ -7,7 +7,7 @@
 ## Alcance y fuente de verdad
 
 - Fuente canónica del esquema: `supabase/migrations/`, aplicada por nombre en orden ascendente.
-- Última migración inspeccionada: `20260715120000_analytics_account_and_event_metrics.sql`.
+- Última migración inspeccionada: `20260715150000_analytics_delivery_idempotency.sql`.
 - Consumidores inspeccionados: `src/` y `supabase/functions/`.
 - `supabase/sql/` es referencia histórica y no participa de esta auditoría.
 
@@ -19,8 +19,6 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 ## Tablas y vistas usadas por la aplicación
 
 - `analytics_consents`
-- `analytics_events`
-- `analytics_sessions`
 - `artisan_storefronts`
 - `buyer_favorites`
 - `buyer_preferences`
@@ -45,6 +43,7 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `analytics_anonymous_daily`
 - `analytics_consent_history`
 - `analytics_consents`
+- `analytics_delivery_receipts`
 - `analytics_events`
 - `analytics_sessions`
 - `artisan_storefronts`
@@ -82,8 +81,9 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `get_public_catalog_product_feed_v5`
 - `get_public_catalog_storefront_groups_v6`
 - `get_public_catalog_storefront_suggestions_v2`
-- `record_anonymous_analytics`
+- `record_anonymous_analytics_v2`
 - `record_catalog_activity_event_v1`
+- `record_consented_analytics_v2`
 - `save_analytics_consent`
 - `save_category_spec_template`
 - `update_order_item_fulfillment_status`
@@ -109,7 +109,9 @@ remoto; esos puntos requieren Supabase local y las verificaciones de
 - `is_admin`
 - `is_public_artisan_visible`
 - `record_anonymous_analytics`
+- `record_anonymous_analytics_v2`
 - `record_catalog_activity_event_v1`
+- `record_consented_analytics_v2`
 - `save_analytics_consent`
 - `save_category_spec_template`
 - `update_order_item_fulfillment_status`
