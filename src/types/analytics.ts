@@ -99,6 +99,7 @@ export type AdminAnalyticsOverview = {
   performanceTiers: AnalyticsCountItem[];
   periodDays: number;
   recentUsers: AnalyticsRecentUser[];
+  sessionDurationBuckets: AnalyticsCountItem[];
   signupStarted: number;
   topEvents: AnalyticsCountItem[];
   topPages: AnalyticsPageItem[];

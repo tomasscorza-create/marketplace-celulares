@@ -18,6 +18,10 @@ import type {
 } from "../types/analytics";
 
 const LABELS: Record<string, string> = {
+  "15_to_59": "15 a 59 segundos",
+  "1_to_2": "1 a 2 minutos",
+  "3_to_9": "3 a 9 minutos",
+  "10_plus": "10 minutos o más",
   android: "Android",
   chromeos: "ChromeOS",
   computer: "Computadoras",
@@ -31,6 +35,7 @@ const LABELS: Record<string, string> = {
   mobile: "Celulares",
   other: "Otros",
   tablet: "Tablets",
+  under_15: "Menos de 15 segundos",
   unknown: "Sin datos suficientes",
   windows: "Windows",
 };
@@ -284,6 +289,11 @@ export function AdminAnalyticsPage() {
               <DistributionCard items={overview.operatingSystems} title="Sistema operativo" />
               <DistributionCard items={overview.performanceTiers} title="Gama estimada" />
             </div>
+
+            <DistributionCard
+              items={overview.sessionDurationBuckets}
+              title="Duración de sesiones consentidas"
+            />
 
             <div className="grid gap-5 xl:grid-cols-2">
               <section className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">

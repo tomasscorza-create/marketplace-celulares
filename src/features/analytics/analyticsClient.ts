@@ -29,6 +29,7 @@ type AnalyticsFunctionResponse = {
 };
 
 let analyticsIdentity: AnalyticsIdentity = { consented: false, userId: null };
+let analyticsSessionGeneration = 0;
 let consentedEventQueue = Promise.resolve();
 let publicVisitInFlight: Promise<boolean> | null = null;
 
@@ -43,6 +44,14 @@ function safeSessionStorageGet(key: string) {
 function safeSessionStorageSet(key: string, value: string) {
   try {
     sessionStorage.setItem(key, value);
+  } catch {
+    // Analytics must never interrupt the user experience.
+  }
+}
+
+function safeSessionStorageRemove(key: string) {
+  try {
+    sessionStorage.removeItem(key);
   } catch {
     // Analytics must never interrupt the user experience.
   }
@@ -118,10 +127,15 @@ async function sendAnonymous(
   return delivery?.outcome === "accepted";
 }
 
-async function sendConsented(eventName: AnalyticsEventName | "heartbeat", options: TrackEventOptions) {
+async function sendConsented(
+  eventName: AnalyticsEventName | "heartbeat" | "session_end",
+  options: TrackEventOptions,
+  requestedSessionId?: string | null,
+) {
   const userId = analyticsIdentity.userId;
   if (!userId || !analyticsIdentity.consented) return;
 
+  const sessionGeneration = analyticsSessionGeneration;
   const sessionKey = getSessionKey(userId);
   const delivery = await invokeCollector({
     activeSeconds: options.activeSeconds,
@@ -132,15 +146,26 @@ async function sendConsented(eventName: AnalyticsEventName | "heartbeat", option
     mode: "consented",
     path: normalizePath(options.path),
     policyVersion: ANALYTICS_POLICY_VERSION,
-    sessionId: safeSessionStorageGet(sessionKey),
+    sessionId: requestedSessionId === undefined
+      ? safeSessionStorageGet(sessionKey)
+      : requestedSessionId,
   });
   const response = delivery?.outcome === "accepted" ? delivery.value : null;
 
-  if (response?.sessionId) safeSessionStorageSet(sessionKey, response.sessionId);
+  if (
+    response?.sessionId &&
+    eventName !== "session_end" &&
+    sessionGeneration === analyticsSessionGeneration
+  ) {
+    safeSessionStorageSet(sessionKey, response.sessionId);
+  }
 }
 
 function enqueueConsented(task: () => Promise<void>) {
-  consentedEventQueue = consentedEventQueue.then(task, task);
+  const sessionGeneration = analyticsSessionGeneration;
+  const guardedTask = () =>
+    sessionGeneration === analyticsSessionGeneration ? task() : Promise.resolve();
+  consentedEventQueue = consentedEventQueue.then(guardedTask, guardedTask);
   return consentedEventQueue;
 }
 
@@ -197,6 +222,12 @@ async function trackConsentedRoute(normalizedPath: string) {
 }
 
 export function configureAnalyticsIdentity(identity: AnalyticsIdentity) {
+  if (
+    analyticsIdentity.userId !== identity.userId ||
+    analyticsIdentity.consented !== identity.consented
+  ) {
+    analyticsSessionGeneration += 1;
+  }
   analyticsIdentity = identity;
 }
 
@@ -221,6 +252,23 @@ export function trackAnalyticsHeartbeat(activeSeconds: number) {
   );
 }
 
+export function endAnalyticsSession(activeSeconds: number) {
+  const userId = analyticsIdentity.userId;
+  if (!userId || !analyticsIdentity.consented) return Promise.resolve();
+
+  const sessionKey = getSessionKey(userId);
+  const sessionId = safeSessionStorageGet(sessionKey);
+  analyticsSessionGeneration += 1;
+  safeSessionStorageRemove(sessionKey);
+
+  if (!sessionId && activeSeconds <= 0) return Promise.resolve();
+  return sendConsented(
+    "session_end",
+    { activeSeconds, path: window.location.pathname },
+    sessionId,
+  );
+}
+
 export function trackAnalyticsRoute(path: string) {
   const normalizedPath = normalizePath(path);
   if (analyticsIdentity.userId && analyticsIdentity.consented) {
@@ -230,9 +278,6 @@ export function trackAnalyticsRoute(path: string) {
 }
 
 export function resetAnalyticsSessionForUser(userId: string) {
-  try {
-    sessionStorage.removeItem(getSessionKey(userId));
-  } catch {
-    // No-op when storage is unavailable.
-  }
+  analyticsSessionGeneration += 1;
+  safeSessionStorageRemove(getSessionKey(userId));
 }

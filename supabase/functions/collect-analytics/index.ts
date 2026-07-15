@@ -374,8 +374,8 @@ async function recordConsented(
   const requestedSessionId = typeof body.sessionId === "string" && UUID_PATTERN.test(body.sessionId)
     ? body.sessionId
     : null;
-  const eventName = body.eventName === "heartbeat"
-    ? "heartbeat"
+  const eventName = body.eventName === "heartbeat" || body.eventName === "session_end"
+    ? body.eventName
     : normalizeEnum(body.eventName, CONSENTED_EVENTS, "");
   if (!eventName) {
     return analyticsResponse(

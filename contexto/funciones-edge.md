@@ -27,6 +27,9 @@ Las funciones se agrupan en dos ramas principales:
   delega la escritura a RPC transaccionales. Sus logs técnicos sólo indican
   modo, resultado, razón y estado HTTP; no registran IP, ruta, usuario ni ID del
   evento.
+- **Ciclo de sesión consentida**: `heartbeat` actualiza únicamente tiempo
+  visible y `session_end` cierra la sesión en `pagehide`. Ambos requieren JWT y
+  consentimiento, son idempotentes y no se guardan como eventos de negocio.
 
 ## Dependencias y límites externos
 

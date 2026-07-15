@@ -12,7 +12,9 @@ señales de fingerprinting.
 - `src/pages/AdminAnalyticsPage.tsx`: informe protegido del administrador.
 - `src/pages/PrivacyPage.tsx`: explicación y revocación del consentimiento.
 - `supabase/functions/collect-analytics/index.ts`: validación e ingreso de eventos.
-- `supabase/migrations/20260714190000_internal_analytics.sql`: tablas, RLS y RPC.
+- `supabase/migrations/20260714190000_internal_analytics.sql`: tablas y RLS base.
+- `supabase/migrations/20260715180000_analytics_session_lifecycle.sql`: ciclo de
+  vida vigente de sesiones y distribución de duraciones.
 
 ## Modelo de privacidad
 
@@ -93,6 +95,12 @@ leen como admin. Las escrituras de actividad pasan por la función Edge con
   sesión ni usuario; sirven únicamente para impedir duplicados.
 - La marca temporal de visita se guarda después de la confirmación del backend.
   Sólo las cuentas consentidas mantienen una cola transitoria en memoria.
+- Una sesión consentida vence tras 30 minutos sin actividad. El tiempo activo se
+  acumula sólo mientras la pestaña está visible, se entrega cada 10 segundos y
+  se actualiza al ocultarla. Al abandonar la página se solicita el cierre con
+  `keepalive`; una suspensión aislada nunca suma más de 60 segundos.
+- El panel muestra duración media y rangos de duración basados en segundos
+  activos, no en tiempo de calendario entre inicio y fin.
 
 ## Retención
 
@@ -121,4 +129,4 @@ Además, servir `collect-analytics` localmente y comprobar:
 4. Revocar detiene la captura individual.
 5. Sólo admin ejecuta los RPC de informes.
 
-Última revisión: 2026-07-14.
+Última revisión: 2026-07-14, Fase 4.

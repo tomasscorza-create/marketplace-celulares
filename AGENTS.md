@@ -94,6 +94,11 @@ migraciones, configuración, Git o servicios remotos.
   anónimos son efímeros, no contienen usuario, sesión, ruta, IP ni datos de
   dispositivo y nunca deben ampliarse hasta convertirse en una identidad de
   visitante.
+- Las sesiones consentidas vencen después de 30 minutos sin actividad. El
+  tiempo activo cuenta sólo mientras la página está visible, se entrega en
+  intervalos de 10 segundos y al ocultar la pestaña; `pagehide` solicita el
+  cierre. No calcular duración como `ended_at - started_at` porque incluiría
+  tiempo oculto o suspendido.
 
 ## 3. Mapa de arquitectura
 
